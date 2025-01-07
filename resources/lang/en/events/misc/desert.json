@@ -1,0 +1,805 @@
+[
+  {
+    "event_id": "dst_misc_any_misc2",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c went for a long walk this morning, deep in thought.",
+    "m_c": {
+      "age": ["adolescent", "young adult", "adult", "senior adult", "senior"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "multi_misc_any_collar_accessory1",
+    "location": [
+      "forest",
+      "beach",
+      "plains"
+    ],
+    "season": ["any"],
+    "sub_type": ["accessory"],
+    "weight": 5,
+    "event_text":  "m_c disappears for a few days, then returns to camp with a acc_singular around {PRONOUN/m_c/poss} neck.",
+    "new_accessory": [""],
+    "m_c": {
+        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
+    }
+  }, 
+  {
+    "event_id": "dst_misc_any_misc4",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 30,
+    "event_text": "m_c spends the evening regaling the Clan with stories of story_list.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"],
+      "skill": ["LORE,1", "KIT,1", "STORY,1"],
+      "not_skill": ["KIT,2", "KIT,3", "KIT,4"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc5",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 10,
+    "event_text": "m_c was trying to fluff up {PRONOUN/m_c/poss} nest when {PRONOUN/m_c/subject} saw a thorn inside of {PRONOUN/m_c/poss} bedding. Another prank, but it could not fool {PRONOUN/m_c/object}!",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "multi_misc_any_misc8",
+    "location": [
+      "forest",
+      "plains",
+      "desert",
+      "wetlands"
+    ],
+    "season": ["any"],
+    "weight": 15,
+    "event_text": "m_c tossed a snake out of the camp before it could bite someone.",
+    "m_c": {
+      "age": ["adolescent", "young adult", "adult", "senior adult", "senior"],
+      "status": ["any"]
+    },
+    "relationships": [
+      {
+          "cats_from": [
+              "clan"
+          ],
+          "cats_to": [
+              "m_c"
+          ],
+          "values": [
+              "respect"
+          ],
+          "amount": 2
+      }
+  ]
+  },
+  {
+    "event_id": "dst_misc_any_misc9",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 5,
+    "event_text": "m_c tries to convince r_c to run away with {PRONOUN/m_c/object}.",
+    "m_c": {
+        "age": ["young adult","adult","senior","senior adult"],
+        "status":["any"]
+    },
+    "r_c": {
+        "age": ["young adult","adult","senior","senior adult"],
+        "status":["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc10",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 5,
+    "event_text": "m_c believes {PRONOUN/m_c/subject}'{VERB/m_c/re/s} meant for something greater.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc11",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 5,
+    "event_text": "m_c believes {PRONOUN/m_c/subject} {VERB/m_c/are/is} part of a new prophecy.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc12",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 10,
+    "event_text": "m_c went missing for a few days.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc13",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 5,
+    "event_text": "m_c is caught breaking the Warrior Code.",
+    "m_c": {
+      "age": ["adolescent", "young adult", "adult", "senior adult", "senior"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_misc14",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c is caught outside of the Clan's territory.",
+    "m_c": {
+        "age": ["adolescent", "young adult","adult","senior","senior adult"],
+        "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_traitmisc1",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c considers, as {PRONOUN/m_c/subject} {VERB/m_c/look/looks} out over the Clan, if perhaps this isn't where {PRONOUN/m_c/subject} {VERB/m_c/belong/belongs}.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"],
+      "trait": ["adventurous","daring", "insecure", "nervous"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_traitmisc2",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "The world around {PRONOUN/m_c/object} feels smaller lately; m_c looks out at the horizon and yearns for something unnameable.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"],
+      "trait": ["adventurous","daring"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_dark1",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["skill_trait_required"],
+    "weight": 10,
+    "event_text": "m_c's dreams are filled with flashing teeth and blood-scent. {PRONOUN/m_c/subject/CAP} {VERB/m_c/wake/wakes} up screaming.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"],
+      "skill": ["DARK,1"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_ghost1",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["skill_trait_required"],
+    "weight": 30,
+    "event_text": "m_c thought {PRONOUN/m_c/subject} saw a familiar wispy form lingering at the edge of camp, but it disappeared before {PRONOUN/m_c/subject} could be sure.",
+    "m_c": {
+      "age": ["any"],
+      "status": ["any"],
+      "skill": ["GHOST,1"]
+    }
+  },
+  {
+    "event_id": "multi_misc_leaffall_misc1",
+    "location": [
+      "forest",
+      "beach",
+      "mountainous",
+      "wetlands"
+    ],
+    "season": ["leaf-fall"],
+    "tags": ["clan:kitten"],
+    "weight": 20,
+    "event_text": "The older cats look fondly upon the kits who are dashing in and out of leaf piles at the edge of camp.",
+    "m_c": {
+      "age": ["senior", "senior adult"]
+    },
+    "r_c": {
+      "age": ["senior adult", "senior"]
+    }
+  },
+  {
+    "event_id": "multi_misc_leafbare_misc1",
+    "location": [
+      "forest",
+      "beach",
+      "plains",
+      "mountainous"
+    ],
+    "season": ["leaf-bare"],
+    "weight": 20,
+    "event_text": "m_c and r_c begin a small camp snowball fight while on guard duty, eventually getting the whole Clan to join in.",
+    "m_c": {
+        "status": ["warrior"],
+      "trait": ["playful"]
+    },
+    "r_c": {
+        "status": ["warrior"]
+    },
+    "relationships": [
+        {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic","comfort", "trust"],
+            "amount": 5
+        },
+        {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["dislike"],
+            "amount": -5
+        }
+    ]
+  },
+  {
+    "event_id": "dst_misc_any_accessory2",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["accessory"],
+    "weight": 20,
+    "event_text": "r_c finds acc_plural while out on a walk and decides to give them to m_c.",
+    "new_accessory": ["WILD","PLANT"],
+    "m_c":{
+      "age": ["any"],
+      "status": ["any"]
+    },
+    "r_c": {
+        "age": ["adolescent", "young adult","adult","senior","senior adult"],
+        "status":["any"]
+    },
+    "relationships": [
+        {
+          "cats_from": ["m_c"],
+          "cats_to": ["r_c"],
+          "mutual": true,
+          "values": ["platonic", "comfort", "trust"],
+          "amount": 5
+        },
+        {
+          "cats_from": ["m_c"],
+          "cats_to": ["r_c"],
+          "mutual": true,
+          "values": ["dislike"],
+          "amount": -5
+        }
+    ]
+  },
+  {
+    "event_id": "dst_misc_any_accessory3",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["accessory"],
+    "weight": 20,
+    "event_text": "m_c finds acc_plural while out on a walk and decides to keep them.",
+    "new_accessory": ["WILD","PLANT"],
+    "m_c":{
+      "age": ["any"],
+      "status": ["any"]
+    }
+  },
+  {
+    "event_id": "dst_misc_any_accessory4",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["ceremony", "accessory"],
+    "weight": 20,
+    "event_text": "m_c was given acc_plural as a congratulations, r_c watches from the side with a jealous glint in {PRONOUN/r_c/poss} eyes.",
+    "new_accessory": ["WILD", "PLANT"],
+    "m_c":{
+      "age": ["any"],
+      "status": ["any"]
+    },
+    "r_c":{
+      "age": ["any"],
+      "status": ["any"]
+    },
+    "relationships": [
+        {
+          "cats_from": ["r_c"],
+          "cats_to": ["m_c"],
+          "mutual": true,
+          "values": ["platonic","comfort","respect"],
+          "amount": -5
+        }
+    ]
+  }, 
+  {
+    "event_id": "dst_misc_war_any_any2",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "The tension between c_n and o_c_n is palpable, with even the smallest actions potentially leading to violence.",
+    "m_c": {},
+    "other_clan": {
+        "current_rep": ["hostile"],
+        "changed": 0
+    }
+  },
+  {
+    "event_id": "dst_misc_greenleaf_kit1",
+    "location": ["desert"],
+    "season": ["greenleaf"],
+    "tags": ["clan:warrior"],
+    "weight": 15,
+    "event_text": "m_c chases fireflies around the camp while the warriors sleep.",
+    "m_c": {
+      "status": ["kitten"]
+    }
+  },
+  {
+        "event_id": "dst_misc_any_kitkit1",
+        "location": ["desert"],
+        "season": ["any"],
+        "weight": 20,
+        "event_text": "m_c and r_c try to sneak out of camp, but are caught and returned to the nursery.",
+        "m_c": {
+          "status": ["kitten"]
+        },
+        "r_c": {
+          "status": ["kitten"]
+        },
+        "relationships": [
+          {
+            "cats_from": ["m_c"],
+            "cats_to": ["r_c"],
+            "mutual": true,
+            "values": ["platonic"],
+            "amount": 20
+          }
+        ]
+    },
+    {
+        "event_id": "dst_misc_multi_kitkit1",
+        "location": [
+          "forest",
+          "plains",
+          "mountainous",
+          "wetlands"
+        ],
+        "season": ["newleaf", "greenleaf"],
+        "weight": 15,
+        "event_text": "m_c and r_c sneak out of camp to chase butterflies.",
+        "m_c": {
+          "status": ["kitten"]
+        },
+        "r_c": {
+          "status": ["kitten"]
+        },
+        "relationships": [
+          {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "trust", "comfort"],
+            "amount": 15
+          }
+        ]
+    },
+    {
+        "event_id": "dst_misc_greenleaf_kitkit1",
+        "location": ["desert"],
+        "season": ["greenleaf"],
+      "tags": ["clan:warrior"],
+        "weight": 20,
+        "event_text": "m_c and r_c chase fireflies around the camp while the warriors try to sleep.",
+        "m_c": {
+            "status": ["kitten"]
+        },
+        "r_c": {
+          "status": ["kitten"]
+        },
+        "relationships": [
+          {
+            "cats_from": ["m_c"],
+            "cats_to": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "trust", "comfort"],
+            "amount": 10
+          }
+        ]
+    },
+    {
+        "event_id": "multi_misc_leaffall_kitkit1",
+        "location": [
+          "forest",
+          "mountainous",
+          "wetlands"
+        ],
+        "season": ["leaf-fall"],
+      "tags": ["clan:warrior"],
+        "weight": 20,
+        "event_text": "m_c and r_c lead a small leaf-gathering hunt which the adult cats watch with amused purrs.",
+        "m_c": {
+            "status": ["kitten"]
+        },
+        "r_c": {
+          "status": ["kitten"]
+        },
+        "relationships": [
+          {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "comfort", "trust"],
+            "amount": 15
+          }
+        ]
+    },
+    {
+        "event_id": "multi_misc_leafbare_kitkit1",
+        "location": [
+          "plains",
+          "mountainous"
+        ],
+        "season": ["leaf-bare"],
+        "weight": 20,
+        "event_text": "m_c and r_c make little snow lumps at the entrance to the camp.",
+        "m_c": {
+            "status": ["kitten"]
+        },
+        "r_c": {
+          "status": ["kitten"]
+        },
+        "relationships": [
+          {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "trust", "comfort"],
+            "amount": 15
+          }
+        ]
+      },
+    {
+        "event_id": "multi_misc_any_adultsavingkitapprentice1",
+        "location": [
+          "forest",
+          "plains",
+          "mountainous",
+          "wetlands"
+        ],
+        "season": ["any"],
+        "weight": 15,
+        "event_text": "m_c falls into a river, but is saved by r_c.",
+        "m_c": {
+            "age": ["kitten", "adolescent"]
+        },
+        "r_c": {
+          "age": ["young adult", "adult", "senior adult", "senior"]
+        },
+        "relationships": [
+          {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": false,
+            "values": ["platonic", "comfort", "respect", "trust"],
+            "amount": 15
+          }
+        ]
+    },
+    {
+      "event_id": "dst_misc_any_apprentice1",
+      "location": ["desert"],
+      "season": ["any"],
+      "weight": 20,
+      "event_text": "m_c sneaks out of camp with r_c.",
+      "m_c": {
+          "age": ["adolescent"]
+      },
+      "r_c": {
+        "age": ["adolescent"]
+      },
+      "relationships": [
+          {
+              "cats_to": ["m_c"],
+              "cats_from": ["r_c"],
+              "mutual": true,
+              "values": ["trust", "platonic"],
+              "amount": 15
+          }
+      ]
+  },
+  {
+    "event_id": "dst_misc_any_apprentice2",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c and r_c sneak out of camp to see the sun rise.",
+    "m_c": {
+        "age": ["adolescent"]
+    },
+    "r_c": {
+        "age": ["adolescent"]
+    },
+    "relationships": [
+        {
+            "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "comfort", "trust"],
+            "amount": 15
+        }
+    ]
+  },
+  {
+    "event_id": "dst_misc_any_apprentice3",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c and r_c sneak out of camp to see the moon rise.",
+    "m_c": {
+      "age": ["adolescent"]
+    },
+    "r_c": {
+      "age": ["adolescent"]
+    },
+    "relationships": [
+        {
+          "cats_to": ["m_c"],
+          "cats_from": ["r_c"],
+          "mutual": true,
+          "values": ["platonic", "comfort", "trust"],
+          "amount": 15
+        }
+    ]
+  },
+  {
+    "event_id": "dst_misc_any_apprentice4",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c and r_c try to sneak out of camp, but are caught by their mentors.",
+    "m_c": {
+      "age": ["adolescent"],
+      "status": ["apprentice"]
+    },
+    "r_c": {
+      "age": ["adolescent"],
+      "status": ["apprentice"]
+    },
+    "relationships": [
+        {
+          "cats_to": ["m_c"],
+            "cats_from": ["r_c"],
+            "mutual": true,
+            "values": ["platonic", "trust"],
+          "amount": 15
+        }
+    ]
+  },
+  {
+    "event_id": "multi_misc_any_scandalous_kittypet4",
+    "location": [
+      "forest",
+      "plains",
+      "beach",
+      "wetlands"
+    ],
+    "season": ["any"],
+    "weight": 15,
+    "event_text": "m_c was seen chasing a kittypet off of the territory.",
+    "m_c": {
+        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
+    },
+    "new_cat": [
+      ["meeting", "kittypet", "exists"]
+    ],
+    "relationships": [
+      {
+        "cats_from": ["m_c"],
+        "cats_to": ["n_c:0"],
+        "mutual": true,
+        "values": ["dislike"],
+        "amount": 10
+      }
+    ],
+    "outsider": {
+      "current_rep": ["any"],
+      "changed": -5
+    }
+  },
+
+  {
+    "event_id": "multi_misc_any_distant_other_clan1",
+    "location": [
+      "plains",
+      "desert",
+      "mountainous"
+    ],
+    "season": ["any"],
+    "weight": 10,
+    "event_text": "m_c sees that o_c_n has been cleaning the border trackways, and adds {PRONOUN/m_c/poss} own paws the the effort.",
+    "m_c": {
+        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
+    },
+    "other_clan": {
+      "current_rep": ["any"],
+      "changed": 1
+    }
+  },
+  {
+    "event_id": "multi_misc_any_distant_other_clan2",
+    "location": [
+      "plains",
+      "desert",
+      "mountainous"
+    ],
+    "season": ["any"],
+    "weight": 10,
+    "event_text": "The thornbush might be on o_c_n's side of the border, but both Clans benefit from uprooting it before it can block the path further.",
+    "m_c": {
+        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
+    },
+    "other_clan": {
+      "current_rep": ["any"],
+      "changed": 1
+    }
+  },
+  {
+    "event_id": "multi_misc_any_distant_other_clan3",
+    "location": [
+      "plains",
+      "desert",
+      "mountainous"
+    ],
+    "season": ["any"],
+    "weight": 10,
+    "event_text": "Trying to see o_c_n cats in the flesh can be hard when the Clans live so far apart. m_c has to wait hours for a o_c_n patrol to pass on the message about local loner activity.",
+    "m_c": {
+        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
+    },
+    "other_clan": {
+      "current_rep": ["any"],
+      "changed": 1
+    }
+  },
+  {
+    "event_id": "dst_misc_any_elder1",
+    "location": ["desert"],
+    "season": ["any"],
+    "weight": 20,
+    "event_text": "m_c is brought back to camp after wandering off.",
+    "m_c": {
+      "age": ["senior"],
+      "status":["elder"]
+    }
+  },
+  {
+    "event_id": "dst_misc_freshkill_anystolen1",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["clan_wide"],
+    "weight": 10,
+    "event_text": "The Clan worked hard to gather plenty of fresh-kill, but woke up to find pawprints leading away from the fresh-kill pile, and missing prey.",
+    "supplies": [
+      {
+          "type": "freshkill",
+          "trigger": ["excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_freshkill_anystolen2",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["clan_wide"],
+    "weight": 10,
+    "event_text": "The Clan gathered a stockpile of food to save, the more the better, but one night the fresh-kill pile was drastically reduced and paw prints were found on the ground.",
+    "supplies": [
+      {
+          "type": "freshkill",
+          "trigger": ["excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_herb_anydestruction1",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["clan_wide"],
+    "weight": 1,
+    "event_text": "Some sort of pest got into the herb stores and ruined much of the supplies. c_n will have to clean it out and start over anew.",
+    "supplies": [
+      {
+          "type": "all_herb",
+          "trigger": ["adequate", "full", "excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_herb_anydestruction2",
+    "location": ["desert"],
+    "season": ["any"],
+    "tags": ["clan_wide"],
+    "weight": 1,
+    "event_text": "Abnormally strong winds blew through the camp last night and scattered the herb store into a useless state. The Clan manages to recover some of the herbs, but the resulting supply is much smaller than before.",
+    "supplies": [
+      {
+          "type": "all_herb",
+          "trigger": ["adequate", "full", "excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_herb_newleafdestruction1",
+    "location": ["desert"],
+    "season": ["newleaf"],
+    "tags": ["clan_wide"],
+    "weight": 1,
+    "event_text": "The newleaf rain has left the air humid and the whole camp damp. The herb stores are found to be growing mold and many herbs have to be thrown out.",
+    "supplies": [
+      {
+          "type": "all_herb",
+          "trigger": ["adequate", "full", "excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_herb_greenleafdestruction1",
+    "location": ["desert"],
+    "season": ["greenleaf"],
+    "tags": ["clan_wide"],
+    "weight": 1,
+    "event_text": "The persistent, dry heat managed to cause a small fire in the herb stores. While no one was injured, many of the herbs are little more than ashes now.",
+    "supplies": [
+      {
+          "type": "all_herb",
+          "trigger": ["adequate", "full", "excess"],
+          "adjust": "reduce_half"
+      }
+    ]
+  },
+  {
+    "event_id": "dst_misc_transition_from_female1",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["transition"],
+    "weight": 10,
+    "event_text": "m_c has realized that she-cat doesn't describe how {PRONOUN/m_c/subject} {VERB/m_c/feel/feels} anymore.",
+    "m_c": {
+      "age": ["young adult"],
+      "gender": ["female"]
+    },
+    "new_gender": ["trans male", "nonbinary"]
+  },
+  {
+    "event_id": "dst_misc_transition_from_male1",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["transition"],
+    "weight": 10,
+    "event_text": "m_c has realized that tom doesn't describe how {PRONOUN/m_c/subject} {VERB/m_c/feel/feels} anymore.",
+    "m_c": {
+      "gender": ["male"]
+    },
+    "new_gender": ["trans female", "nonbinary"]
+  }
+]
