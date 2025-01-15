@@ -26,13 +26,13 @@ body:
       label: Grade
       description: How much of an impact does this issue have on play?
       options:
-        - Game-breaking - a bug that makes it impossible to play the game
+        - Unimportant - Little to no impact on play
+        - Non-vital - Can easily be ignored and does not have a large impact on play
+        - Regular - Should be handled soon, but doesn't necessarily break the game or inhibit the player
+        - Important - Has a large effect on the gameplay but is not urgent
         - Dire - Still playable, but a major feature is broken
-        - Important - The bug has a large effect on the gameplay but is not urgent
-        - Regular - A typical bug that should be seen to soon, but doesn't necessarily break the game or inhibit the player
-        - Non-vital - This bug can easily be ignored and does not have a large impact on play
-        - Unimportant - This bug has little to no impact on play.
-      default: 3
+        - Game-breaking - makes it impossible to play the game
+      default: 2
     validations:
       required: true
   - type: textarea
