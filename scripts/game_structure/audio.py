@@ -16,22 +16,26 @@ creation_screens = ["make clan screen"]
 
 
 def init_audio():
-    if os.environ.get("SDL_AUDIODRIVER") is None:
-        print("No audio device found. Sound will be disabled.")
-        os.environ["SDL_AUDIODRIVER"] = "dummy"
+    if os.environ.get("SDL_AUDIODRIVER") == "dummy":
         MusicManager.audio_disabled = True
     try:
         pygame.mixer.init(buffer=44100)
     except pygame.error:
         print("Failed to initialize sound. Sound will be disabled.")
+        print(
+            "To avoid the long load time you just experienced in future, "
+            "set `disable_audio` to true in game_config.json."
+        )
+        os.environ["SDL_AUDIODRIVER"] = "dummy"
         MusicManager.audio_disabled = True
+        pygame.mixer.init(buffer=44100)
 
 
 class MusicManager:
     audio_disabled = False
 
     def __init__(self):
-        if not pygame.mixer.get_init():
+        if not pygame.mixer.get_init() and not self.audio_disabled:
             init_audio()
         self.current_playlist = []
         self.biome_playlist = []
@@ -189,7 +193,6 @@ class MusicManager:
 
         if self.audio_disabled:
             if os.environ.get("SDL_AUDIODRIVER") == "dummy":
-                # no way out of this one
                 return
             try:
                 pygame.mixer.init()

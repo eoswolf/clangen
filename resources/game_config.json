@@ -444,6 +444,7 @@
 		"dark_mode_event_alternate": [87, 76, 55],
 		"light_mode_event_alternate": [167, 148, 111]
 	},
+	"disable_audio": true,
 	"lock_season": false, 
 	"comment": "Forces the season to be locked at the Clan's starting_season"
 }

@@ -155,20 +155,28 @@ print("Version Name: ", VERSION_NAME)
 print("Running on commit " + get_version_info().version_number)
 
 # Load game
-from scripts.game_structure.audio import sound_manager, music_manager
+from scripts.game_structure.game_essentials import game
+
+if game.config.get("disable_audio"):
+    os.environ["SDL_AUDIODRIVER"] = "dummy"
+    print("'disable_audio' set to True. Sound will be disabled.")
+
 import pygame
 
-pygame.init()
+pygame.display.init()
+pygame.font.init()
 pygame.display.set_caption("Clan Generator")
-
 from scripts.game_structure.screen_settings import toggle_fullscreen
-from scripts.game_structure.game_essentials import game
 
 toggle_fullscreen(
     fullscreen=game.settings["fullscreen"],
     show_confirm_dialog=False,
     ingame_switch=False,
 )
+
+from scripts.game_structure.audio import sound_manager, music_manager
+
+pygame.init()
 
 from scripts.game_structure.load_cat import load_cats, version_convert
 from scripts.game_structure.windows import SaveCheck
