@@ -50,21 +50,20 @@ body:
     id: patrol
     attributes:
       label: Patrol ID + Outcome Print (if applicable)
-      placeholder: If you don't know what this means, you probably don't need to fill it out.
+      description: See [what's a patrol ID and do I need it?](https://www.clangen.io/docs/report-a-bug#whats-a-patrol-id-do-i-need-it) and [how do I find the patrol ID?](https://www.clangen.io/docs/report-a-bug#how-do-i-find-the-patrol-id)
   - type: input
     id: version
     attributes:
-      description: |
-        On development, this is displayed in the bottom-right of the screen. 
-        For stable, it's the COMMIT name (third line) of the most recent stdout log file. Steps to get there:
-        1. Select 'Open Data Directory' from the settings menu
-        2. Opening the logs folder
-        3. Open the most recent stdout (not std**err**) in Notepad or a similar text editing program
-        4. The third line ("running on commit vX.XX.X") is what we want!
+      description: See [here](https://www.clangen.io/docs/report-a-bug/#how-do-i-find-my-game-version) for help finding your game version.
       label: "Commit # or Game Version Number"
       placeholder: e.g. "4ef20d05" (if on development) or "v0.12.2" (if stable)
     validations:
       required: true
+  - type: textarea
+    id: errormsg
+    attributes:
+      label: Error log
+      description: Attach the full error log here. Details on how to find the error log are given [here](https://www.clangen.io/docs/report-a-bug#how-do-i-find-the-error-log
   - type: textarea
     id: additional_context
     attributes:
