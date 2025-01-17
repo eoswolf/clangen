@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 
 import pygame
@@ -15,6 +16,10 @@ creation_screens = ["make clan screen"]
 
 
 def init_audio():
+    if os.environ.get("SDL_AUDIODRIVER") is None:
+        print("No audio device found. Sound will be disabled.")
+        os.environ["SDL_AUDIODRIVER"] = "dummy"
+        MusicManager.audio_disabled = True
     try:
         pygame.mixer.init(buffer=44100)
     except pygame.error:
