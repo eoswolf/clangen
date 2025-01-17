@@ -188,6 +188,9 @@ class MusicManager:
         """
 
         if self.audio_disabled:
+            if os.environ.get("SDL_AUDIODRIVER") == "dummy":
+                # no way out of this one
+                return
             try:
                 pygame.mixer.init()
                 self.load_playlists()
@@ -253,9 +256,6 @@ class _SoundManager:
         self.load_sounds()
 
     def load_sounds(self):
-        if MusicManager.audio_disabled:
-            # there's no audio manager possible, so we have to exit
-            return
         self.sounds = {}
         # open up the sound dictionary
         try:
