@@ -14,20 +14,30 @@ menu_screens = ["settings screen", "start screen", "switch clan screen"]
 creation_screens = ["make clan screen"]
 
 
+def init_audio():
+    try:
+        pygame.mixer.init(buffer=44100)
+    except pygame.error:
+        print("Failed to initialize sound. Sound will be disabled.")
+        MusicManager.audio_disabled = True
+
+
 class MusicManager:
+    audio_disabled = False
+
     def __init__(self):
-        
+        if not pygame.mixer.get_init():
+            init_audio()
         self.current_playlist = []
         self.biome_playlist = []
         self.number_of_tracks = len(self.current_playlist)
         self.volume = game.settings["music_volume"] / 100
-        self.muted = False
-        self.audio_disabled = False
+        self.muted = self.audio_disabled
         self.current_track = None
         self.queued_track = None
 
-        
         self.load_playlists()
+
     def load_playlists(self):
         self.playlists = {}
         # loading playlists
@@ -171,13 +181,13 @@ class MusicManager:
         unpauses current music track, then double checks if the track is appropriate for the screen before changing
         if necessary
         """
-        
+
         if self.audio_disabled:
             try:
                 pygame.mixer.init()
                 self.load_playlists()
                 sound_manager.load_sounds()
-                self.audio_disabled = False
+                MusicManager.audio_disabled = False
                 self.muted = False
             except pygame.error:
                 self.muted = True
@@ -229,12 +239,18 @@ music_manager = MusicManager()
 
 class _SoundManager:
     def __init__(self):
+        if not pygame.mixer.get_init() and not MusicManager.audio_disabled:
+            init_audio()
+
         self.volume = game.settings["sound_volume"] / 100
         self.pressed = None
 
         self.load_sounds()
-    
+
     def load_sounds(self):
+        if MusicManager.audio_disabled:
+            # there's no audio manager possible, so we have to exit
+            return
         self.sounds = {}
         # open up the sound dictionary
         try:
@@ -285,7 +301,7 @@ class _SoundManager:
     def play(self, sound, button=None):
         """plays the given sound, if an ImageButton is passed through then the sound_id of the ImageButton will be
         used instead"""
-        if music_manager.muted or music_manager.audio_disabled:
+        if music_manager.muted or MusicManager.audio_disabled:
             return
 
         if button and hasattr(button, "sound_id"):
