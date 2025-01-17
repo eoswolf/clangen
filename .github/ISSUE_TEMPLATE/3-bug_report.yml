@@ -54,7 +54,15 @@ body:
   - type: input
     id: version
     attributes:
+      description: |
+        On development, this is displayed in the bottom-right of the screen. 
+        For stable, it's the COMMIT name (third line) of the most recent stdout log file. Steps to get there:
+        1. Select 'Open Data Directory' from the settings menu
+        2. Opening the logs folder
+        3. Open the most recent stdout (not std**err**) in Notepad or a similar text editing program
+        4. The third line ("running on commit vX.XX.X") is what we want!
       label: "Commit # or Game Version Number"
+      placeholder: e.g. "4ef20d05" (if on development) or "v0.12.2" (if stable)
     validations:
       required: true
   - type: textarea
