@@ -668,10 +668,12 @@ class ChangeCatName(UIWindow):
             elif event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
+                del game.all_screens["profile screen"].windows["cat_name_window"]
                 self.kill()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
             game.all_screens["profile screen"].exit_screen()
             game.all_screens["profile screen"].screen_switches()
+            del game.all_screens["profile screen"].windows["cat_name_window"]
             self.kill()
         return super().process_event(event)
 
@@ -1233,10 +1235,12 @@ class KillCat(UIWindow):
             elif event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
+                del game.all_screens["profile screen"].windows["kill_cat_window"]
                 self.kill()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
             game.all_screens["profile screen"].exit_screen()
             game.all_screens["profile screen"].screen_switches()
+            del game.all_screens["profile screen"].windows["kill_cat_window"]
             self.kill()
 
         return super().process_event(event)
@@ -2034,6 +2038,7 @@ class ChangeCatToggles(UIWindow):
             if event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
+                del game.all_screens["profile screen"].windows["cat_toggles_window"]
                 self.kill()
             elif event.ui_element == self.checkboxes["prevent_fading"]:
                 self.the_cat.prevent_fading = not self.the_cat.prevent_fading
@@ -2050,6 +2055,7 @@ class ChangeCatToggles(UIWindow):
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
             game.all_screens["profile screen"].exit_screen()
             game.all_screens["profile screen"].screen_switches()
+            del game.all_screens["profile screen"].windows["cat_toggles_window"]
             self.kill()
 
         return super().process_event(event)

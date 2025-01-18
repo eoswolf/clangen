@@ -180,6 +180,7 @@ class ProfileScreen(Screens):
         self.the_cat = None
         self.checkboxes = {}
         self.profile_elements = {}
+        self.windows = {}
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
@@ -264,7 +265,7 @@ class ProfileScreen(Screens):
                 else:
                     print("invalid next cat", self.previous_cat)
 
-            elif event.key == pygame.K_ESCAPE:
+            elif event.key == pygame.K_ESCAPE and len(self.windows) <= 0:
                 self.close_current_tab()
                 self.change_screen(game.last_screen_forProfile)
 
@@ -289,7 +290,7 @@ class ProfileScreen(Screens):
         # Personal Tab
         elif self.open_tab == "personal":
             if event.ui_element == self.change_name_button:
-                ChangeCatName(self.the_cat)
+                self.windows["cat_name_window"] = ChangeCatName(self.the_cat)
             elif event.ui_element == self.specify_gender_button:
                 self.change_screen("change gender screen")
             # when button is pressed...
@@ -346,11 +347,11 @@ class ProfileScreen(Screens):
                 self.build_profile()
                 self.update_disabled_buttons_and_text()
             elif event.ui_element == self.cat_toggles_button:
-                ChangeCatToggles(self.the_cat)
+                self.windows["cat_toggles_window"] = ChangeCatToggles(self.the_cat)
         # Dangerous Tab
         elif self.open_tab == "dangerous":
             if event.ui_element == self.kill_cat_button:
-                KillCat(self.the_cat)
+                self.windows["kill_cat_window"] = KillCat(self.the_cat)
             elif event.ui_element == self.exile_cat_button:
                 if not self.the_cat.dead and not self.the_cat.exiled:
                     Cat.exile(self.the_cat)
