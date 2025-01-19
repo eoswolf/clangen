@@ -819,6 +819,7 @@ class HandleShortEvents:
                     herb_supply.remove_herb(herb, count / 8)
                 elif "increase" in adjustment:
                     herb_supply.add_herb(herb, adjustment.split("_")[1])
+            print("Ran without crashing")
 
         # if we weren't adjusted the whole herb store, then adjust an individual
         else:
