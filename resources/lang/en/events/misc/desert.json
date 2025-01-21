@@ -562,7 +562,20 @@
     "season": ["any"],
     "sub_type": ["war"],
     "weight": 20,
-    "event_text": "The tension between c_n and o_c_n is palpable, with even the smallest actions potentially leading to violence.",
+    "event_text": "Along the border with o_c_n, c_n quietly prepares the cacti and thornbushes to work to their advantage.",
+    "m_c": {},
+    "other_clan": {
+        "current_rep": ["hostile"],
+        "changed": 0
+    }
+  },
+  {
+    "event_id": "dst_misc_war_any_any2",
+    "location": ["desert"],
+    "season": ["any"],
+    "sub_type": ["war"],
+    "weight": 20,
+    "event_text": "Though few think o_c_n will go so far as to attack c_n's water sources, the gossip in camp swirls around that possability.",
     "m_c": {},
     "other_clan": {
         "current_rep": ["hostile"],
@@ -575,7 +588,7 @@
     "season": ["greenleaf"],
     "tags": ["clan:warrior"],
     "weight": 15,
-    "event_text": "m_c chases fireflies around the camp while the warriors sleep.",
+    "event_text": "As the adults catch the evening breeze on their hot pelts, m_c emerges from the nursury, finally allowed to play once the sun's rays slip from the sky.",
     "m_c": {
       "status": ["kitten"]
     }
@@ -585,7 +598,7 @@
         "location": ["desert"],
         "season": ["any"],
         "weight": 20,
-        "event_text": "m_c and r_c try to sneak out of camp, but are caught and returned to the nursery.",
+        "event_text": "m_c and r_c play predator-and-warrior, wearing a shed snake skin.",
         "m_c": {
           "status": ["kitten"]
         },
@@ -603,16 +616,13 @@
         ]
     },
     {
-        "event_id": "dst_misc_multi_kitkit1",
+        "event_id": "dst_misc_kitkit2",
         "location": [
-          "forest",
-          "plains",
-          "mountainous",
-          "wetlands"
+          "desert"
         ],
-        "season": ["newleaf", "greenleaf"],
+        "season": ["any"],
         "weight": 15,
-        "event_text": "m_c and r_c sneak out of camp to chase butterflies.",
+        "event_text": "m_c and r_c try to climb the rocks around camp, to limited success.",
         "m_c": {
           "status": ["kitten"]
         },
@@ -633,9 +643,9 @@
         "event_id": "dst_misc_greenleaf_kitkit1",
         "location": ["desert"],
         "season": ["greenleaf"],
-      "tags": ["clan:warrior"],
+        "tags": ["clan:warrior"],
         "weight": 20,
-        "event_text": "m_c and r_c chase fireflies around the camp while the warriors try to sleep.",
+        "event_text": "m_c and r_c emerge from the nursury as the cool of the night takes over, their bouncy energy contrasting the tired warriors napping on the sun-warmed rocks.",
         "m_c": {
             "status": ["kitten"]
         },
@@ -653,16 +663,14 @@
         ]
     },
     {
-        "event_id": "multi_misc_leaffall_kitkit1",
+        "event_id": "dst_misc_leaffall_kitkit1",
         "location": [
-          "forest",
-          "mountainous",
-          "wetlands"
+          "desert"
         ],
         "season": ["leaf-fall"],
       "tags": ["clan:warrior"],
         "weight": 20,
-        "event_text": "m_c and r_c lead a small leaf-gathering hunt which the adult cats watch with amused purrs.",
+        "event_text": "m_c doesn't care what the warriors say, thunder is definitely dangerous and horrible. r_c agrees, the kittens finding comfort in each other.",
         "m_c": {
             "status": ["kitten"]
         },
@@ -680,14 +688,13 @@
         ]
     },
     {
-        "event_id": "multi_misc_leafbare_kitkit1",
+        "event_id": "dst_misc_leafbare_kitkit1",
         "location": [
-          "plains",
-          "mountainous"
+          "desert"
         ],
         "season": ["leaf-bare"],
         "weight": 20,
-        "event_text": "m_c and r_c make little snow lumps at the entrance to the camp.",
+        "event_text": "The night's temperature dips cold enough to leave a layer of thick frost on everything. m_c and r_c are mystified and hesitant, but eventually the frost becomes another slippery toy in their world.",
         "m_c": {
             "status": ["kitten"]
         },
@@ -705,16 +712,13 @@
         ]
       },
     {
-        "event_id": "multi_misc_any_adultsavingkitapprentice1",
+        "event_id": "dst_misc_any_adultsavingkitapprentice1",
         "location": [
-          "forest",
-          "plains",
-          "mountainous",
-          "wetlands"
+          "desert"
         ],
         "season": ["any"],
         "weight": 15,
-        "event_text": "m_c falls into a river, but is saved by r_c.",
+        "event_text": "m_c faceplants right into the shaded water well in the rocks {PRONOUN/m_c/subject}{{VERB/m_c/'re/'s} drinking from and is hauled up by r_c, spluttering and embarassed.",
         "m_c": {
             "age": ["kitten", "adolescent"]
         },
@@ -736,7 +740,7 @@
       "location": ["desert"],
       "season": ["any"],
       "weight": 20,
-      "event_text": "m_c sneaks out of camp with r_c.",
+      "event_text": "m_c sneaks out at night - r_c follows. But {PRONOUN/r_c/subject} {VERB/r_c/don't/doesn't} tattle on m_c, instead joining {PRONOUN/m_c/object} as {PRONOUN/m_c/subject} {VERB/m_c/run/runs} through the cool sharp night air.",
       "m_c": {
           "age": ["adolescent"]
       },
@@ -758,7 +762,7 @@
     "location": ["desert"],
     "season": ["any"],
     "weight": 20,
-    "event_text": "m_c and r_c sneak out of camp to see the sun rise.",
+    "event_text": "The sun rises over the desert - and over m_c and r_c, who definitely aren't allowed out of camp this early and alone.",
     "m_c": {
         "age": ["adolescent"]
     },
@@ -780,7 +784,7 @@
     "location": ["desert"],
     "season": ["any"],
     "weight": 20,
-    "event_text": "m_c and r_c sneak out of camp to see the moon rise.",
+    "event_text": "m_c sneaks out of camp on a dare, meeting r_c with a lashing tail, {PRONOUN/m_c/poss} chin raised proudly.",
     "m_c": {
       "age": ["adolescent"]
     },
@@ -802,7 +806,7 @@
     "location": ["desert"],
     "season": ["any"],
     "weight": 20,
-    "event_text": "m_c and r_c try to sneak out of camp, but are caught by their mentors.",
+    "event_text": "m_c and r_c bond over how much they both hate mouse bile.",
     "m_c": {
       "age": ["adolescent"],
       "status": ["apprentice"]
@@ -822,28 +826,25 @@
     ]
   },
   {
-    "event_id": "multi_misc_any_scandalous_kittypet4",
+    "event_id": "dst_misc_any_loner1",
     "location": [
-      "forest",
-      "plains",
-      "beach",
-      "wetlands"
+      "desert"
     ],
     "season": ["any"],
     "weight": 15,
-    "event_text": "m_c was seen chasing a kittypet off of the territory.",
+    "event_text": "On the border, a loner has sprayed a shrub with {PRONOUN/n_c:0/poss} scent.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
     "new_cat": [
-      ["meeting", "kittypet", "exists"]
+      ["meeting", "loner", "exists"]
     ],
     "relationships": [
       {
         "cats_from": ["m_c"],
         "cats_to": ["n_c:0"],
         "mutual": true,
-        "values": ["dislike"],
+        "values": ["jealous"],
         "amount": 10
       }
     ],
@@ -854,51 +855,29 @@
   },
 
   {
-    "event_id": "multi_misc_any_distant_other_clan1",
+    "event_id": "dst_misc_any_distant_other_clan1",
     "location": [
-      "plains",
-      "desert",
-      "mountainous"
+      "desert"
     ],
     "season": ["any"],
     "weight": 10,
-    "event_text": "m_c sees that o_c_n has been cleaning the border trackways, and adds {PRONOUN/m_c/poss} own paws the the effort.",
+    "event_text": "m_c hasn't seen a o_c_n cat for, stars, almost the entire moon. Wonder how they're doing.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
     "other_clan": {
-      "current_rep": ["any"],
-      "changed": 1
+      "current_rep": ["ally", "neutral"],
+      "changed": 0
     }
   },
   {
-    "event_id": "multi_misc_any_distant_other_clan2",
+    "event_id": "dst_misc_any_distant_other_clan2",
     "location": [
-      "plains",
-      "desert",
-      "mountainous"
+      "desert"
     ],
     "season": ["any"],
     "weight": 10,
-    "event_text": "The thornbush might be on o_c_n's side of the border, but both Clans benefit from uprooting it before it can block the path further.",
-    "m_c": {
-        "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
-    },
-    "other_clan": {
-      "current_rep": ["any"],
-      "changed": 1
-    }
-  },
-  {
-    "event_id": "multi_misc_any_distant_other_clan3",
-    "location": [
-      "plains",
-      "desert",
-      "mountainous"
-    ],
-    "season": ["any"],
-    "weight": 10,
-    "event_text": "Trying to see o_c_n cats in the flesh can be hard when the Clans live so far apart. m_c has to wait hours for a o_c_n patrol to pass on the message about local loner activity.",
+    "event_text": "Wild pigs rampage along the border with o_c_n, leaving a gigantic mess that c_n dutifully cleans up.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
@@ -912,7 +891,7 @@
     "location": ["desert"],
     "season": ["any"],
     "weight": 20,
-    "event_text": "m_c is brought back to camp after wandering off.",
+    "event_text": "The sudden drop in temperature at night didn't used to bother m_c, but {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} not as young as {PRONOUN/m_c/subject} used to be.",
     "m_c": {
       "age": ["senior"],
       "status":["elder"]
@@ -924,7 +903,7 @@
     "season": ["any"],
     "tags": ["clan_wide"],
     "weight": 10,
-    "event_text": "The Clan worked hard to gather plenty of fresh-kill, but woke up to find pawprints leading away from the fresh-kill pile, and missing prey.",
+    "event_text": "Hawks help themselves to the fresh-kill pile. No one intended that food to go to them, but at least there wasn't violence.",
     "supplies": [
       {
           "type": "freshkill",
@@ -939,7 +918,7 @@
     "season": ["any"],
     "tags": ["clan_wide"],
     "weight": 10,
-    "event_text": "A dingo pack raids camp. Thankfully there are no injuries, the dens holdign firm, but the fresh-kill pile is nearly ruined.",
+    "event_text": "A dingo pack raids camp. Thankfully there are no injuries, the dens holding firm, but the fresh-kill pile is nearly ruined.",
     "supplies": [
       {
           "type": "freshkill",
