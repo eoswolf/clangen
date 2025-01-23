@@ -8,7 +8,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "While batting a shiny skitter-pebble, around m_c misjudged a pounce and smashed {PRONOUN/m_c/subject} tiny little snout into it.",
+        "event_text": "While batting a shiny skitter-pebble around m_c misjudged a pounce and smashed {PRONOUN/m_c/poss} tiny little snout into it.",
         "m_c": {
             "status": [
                 "kitten"
@@ -204,7 +204,7 @@
         ]
     },
     {
-        "event_id": "dst_injury_spain_anykitten1",
+        "event_id": "dst_injury_sprain_anykitten1",
         "location": [
             "desert"
         ],
@@ -264,7 +264,7 @@
             "greenleaf"
         ],
         "weight": 20,
-        "event_text": "Greenleaf is a harsh season for childhood. m_c was outside for just a little too long, and when {PRONOUN/m_c/subject} {VERB/m_c/return/returns} to the nursery, {PRONOUN/m_c/poss} little body is dangerously hot.",
+        "event_text": "Greenleaf is a harsh season for kithood. m_c was outside for just a little too long, and when {PRONOUN/m_c/subject} {VERB/m_c/return/returns} to the nursery, {PRONOUN/m_c/poss} little body is dangerously hot.",
         "m_c": {
             "status": [
                 "kitten"
@@ -290,7 +290,7 @@
             "leaf-bare"
         ],
         "weight": 20,
-        "event_text": "With the ground made slippery by the recent rains, water isn't the only thing falling. m_c slips over, and though {PRONOUN/m_c/poss} limp has mostly disappeared by the time {PRONOUN/m_c/subject} {VERB/m_c/get/gets} to {PRONOUN/m_c/poss} nest, the smear of mud marrs {PRONOUN/m_c/poss} dignity.",
+        "event_text": "With the ground made slippery by the recent rains, water isn't the only thing falling. m_c slips over, and though {PRONOUN/m_c/poss} limp has mostly disappeared by the time {PRONOUN/m_c/subject} {VERB/m_c/get/gets} to {PRONOUN/m_c/poss} nest, the smear of mud mars {PRONOUN/m_c/poss} dignity.",
         "m_c": {
             "age": [
                 "adolescent",
@@ -351,7 +351,7 @@
             "greenleaf"
         ],
         "weight": 20,
-        "event_text": "Sunstroke stalks c_n in greenleaf, lurking to pounce on anyone unwary or unwise. This moon it strikes m_c",
+        "event_text": "Sunstroke stalks c_n in greenleaf, lurking to pounce on anyone unwary or unwise. This moon it strikes m_c.",
         "m_c": {
             "age": [
                 "adolescent",
@@ -1075,7 +1075,7 @@
             "greenleaf"
         ],
         "weight": 20,
-        "event_text": "On one of the hottest days of the year, r_c spends all {PRONOUN/m_c/poss} energy making sure that the older members of c_n keep drinking. Only m_c gets touched by sunstroke, and it's only a mild case of dehydration.",
+        "event_text": "On one of the hottest days of the year r_c spends all {PRONOUN/r_c/poss} energy making sure that the older members of c_n keep drinking. Only m_c gets touched by sunstroke, and it's only a mild case of dehydration.",
         "m_c": {
             "age": [
                 "senior adult",
@@ -1822,7 +1822,7 @@
                 "cats": [
                     "m_c"
                 ],
-                "scar": "m_c was scarred while persauding a hawk that cats make bad prey.",
+                "scar": "m_c was scarred while persuading a hawk that cats make bad prey.",
                 "reg_death": "The wounds from a hawk attack eventually killed m_c.",
                 "lead_death": "died from {PRONOUN/m_c/poss} wounds after a hawk attack"
             }
@@ -2977,7 +2977,7 @@
             "war"
         ],
         "weight": 20,
-        "event_text": "The border patrols are intensified as the war with o_c_n rages. m_c does {PRONOUN/m_c/poss} part, but gets dehydrated after going out on a patrol with more experience warriors.",
+        "event_text": "The border patrols are intensified as the war with o_c_n rages. m_c does {PRONOUN/m_c/poss} part, but gets dehydrated after going out on a patrol with more experienced warriors.",
         "m_c": {
             "status": [
                 "apprentice"
@@ -3006,7 +3006,7 @@
             "war"
         ],
         "weight": 20,
-        "event_text": "m_c is put through a day long tracking training session that leaves {PRONOUN/m_c/object} collapsed in exhaustion into {PRONOUN/m_c/poss} nest at sunset. It's important to get {PRONOUN/m_c/object} up to speed quickly, as with the war with o_c_n tracking incursions along the long border is a priority.",
+        "event_text": "m_c is put through a day long tracking training session that leaves {PRONOUN/m_c/object} collapsed in exhaustion into {PRONOUN/m_c/poss} nest at sunset. It's important to get {PRONOUN/m_c/object} up to speed quickly, as due to the war with o_c_n, tracking incursions along the long border is a priority.",
         "m_c": {
             "status": [
                 "apprentice"
@@ -3737,7 +3737,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "A camel trod on m_c's tail as it prodded past m_c's hiding place.",
+        "event_text": "A camel trod on m_c's tail as it plodded past m_c's hiding place.",
         "m_c": {
             "age": [
                 "senior",
@@ -3765,8 +3765,8 @@
                 "cats": [
                     "m_c"
                 ],
-                "scar": "A heavy hooves of a roaming camel broke m_c's tail.",
-                "reg_death": "A camel trumpled m_c, killing {PRONOUN/m_c/object}.",
+                "scar": "The heavy hooves of a roaming camel broke m_c's tail.",
+                "reg_death": "A camel trampled m_c, killing {PRONOUN/m_c/object}.",
                 "lead_death": "a camel trampling {PRONOUN/m_c/object}"
             }
         ]
@@ -3862,7 +3862,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "m_c put a paw wrong running amongst the rocks, and {PRONOUN/m_c/poss} momentum wrentched {PRONOUN/m_c/poss} shoulder out of place.",
+        "event_text": "m_c put a paw wrong running amongst the rocks, and {PRONOUN/m_c/poss} momentum wrenched {PRONOUN/m_c/poss} shoulder out of place.",
         "m_c": {
             "age": [
                 "senior",
@@ -4181,7 +4181,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "m_c's tail was badly injured when they were almost caught by a horned owl.",
+        "event_text": "m_c's tail was badly injured when {PRONOUN/m_c/subject} {VERB/m_c/were/was} almost caught by a horned owl.",
         "m_c": {
             "age": [
                 "senior",
@@ -4212,9 +4212,9 @@
                 "cats": [
                     "m_c"
                 ],
-                "scar": "m_c was scarred by a greater horn owl's ambush.",
-                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after {PRONOUN/m_c/subject} {VERB/m_c/were/was} hurt by a greater horn owl's ambush.",
-                "lead_death": "m_c died from {PRONOUN/m_c/poss} wounds after being hurt by a greater horn owl's ambush"
+                "scar": "m_c was scarred by a great horn owl's ambush.",
+                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after {PRONOUN/m_c/subject} {VERB/m_c/were/was} hurt by a great horn owl's ambush.",
+                "lead_death": "m_c died from {PRONOUN/m_c/poss} wounds after being hurt by a great horn owl's ambush"
             }
         ]
     },
@@ -4511,7 +4511,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "A group of meerkats mobs m_c, darting in and out of combat with {PRONOUN/m_c/subject} in the same way that meerkats mob snakes.",
+        "event_text": "A group of meerkats mobs m_c, darting in and out of combat with {PRONOUN/m_c/object} in the same way that meerkats mob snakes.",
         "m_c": {
             "status": [
                 "apprentice",
@@ -4606,7 +4606,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "Though the Clan tries to guard against them, a funnel web spider is discovered to have set up a home in c_n's camp when it announces it's presence by biting m_c.",
+        "event_text": "Though the Clan tries to guard against them, a funnel web spider is discovered to have set up a home in c_n's camp when it announces its presence by biting m_c.",
         "m_c": {
             "age": [
                 "any"
@@ -4643,7 +4643,7 @@
                 ],
                 "scar": "A funnel web spider set up a home near m_c's nest, and left m_c with a scar.",
                 "reg_death": "m_c died from complications caused by a funnel web spider bite.",
-                "lead_death": "died from complications caused a funnel web spider bite"
+                "lead_death": "died from complications caused by a funnel web spider bite"
             }
         ]
     },
@@ -4690,7 +4690,7 @@
                 ],
                 "scar": "A copperhead snake scarred m_c's pelt, though {PRONOUN/m_c/subject} overcame the venom.",
                 "reg_death": "The venom of a copperhead snake killed m_c.",
-                "lead_death": "hhe venom of a copperhead snake"
+                "lead_death": "the venom of a copperhead snake"
             }
         ]
     },
