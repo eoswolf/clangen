@@ -188,7 +188,6 @@ from scripts.utility import (
     quit,
 )  # pylint: disable=redefined-builtin
 from scripts.debug_menu import debugmode
-import pygame
 
 
 # import all screens for initialization (Note - must be done after pygame_gui manager is created)
