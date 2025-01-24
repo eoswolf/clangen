@@ -588,7 +588,7 @@
     "season": ["greenleaf"],
     "tags": ["clan:warrior"],
     "weight": 15,
-    "event_text": "As the adults catch the evening breeze on their hot pelts, m_c emerges from the nursury, finally allowed to play once the sun's rays slip from the sky.",
+    "event_text": "As the adults catch the evening breeze on their hot pelts, m_c emerges from the nursery, finally allowed to play once the sun's rays slip from the sky.",
     "m_c": {
       "status": ["kitten"]
     }
