@@ -247,7 +247,7 @@
       "leaf-fall"
     ],
     "weight": 15,
-    "event_text": "m_c watches carefully over camp, trying to avoid the worse of the sun's rays while on guard duty.",
+    "event_text": "m_c watches carefully over camp, trying to avoid the worst of the sun's rays while on guard duty.",
     "m_c": {
       "age": ["adolescent", "young adult", "adult", "senior adult", "senior"],
       "status": ["warrior"]
