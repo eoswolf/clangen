@@ -575,7 +575,7 @@
     "season": ["any"],
     "sub_type": ["war"],
     "weight": 20,
-    "event_text": "Though few think o_c_n will go so far as to attack c_n's water sources, the gossip in camp swirls around that possability.",
+    "event_text": "Though few think o_c_n will go so far as to attack c_n's water sources, the gossip in camp swirls around that possibility.",
     "m_c": {},
     "other_clan": {
         "current_rep": ["hostile"],
