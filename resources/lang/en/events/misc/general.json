@@ -1356,7 +1356,7 @@
         "season": ["leaf-fall"],
       "tags": ["clan:warrior"],
         "weight": 20,
-        "event_text": "m_c and r_c lead a small leaf-gathering hunt which the adult cats watch with amused purrs.",
+        "event_text": "m_c and r_c lead a small leaf-gathering hunt, which the adult cats watch with amused purrs.",
         "m_c": {
             "status": ["kitten"]
         },
