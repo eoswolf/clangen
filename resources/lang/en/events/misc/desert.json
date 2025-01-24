@@ -203,7 +203,7 @@
       "leaf-fall"
     ],
     "weight": 10,
-    "event_text": "A brief duststorm leaves the world blurred around c_n, their eyes stinging with grit, their scents wiped from existance.",
+    "event_text": "A brief duststorm leaves the world blurred around c_n, their eyes stinging with grit, their scents wiped from existence.",
     "m_c": {
       "age": ["any"],
       "status": ["any"]
