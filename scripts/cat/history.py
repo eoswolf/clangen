@@ -29,9 +29,9 @@ class History:
         self.murder = murder if murder else {}
 
         # fix 'old' history save bugs
-        if type(self.mentor_influence["trait"]) is type(None):
+        if self.mentor_influence["trait"] is None:
             self.mentor_influence["trait"] = {}
-        if type(self.mentor_influence["skill"]) is type(None):
+        if self.mentor_influence["skill"] is None:
             self.mentor_influence["skill"] = {}
         if "mentor" in self.mentor_influence:
             del self.mentor_influence["mentor"]
