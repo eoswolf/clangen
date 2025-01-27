@@ -154,21 +154,19 @@ class History:
     #                            adding and removing                               #
     # ---------------------------------------------------------------------------- #
 
-    @staticmethod
-    def add_beginning(cat, clan_born=False):
+    def add_beginning(self, moons, clan_born=False):
         """
         adds joining age and moon info to the cat's history save
-        :param cat: cat object
+        :param moons: age in moons
         :param clan_born: default False, set True if the cat was not born in the Clan
         """
         if not game.clan:
             return
-        History.check_load(cat)
 
-        cat.history.beginning = {
+        self.beginning = {
             "clan_born": clan_born,
             "birth_season": game.clan.current_season if clan_born else None,
-            "age": cat.moons,
+            "age": moons,
             "moon": game.clan.age
         }
 

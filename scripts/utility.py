@@ -975,8 +975,8 @@ def create_new_cat(
         # and they exist now
         created_cats.append(new_cat)
         game.clan.add_cat(new_cat)
-        history = History()
-        history.add_beginning(new_cat)
+        new_cat.load_history()
+        new_cat.history.add_beginning(new_cat.moons)
 
         # create relationships
         new_cat.create_relationships_new_cat()
