@@ -1100,7 +1100,7 @@ class Cat:
         if not os.path.exists(history_dir):
             os.makedirs(history_dir)
 
-        history_dict = History.make_dict(self)
+        history_dict = self.history.make_dict()
         try:
             game.safe_save(f"{history_dir}/{self.ID}_history.json", history_dict)
         except:

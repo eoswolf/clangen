@@ -137,17 +137,16 @@ class History:
         if not cat.history:
             cat.load_history()
 
-    @staticmethod
-    def make_dict(cat):
+    def make_dict(self):
         history_dict = {
-            "beginning": cat.history.beginning,
-            "mentor_influence": cat.history.mentor_influence,
-            "app_ceremony": cat.history.app_ceremony,
-            "lead_ceremony": cat.history.lead_ceremony,
-            "possible_history": cat.history.possible_history,
-            "died_by": cat.history.died_by,
-            "scar_events": cat.history.scar_events,
-            "murder": cat.history.murder,
+            "beginning": self.beginning,
+            "mentor_influence": self.mentor_influence,
+            "app_ceremony": self.app_ceremony,
+            "lead_ceremony": self.lead_ceremony,
+            "possible_history": self.possible_history,
+            "died_by": self.died_by,
+            "scar_events": self.scar_events,
+            "murder": self.murder,
         }
         return history_dict
 
