@@ -993,8 +993,10 @@ class PatrolOutcome:
                 else history_scar.replace("o_c_n", f"{str(patrol.other_clan.name)}Clan")
             )
 
-        History.add_possible_history(
-            cat,
+        cat.load_history()
+
+        cat.history.add_possible_history(
+            cat.status,
             condition=condition,
             death_text=final_death_history,
             scar_text=history_scar,

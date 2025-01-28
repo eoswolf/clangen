@@ -505,7 +505,8 @@ class Pregnancy_Events:
                     death_event = i18n.t(
                         "conditions.pregnancy.kitting_death_harsh", name=cat.name
                     )
-                History.add_possible_history(cat, "blood loss", death_text=death_event)
+                cat.load_history()
+                cat.history.add_possible_history(cat.status, "blood loss", death_text=death_event)
                 possible_events = events["birth"]["difficult_birth"]
                 # just makin sure meds aren't mentioned if they aren't around or if they are a parent
                 meds = get_alive_status_cats(

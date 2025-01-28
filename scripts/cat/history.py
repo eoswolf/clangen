@@ -305,8 +305,7 @@ class History:
             "moon": game.clan.age
         }
 
-    @staticmethod
-    def add_possible_history(cat, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
+    def add_possible_history(self, status, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
         """
         this adds the possible death/scar to the cat's history
         :param cat: cat object
@@ -315,28 +314,27 @@ class History:
         :param scar_text: text for scar history
         :param other_cat: cat object of other cat involved.
         """
-        cat.load_history()
 
         # If the condition already exists, we don't want to overwrite it
-        if condition in cat.history.possible_history:
+        if condition in self.possible_history:
             if death_text is not None:
-                cat.history.possible_history[condition]["death_text"] = death_text
+                self.possible_history[condition]["death_text"] = death_text
             if scar_text is not None:
-                cat.history.possible_history[condition]["scar_text"] = scar_text
+                self.possible_history[condition]["scar_text"] = scar_text
             if other_cat is not None:
-                cat.history.possible_history[condition]["other_cat"] = other_cat.ID
+                self.possible_history[condition]["other_cat"] = other_cat.ID
         else:
             # Use a default is none is provided.
             # Will probably sound weird, but it's better than nothing
             if not death_text:
-                if cat.status == 'leader':
+                if status == 'leader':
                     death_text = f"died from an injury or illness ({condition})"
                 else:
                     death_text = f"m_c died from an injury or illness ({condition})."
             if not scar_text:
                 scar_text = f"m_c was scarred from an injury or illness ({condition})."
 
-            cat.history.possible_history[condition] = {
+            self.possible_history[condition] = {
                 "death_text": death_text,
                 "scar_text": scar_text,
                 "other_cat": other_cat.ID if other_cat else None

@@ -267,8 +267,9 @@ class RomanticEvents:
 
                 if possible_scar or possible_death:
                     for condition in injuries:
-                        History.add_possible_history(
-                            injured_cat,
+                        injured_cat.load_history()
+                        injured_cat.history.add_possible_history(
+                            injured_cat.status,
                             condition,
                             death_text=possible_death,
                             scar_text=possible_scar,

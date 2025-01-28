@@ -733,8 +733,8 @@ class HandleShortEvents:
                             self.random_cat,
                         )
                     if possible_scar or possible_death:
-                        History.add_possible_history(
-                            cat,
+                        cat.history.add_possible_history(
+                            cat.status,
                             injury,
                             scar_text=possible_scar,
                             death_text=possible_death,
