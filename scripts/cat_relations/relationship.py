@@ -64,6 +64,9 @@ class Relationship:
         self.jealousy = jealousy
         self.trust = trust
 
+        cat_from.load_history()
+        cat_to.load_history()
+
     def link_relationship(self):
         """Add the other relationship object to this easily access and change the other side."""
         if self.cat_from.ID in self.cat_to.relationships:
@@ -200,9 +203,9 @@ class Relationship:
 
                 if possible_scar or possible_death:
                     for condition in injuries:
-                        self.history.add_possible_history(
-                            injured_cat,
+                        injured_cat.history.add_possible_history(
                             condition,
+                            status=injured_cat.status,
                             scar_text=possible_scar,
                             death_text=possible_death,
                         )
