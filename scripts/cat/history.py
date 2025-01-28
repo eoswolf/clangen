@@ -160,19 +160,17 @@ class History:
             "moon": game.clan.age
         }
 
-    @staticmethod
-    def add_mentor_facet_influence_strings(cat):
+    def add_mentor_facet_influence_strings(self, personality):
         """
         adds mentor influence to the cat's history save
         :param cat: cat object
         """
-        cat.load_history()
 
-        if not cat.history.mentor_influence["trait"]:
+        if not self.mentor_influence["trait"]:
             return
 
-        if ("Benevolent" or "Abrasive" or "Reserved" or "Outgoing") in cat.history.mentor_influence["trait"]:
-            cat.history.mentor_influence["trait"] = None
+        if ("Benevolent" or "Abrasive" or "Reserved" or "Outgoing") in self.mentor_influence["trait"]:
+            self.mentor_influence["trait"] = None
             return
 
         # working under the impression that these blurbs will be preceded by "more likely to"
@@ -208,27 +206,25 @@ class History:
             ]
         }
 
-        for _ment in cat.history.mentor_influence["trait"]:
-            cat.history.mentor_influence["trait"][_ment]["strings"] = []
-            for _fac in cat.history.mentor_influence["trait"][_ment]:
+        for _ment in self.mentor_influence["trait"]:
+            self.mentor_influence["trait"][_ment]["strings"] = []
+            for _fac in self.mentor_influence["trait"][_ment]:
                 # Check to make sure nothing weird got in there.
-                if _fac in cat.personality.facet_types:
-                    if cat.history.mentor_influence["trait"][_ment][_fac] > 0:
-                        cat.history.mentor_influence["trait"][_ment]["strings"].append(
+                if _fac in personality.facet_types:
+                    if self.mentor_influence["trait"][_ment][_fac] > 0:
+                        self.mentor_influence["trait"][_ment]["strings"].append(
                             random.choice(facet_influence_text[_fac + "_raise"]))
-                    elif cat.history.mentor_influence["trait"][_ment][_fac] < 0:
-                        cat.history.mentor_influence["trait"][_ment]["strings"].append(
+                    elif self.mentor_influence["trait"][_ment][_fac] < 0:
+                        self.mentor_influence["trait"][_ment]["strings"].append(
                             random.choice(facet_influence_text[_fac + "_lower"]))
 
-    @staticmethod
-    def add_mentor_skill_influence_strings(cat):
+    def add_mentor_skill_influence_strings(self):
         """
         adds mentor influence to the cat's history save
         :param cat: cat object
         """
-        cat.load_history()
 
-        if not cat.history.mentor_influence["skill"]:
+        if not self.mentor_influence["skill"]:
             return
 
         # working under the impression that these blurbs will be preceded by "become better at"
@@ -257,16 +253,16 @@ class History:
             SkillPath.GHOST: ["connecting to the afterlife"]
         }
 
-        for _ment in cat.history.mentor_influence["skill"]:
-            cat.history.mentor_influence["skill"][_ment]["strings"] = []
-            for _path in cat.history.mentor_influence["skill"][_ment]:
+        for _ment in self.mentor_influence["skill"]:
+            self.mentor_influence["skill"][_ment]["strings"] = []
+            for _path in self.mentor_influence["skill"][_ment]:
                 # Check to make sure nothing weird got in there.
                 if _path == "strings":
                     continue
 
                 try:
-                    if cat.history.mentor_influence["skill"][_ment][_path] > 0:
-                        cat.history.mentor_influence["skill"][_ment]["strings"].append(
+                    if self.mentor_influence["skill"][_ment][_path] > 0:
+                        self.mentor_influence["skill"][_ment]["strings"].append(
                             random.choice(skill_influence_text[SkillPath[_path]]))
                 except KeyError:
                     print("issue", _path)

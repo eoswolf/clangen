@@ -976,8 +976,10 @@ class Cat:
                             self, affect_skills[0], affect_skills[1], affect_skills[2]
                         )
 
-            History.add_mentor_skill_influence_strings(self)
-            History.add_mentor_facet_influence_strings(self)
+            self.load_history()
+
+            self.history.add_mentor_skill_influence_strings()
+            self.history.add_mentor_facet_influence_strings(self.personality)
         return
 
     def manage_outside_trait(self):
