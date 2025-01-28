@@ -267,31 +267,26 @@ class History:
                 except KeyError:
                     print("issue", _path)
 
-    @staticmethod
-    def add_facet_mentor_influence(cat, mentor_id, facet, amount):
+    def add_facet_mentor_influence(self, mentor_id, facet, amount):
         """Adds the history information for a single mentor facet change, that occurs after a patrol. """
 
-        cat.load_history()
-        if mentor_id not in cat.history.mentor_influence["trait"]:
-            cat.history.mentor_influence["trait"][mentor_id] = {}
-        if facet not in cat.history.mentor_influence["trait"][mentor_id]:
-            cat.history.mentor_influence["trait"][mentor_id][facet] = 0
-        cat.history.mentor_influence["trait"][mentor_id][facet] += amount
+        if mentor_id not in self.mentor_influence["trait"]:
+            self.mentor_influence["trait"][mentor_id] = {}
+        if facet not in self.mentor_influence["trait"][mentor_id]:
+            self.mentor_influence["trait"][mentor_id][facet] = 0
+        self.mentor_influence["trait"][mentor_id][facet] += amount
 
-    @staticmethod
-    def add_skill_mentor_influence(cat, mentor_id, path, amount):
-        """ Adds mentor influence on skills """
-
-        cat.load_history()
+    def add_skill_mentor_influence(self, mentor_id, path, amount):
+        """Adds mentor influence on skills. """
 
         if not isinstance(path, SkillPath):
             path = SkillPath[path]
 
-        if mentor_id not in cat.history.mentor_influence["skill"]:
-            cat.history.mentor_influence["skill"][mentor_id] = {}
-        if path.name not in cat.history.mentor_influence["skill"][mentor_id]:
-            cat.history.mentor_influence["skill"][mentor_id][path.name] = 0
-        cat.history.mentor_influence["skill"][mentor_id][path.name] += amount
+        if mentor_id not in self.mentor_influence["skill"]:
+            self.mentor_influence["skill"][mentor_id] = {}
+        if path.name not in self.mentor_influence["skill"][mentor_id]:
+            self.mentor_influence["skill"][mentor_id][path.name] = 0
+        self.mentor_influence["skill"][mentor_id][path.name] += amount
 
     @staticmethod
     def add_app_ceremony(cat, honor):

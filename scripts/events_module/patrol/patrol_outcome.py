@@ -885,11 +885,15 @@ class PatrolOutcome:
                 )
                 affect_skills = cat.skills.mentor_influence(mentor)
                 if affect_personality:
+                    cat.load_history()
+
                     History.add_facet_mentor_influence(
                         cat, mentor.ID, affect_personality[0], affect_personality[1]
                     )
                     print(str(cat.name), affect_personality)
                 if affect_skills:
+                    cat.load_history()
+
                     History.add_skill_mentor_influence(
                         cat, affect_skills[0], affect_skills[1], affect_skills[2]
                     )

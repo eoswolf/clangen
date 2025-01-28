@@ -954,6 +954,8 @@ class Cat:
         """Updates trait and skill upon ceremony"""
 
         if self.status in ["warrior", "medicine cat", "mediator"]:
+            self.load_history()
+
             # Give a couple doses of mentor influence:
             if mentor:
                 max_influence = randint(0, 2)
@@ -965,18 +967,15 @@ class Cat:
                     )
                     affect_skills = self.skills.mentor_influence(Cat.fetch_cat(mentor))
                     if affect_personality:
-                        History.add_facet_mentor_influence(
-                            self,
+                        self.history.add_facet_mentor_influence(
                             mentor.ID,
                             affect_personality[0],
                             affect_personality[1],
                         )
                     if affect_skills:
-                        History.add_skill_mentor_influence(
-                            self, affect_skills[0], affect_skills[1], affect_skills[2]
+                        self.history.add_skill_mentor_influence(
+                            affect_skills[0], affect_skills[1], affect_skills[2]
                         )
-
-            self.load_history()
 
             self.history.add_mentor_skill_influence_strings()
             self.history.add_mentor_facet_influence_strings(self.personality)
