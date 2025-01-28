@@ -1021,6 +1021,7 @@ class Cat:
         self.history = History(
             died_by=deaths,
             scar_events=scars,
+            cat=self
         )
 
     def load_history(self):
@@ -1050,6 +1051,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
+                cat=self
             )
             return
         try:
@@ -1088,6 +1090,7 @@ class Cat:
                         else []
                     ),
                     murder=history_data["murder"] if "murder" in history_data else {},
+                    cat=self
                 )
         except Exception:
             self.history = None
@@ -1119,6 +1122,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
+                cat=self
             )
 
             print(f"WARNING: saving history of cat #{self.ID} didn't work")

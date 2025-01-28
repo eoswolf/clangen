@@ -17,7 +17,8 @@ class History:
                  possible_history=None,
                  died_by=None,
                  scar_events=None,
-                 murder=None
+                 murder=None,
+                 cat=None
                  ):
         self.beginning = beginning if beginning else {}
         self.mentor_influence = mentor_influence if mentor_influence else {"trait": {}, "skill": {}}
@@ -27,6 +28,7 @@ class History:
         self.died_by = died_by if died_by else []
         self.scar_events = scar_events if scar_events else []
         self.murder = murder if murder else {}
+        self.cat = cat
 
         # fix 'old' history save bugs
         if self.mentor_influence["trait"] is None:
@@ -288,8 +290,7 @@ class History:
             self.mentor_influence["skill"][mentor_id][path.name] = 0
         self.mentor_influence["skill"][mentor_id][path.name] += amount
 
-    @staticmethod
-    def add_app_ceremony(cat, honor):
+    def add_app_ceremony(self, moons, honor):
         """
         adds ceremony honor to the cat's history
         :param cat: cat object
@@ -297,11 +298,10 @@ class History:
         """
         if not game.clan:
             return
-        cat.load_history()
 
-        cat.history.app_ceremony = {
+        self.app_ceremony = {
             "honor": honor,
-            "graduation_age": cat.moons,
+            "graduation_age": moons,
             "moon": game.clan.age
         }
 
