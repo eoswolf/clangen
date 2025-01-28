@@ -1640,7 +1640,7 @@ class Events:
 
         if cat.status in ["warrior", "medicine cat", "mediator"]:
             cat.load_history()
-            cat.history.add_app_ceremony(cat.moons, random_honor)
+            cat.history.add_app_ceremony(random_honor)
 
         ceremony_tags, ceremony_text = self.CEREMONY_TXT[
             random.choice(list(possible_ceremonies))

@@ -887,15 +887,15 @@ class PatrolOutcome:
                 if affect_personality:
                     cat.load_history()
 
-                    History.add_facet_mentor_influence(
-                        cat, mentor.ID, affect_personality[0], affect_personality[1]
+                    cat.history.add_facet_mentor_influence(
+                        mentor.ID, affect_personality[0], affect_personality[1]
                     )
                     print(str(cat.name), affect_personality)
                 if affect_skills:
                     cat.load_history()
 
-                    History.add_skill_mentor_influence(
-                        cat, affect_skills[0], affect_skills[1], affect_skills[2]
+                    cat.history.add_skill_mentor_influence(
+                        affect_skills[0], affect_skills[1], affect_skills[2]
                     )
                     print(str(cat.name), affect_skills)
 
@@ -995,12 +995,7 @@ class PatrolOutcome:
 
         cat.load_history()
 
-        cat.history.add_possible_history(
-            cat.status,
-            condition=condition,
-            death_text=final_death_history,
-            scar_text=history_scar,
-        )
+        cat.history.add_possible_history(condition=condition, death_text=final_death_history, scar_text=history_scar)
 
     def __handle_death_history(self, cat: Cat, patrol: "Patrol") -> None:
         """Handles adding death history, for dead cats."""

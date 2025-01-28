@@ -861,7 +861,7 @@ class Cat:
         self.outside = False
         if not self.exiled:
             self.load_history()
-            self.history.add_beginning(self.moons)
+            self.history.add_beginning()
         self.exiled = False
         game.clan.add_to_clan(self)
 
@@ -878,7 +878,7 @@ class Cat:
             ):
                 child.add_to_clan()
                 child.load_history()
-                child.history.add_beginning(child.moons)
+                child.history.add_beginning()
                 ids.append(child_id)
 
         return ids
@@ -978,7 +978,7 @@ class Cat:
                         )
 
             self.history.add_mentor_skill_influence_strings()
-            self.history.add_mentor_facet_influence_strings(self.personality)
+            self.history.add_mentor_facet_influence_strings()
         return
 
     def manage_outside_trait(self):

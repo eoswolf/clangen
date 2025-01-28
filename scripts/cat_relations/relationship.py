@@ -40,7 +40,6 @@ class Relationship:
         log=None,
     ) -> None:
         self.chosen_interaction = None
-        self.history = History()
         self.cat_from = cat_from
         self.cat_to = cat_to
         self.mates = mates

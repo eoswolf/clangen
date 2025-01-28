@@ -146,7 +146,7 @@ class History:
     #                            adding and removing                               #
     # ---------------------------------------------------------------------------- #
 
-    def add_beginning(self, moons, clan_born=False):
+    def add_beginning(self, clan_born=False):
         """
         adds joining age and moon info to the cat's history save
         :param moons: age in moons
@@ -158,11 +158,11 @@ class History:
         self.beginning = {
             "clan_born": clan_born,
             "birth_season": game.clan.current_season if clan_born else None,
-            "age": moons,
+            "age": self.cat.moons,
             "moon": game.clan.age
         }
 
-    def add_mentor_facet_influence_strings(self, personality):
+    def add_mentor_facet_influence_strings(self):
         """
         adds mentor influence to the cat's history save
         :param cat: cat object
@@ -212,7 +212,7 @@ class History:
             self.mentor_influence["trait"][_ment]["strings"] = []
             for _fac in self.mentor_influence["trait"][_ment]:
                 # Check to make sure nothing weird got in there.
-                if _fac in personality.facet_types:
+                if _fac in self.cat.personality.facet_types:
                     if self.mentor_influence["trait"][_ment][_fac] > 0:
                         self.mentor_influence["trait"][_ment]["strings"].append(
                             random.choice(facet_influence_text[_fac + "_raise"]))
@@ -290,7 +290,7 @@ class History:
             self.mentor_influence["skill"][mentor_id][path.name] = 0
         self.mentor_influence["skill"][mentor_id][path.name] += amount
 
-    def add_app_ceremony(self, moons, honor):
+    def add_app_ceremony(self, honor):
         """
         adds ceremony honor to the cat's history
         :param cat: cat object
@@ -301,11 +301,11 @@ class History:
 
         self.app_ceremony = {
             "honor": honor,
-            "graduation_age": moons,
+            "graduation_age": self.cat.moons,
             "moon": game.clan.age
         }
 
-    def add_possible_history(self, status, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
+    def add_possible_history(self, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
         """
         this adds the possible death/scar to the cat's history
         :param cat: cat object
@@ -327,7 +327,7 @@ class History:
             # Use a default is none is provided.
             # Will probably sound weird, but it's better than nothing
             if not death_text:
-                if status == 'leader':
+                if self.cat.status == 'leader':
                     death_text = f"died from an injury or illness ({condition})"
                 else:
                     death_text = f"m_c died from an injury or illness ({condition})."

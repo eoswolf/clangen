@@ -1047,7 +1047,6 @@ class KillCat(UIWindow):
             object_id="#kill_cat_window",
             resizable=False,
         )
-        self.history = History()
         self.the_cat = cat
         self.take_all = False
         self.back_button = UIImageButton(
@@ -1209,7 +1208,7 @@ class KillCat(UIWindow):
                         game.clan.leader_lives -= 1
 
                 self.the_cat.die()
-                self.history.add_death(self.the_cat, death_message)
+                History.add_death(self.the_cat, death_message)
                 update_sprite(self.the_cat)
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()

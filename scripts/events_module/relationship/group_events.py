@@ -701,12 +701,8 @@ class GroupEvents:
                 for condition in injuries:
                     injured_cat.load_history()
 
-                    injured_cat.history.add_possible_history(
-                        injured_cat.status,
-                        condition,
-                        death_text=possible_death,
-                        scar_text=possible_scar,
-                    )
+                    injured_cat.history.add_possible_history(condition, death_text=possible_death,
+                                                             scar_text=possible_scar)
 
     @staticmethod
     def prepare_text(text: str, abbreviations_cat_id: dict) -> str:
