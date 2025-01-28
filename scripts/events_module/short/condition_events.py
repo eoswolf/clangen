@@ -587,6 +587,8 @@ class Condition_Events:
 
                 event = event_text_adjust(Cat, event, main_cat=cat)
 
+                cat.load_history()
+
                 if cat.status == "leader":
                     event = event + " " + get_leader_life_notice()
                     history_event = history_event.replace("m_c ", "").replace(".", "")
@@ -608,7 +610,7 @@ class Condition_Events:
 
             # heal the cat
             elif cat.healed_condition is True:
-                History.remove_possible_history(cat, illness)
+                cat.history.remove_possible_history(illness)
                 game.switches["skip_conditions"].append(illness)
                 # gather potential event strings for healed illness
                 possible_string_list = Condition_Events.ILLNESS_HEALED_STRINGS[illness]
@@ -670,6 +672,8 @@ class Condition_Events:
             skipped = cat.moon_skip_injury(injury)
             if skipped:
                 continue
+
+            cat.load_history()
 
             if cat.dead or (
                 cat.status == "leader" and starting_life_count != game.clan.leader_lives
@@ -741,7 +745,7 @@ class Condition_Events:
 
                 game.herb_events_list.append(event)
 
-                History.remove_possible_history(cat, injury)
+                cat.history.remove_possible_history(injury)
                 cat.injuries.pop(injury)
                 cat.healed_condition = False
 

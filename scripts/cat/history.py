@@ -340,8 +340,7 @@ class History:
                 "other_cat": other_cat.ID if other_cat else None
             }
 
-    @staticmethod
-    def remove_possible_history(cat, condition):
+    def remove_possible_history(self, condition):
         """
         use to remove possible death/scar histories
         :param cat: cat object
@@ -350,10 +349,8 @@ class History:
         # :param death: set True if removing death
         """
 
-        cat.load_history()
-
-        if condition in cat.history.possible_history:
-            cat.history.possible_history.pop(condition)
+        if condition in self.possible_history:
+            self.possible_history.pop(condition)
 
     @staticmethod
     def add_death(cat, death_text, condition=None, other_cat=None):
@@ -372,7 +369,7 @@ class History:
             if cat.history.possible_history[condition]["death_text"]:
                 death_text = cat.history.possible_history[condition]["death_text"]
             other_cat = cat.history.possible_history[condition].get("other_cat")
-            cat.history.remove_possible_history(cat, condition)
+            cat.history.remove_possible_history(condition)
 
         cat.history.died_by.append({
             "involved": other_cat,
@@ -392,7 +389,7 @@ class History:
             if cat.history.possible_history[condition]["scar_text"]:
                 scar_text = cat.history.possible_history[condition]["scar_text"]
             other_cat = cat.history.possible_history[condition].get("other_cat")
-            cat.history.remove_possible_history(cat, condition)
+            cat.history.remove_possible_history(condition)
 
         cat.history.scar_events.append({
             "involved": other_cat,
