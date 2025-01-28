@@ -860,7 +860,7 @@ class Cat:
         are coming with them."""
         self.outside = False
         if not self.exiled:
-            History.check_load(self)
+            self.load_history()
             self.history.add_beginning(self.moons)
         self.exiled = False
         game.clan.add_to_clan(self)
@@ -877,7 +877,7 @@ class Cat:
                 and child.moons < 12
             ):
                 child.add_to_clan()
-                History.check_load(child)
+                child.load_history()
                 child.history.add_beginning(child.moons)
                 ids.append(child_id)
 

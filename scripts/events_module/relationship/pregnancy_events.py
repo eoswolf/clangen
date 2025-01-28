@@ -900,7 +900,7 @@ class Pregnancy_Events:
             clan.add_cat(kit)
 
             #### GIVE HISTORY ######
-            History.check_load(kit)
+            kit.load_history()
             kit.history.add_beginning(kit.moons, clan_born=bool(cat))
 
         # check other cats of Clan for siblings

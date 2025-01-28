@@ -127,16 +127,6 @@ class History:
     #                                   utility                                    #
     # ---------------------------------------------------------------------------- #
 
-    @staticmethod
-    def check_load(cat):
-        """
-        this checks if the cat's history has been loaded and loads it if False
-        :param cat: cat object
-        :return:
-        """
-        if not cat.history:
-            cat.load_history()
-
     def make_dict(self):
         history_dict = {
             "beginning": self.beginning,
@@ -176,7 +166,7 @@ class History:
         adds mentor influence to the cat's history save
         :param cat: cat object
         """
-        History.check_load(cat)
+        cat.load_history()
 
         if not cat.history.mentor_influence["trait"]:
             return
@@ -236,7 +226,7 @@ class History:
         adds mentor influence to the cat's history save
         :param cat: cat object
         """
-        History.check_load(cat)
+        cat.load_history()
 
         if not cat.history.mentor_influence["skill"]:
             return
@@ -285,7 +275,7 @@ class History:
     def add_facet_mentor_influence(cat, mentor_id, facet, amount):
         """Adds the history information for a single mentor facet change, that occurs after a patrol. """
 
-        History.check_load(cat)
+        cat.load_history()
         if mentor_id not in cat.history.mentor_influence["trait"]:
             cat.history.mentor_influence["trait"][mentor_id] = {}
         if facet not in cat.history.mentor_influence["trait"][mentor_id]:
@@ -296,7 +286,7 @@ class History:
     def add_skill_mentor_influence(cat, mentor_id, path, amount):
         """ Adds mentor influence on skills """
 
-        History.check_load(cat)
+        cat.load_history()
 
         if not isinstance(path, SkillPath):
             path = SkillPath[path]
@@ -316,7 +306,7 @@ class History:
         """
         if not game.clan:
             return
-        History.check_load(cat)
+        cat.load_history()
 
         cat.history.app_ceremony = {
             "honor": honor,
@@ -334,7 +324,7 @@ class History:
         :param scar_text: text for scar history
         :param other_cat: cat object of other cat involved.
         """
-        History.check_load(cat)
+        cat.load_history()
 
         # If the condition already exists, we don't want to overwrite it
         if condition in cat.history.possible_history:
@@ -371,7 +361,7 @@ class History:
         # :param death: set True if removing death
         """
 
-        History.check_load(cat)
+        cat.load_history()
 
         if condition in cat.history.possible_history:
             cat.history.possible_history.pop(condition)
@@ -385,7 +375,7 @@ class History:
 
         if not game.clan:
             return
-        History.check_load(cat)
+        cat.load_history()
 
         if other_cat is not None:
             other_cat = other_cat.ID
@@ -405,7 +395,7 @@ class History:
     def add_scar(cat, scar_text, condition=None, other_cat=None):
         if not game.clan:
             return
-        History.check_load(cat)
+        cat.load_history()
 
         if other_cat is not None:
             other_cat = other_cat.ID
@@ -434,8 +424,8 @@ class History:
         """
         if not game.clan:
             return
-        History.check_load(cat)
-        History.check_load(other_cat)
+        cat.load_history()
+        other_cat.load_history()
         if "is_murderer" not in other_cat.history.murder:
             other_cat.history.murder["is_murderer"] = []
         if 'is_victim' not in cat.history.murder:
@@ -459,7 +449,7 @@ class History:
         """
         generates and adds lead ceremony to history
         """
-        History.check_load(cat)
+        cat.load_history()
 
         cat.history.lead_ceremony = cat.generate_lead_ceremony()
 
@@ -482,7 +472,7 @@ class History:
         if beginning info is empty, a NoneType is returned
         :param cat: cat object
         """
-        History.check_load(cat)
+        cat.load_history()
         return cat.history.beginning
 
     @staticmethod
@@ -505,7 +495,7 @@ class History:
 
         if mentor influence is empty, a NoneType is returned
         """
-        History.check_load(cat)
+        cat.load_history()
         return cat.history.mentor_influence
 
     @staticmethod
@@ -521,7 +511,7 @@ class History:
 
         if app_ceremony is empty, a NoneType is returned
         """
-        History.check_load(cat)
+        cat.load_history()
         return cat.history.app_ceremony
 
     @staticmethod
@@ -530,7 +520,7 @@ class History:
         returns the leader ceremony text
         :param cat: cat object
         """
-        History.check_load(cat)
+        cat.load_history()
         if not cat.history.lead_ceremony:
             History.add_lead_ceremony(cat)
         return str(cat.history.lead_ceremony)
@@ -565,7 +555,7 @@ class History:
         :param cat: cat object
         :param condition: which condition that caused the death/scar, default None
         """
-        History.check_load(cat)
+        cat.load_history()
 
         if condition in cat.history.possible_history:
             return cat.history.possible_history[condition]
@@ -598,7 +588,7 @@ class History:
         :param scar: request scars, default False
         """
 
-        History.check_load(cat)
+        cat.load_history()
 
         event_type = None
         if scar:
@@ -643,7 +633,7 @@ class History:
         :param cat: cat object
         """
 
-        History.check_load(cat)
+        cat.load_history()
 
         return cat.history.murder
 
