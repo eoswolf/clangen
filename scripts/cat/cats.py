@@ -1024,6 +1024,9 @@ class Cat:
 
     def load_history(self):
         """Load this cat's history"""
+        if self.history:
+            return
+
         try:
             if game.switches["clan_name"] != "":
                 clanname = game.switches["clan_name"]
