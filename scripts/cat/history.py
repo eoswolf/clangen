@@ -375,21 +375,19 @@ class History:
             "moon": game.clan.age
         })
 
-    @staticmethod
-    def add_scar(cat, scar_text, condition=None, other_cat=None):
+    def add_scar(self, scar_text, condition=None, other_cat=None):
         if not game.clan:
             return
-        cat.load_history()
 
         if other_cat is not None:
             other_cat = other_cat.ID
-        if condition in cat.history.possible_history:
-            if cat.history.possible_history[condition]["scar_text"]:
-                scar_text = cat.history.possible_history[condition]["scar_text"]
-            other_cat = cat.history.possible_history[condition].get("other_cat")
-            cat.history.remove_possible_history(condition)
+        if condition in self.possible_history:
+            if self.possible_history[condition]["scar_text"]:
+                scar_text = self.possible_history[condition]["scar_text"]
+            other_cat = self.possible_history[condition].get("other_cat")
+            self.remove_possible_history(condition)
 
-        cat.history.scar_events.append({
+        self.scar_events.append({
             "involved": other_cat,
             "text": scar_text,
             "moon": game.clan.age

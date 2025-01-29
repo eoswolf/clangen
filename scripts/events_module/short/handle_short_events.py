@@ -713,7 +713,8 @@ class HandleShortEvents:
                     history_text = history_text_adjust(
                         block["scar"], self.other_clan_name, game.clan, self.random_cat
                     )
-                    History.add_scar(cat, history_text)
+                    cat.load_history()
+                    cat.history.add_scar(history_text)
                     break
         else:
             for block in self.chosen_event.history:
