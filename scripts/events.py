@@ -398,8 +398,8 @@ class Events:
             # SUCCESS/FAIL
             if info_dict["success"]:
                 if info_dict["interaction_type"] == "hunt":
-                    History.add_death(
-                        outsider_cat,
+                    outsider_cat.load_history()
+                    outsider_cat.history.add_death(
                         death_text=history_text_adjust(
                             i18n.t("hardcoded.lead_den_killed"),
                             other_clan_name=None,

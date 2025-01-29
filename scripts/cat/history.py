@@ -352,8 +352,7 @@ class History:
         if condition in self.possible_history:
             self.possible_history.pop(condition)
 
-    @staticmethod
-    def add_death(cat, death_text, condition=None, other_cat=None):
+    def add_death(self, death_text, condition=None, other_cat=None):
         """ Adds death to cat's history. If a condition is passed, it will look into
             possible_history to see if anything is saved there, and, if so, use the text and
             other_cat there (overriding the
@@ -361,17 +360,16 @@ class History:
 
         if not game.clan:
             return
-        cat.load_history()
 
         if other_cat is not None:
             other_cat = other_cat.ID
-        if condition in cat.history.possible_history:
-            if cat.history.possible_history[condition]["death_text"]:
-                death_text = cat.history.possible_history[condition]["death_text"]
-            other_cat = cat.history.possible_history[condition].get("other_cat")
-            cat.history.remove_possible_history(condition)
+        if condition in self.possible_history:
+            if self.possible_history[condition]["death_text"]:
+                death_text = self.possible_history[condition]["death_text"]
+            other_cat = self.possible_history[condition].get("other_cat")
+            self.remove_possible_history(condition)
 
-        cat.history.died_by.append({
+        self.died_by.append({
             "involved": other_cat,
             "text": death_text,
             "moon": game.clan.age

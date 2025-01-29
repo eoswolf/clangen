@@ -1018,4 +1018,5 @@ class PatrolOutcome:
                 "o_c_n", f"{str(patrol.other_clan.name)}Clan"
             )
 
-        History.add_death(cat, death_text=final_death_history)
+        cat.load_history()
+        cat.history.add_death(death_text=final_death_history)

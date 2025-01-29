@@ -493,7 +493,9 @@ class Pregnancy_Events:
                 death_event = i18n.t(
                     "conditions.pregnancy.kitting_death", name=cat.name
                 )
-            History.add_death(cat, death_text=death_event)
+            cat.load_history()
+            cat.history.add_death(death_text=death_event)
+
         elif not cat.outside:  # if cat doesn't die, give recovering from birth
             cat.get_injured("recovering from birth", event_triggered=True)
             if "blood loss" in cat.injuries:
