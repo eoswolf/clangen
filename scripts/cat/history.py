@@ -41,13 +41,13 @@ class History:
         """ 
         want save to look like
         {
-        "beginning":{
+        "beginning": {
             "clan_born": bool,
             "birth_season": season,
             "age": age,
             "moon": moon
             },
-        "mentor_influence":{
+        "mentor_influence": {
             "trait": {
                 "mentor_id": {
                     "lawfulness": 0
@@ -149,7 +149,6 @@ class History:
     def add_beginning(self, clan_born=False):
         """
         adds joining age and moon info to the cat's history save
-        :param moons: age in moons
         :param clan_born: default False, set True if the cat was not born in the Clan
         """
         if not game.clan:
@@ -165,7 +164,6 @@ class History:
     def add_mentor_facet_influence_strings(self):
         """
         adds mentor influence to the cat's history save
-        :param cat: cat object
         """
 
         if not self.mentor_influence["trait"]:
@@ -223,7 +221,6 @@ class History:
     def add_mentor_skill_influence_strings(self):
         """
         adds mentor influence to the cat's history save
-        :param cat: cat object
         """
 
         if not self.mentor_influence["skill"]:
@@ -293,7 +290,6 @@ class History:
     def add_app_ceremony(self, honor):
         """
         adds ceremony honor to the cat's history
-        :param cat: cat object
         :param honor: the honor trait given during the cat's ceremony
         """
         if not game.clan:
@@ -308,7 +304,6 @@ class History:
     def add_possible_history(self, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
         """
         this adds the possible death/scar to the cat's history
-        :param cat: cat object
         :param condition: the condition that is causing the death/scar
         :param death_text: text for death history
         :param scar_text: text for scar history
@@ -343,7 +338,6 @@ class History:
     def remove_possible_history(self, condition):
         """
         use to remove possible death/scar histories
-        :param cat: cat object
         :param condition: condition linked to the death/scar you're removing
         # :param scar: set True if removing scar
         # :param death: set True if removing death
@@ -440,7 +434,6 @@ class History:
     def get_lead_ceremony(self):
         """
         returns the leader ceremony text
-        :param cat: cat object
         """
 
         if not self.lead_ceremony:
@@ -473,7 +466,6 @@ class History:
         },
 
         if possible scar/death is empty, a NoneType is returned
-        :param cat: cat object
         :param condition: which condition that caused the death/scar, default None
         """
 
@@ -502,7 +494,6 @@ class History:
             ]
 
         if scar/death is empty, a NoneType is returned
-        :param cat: cat object
         :param death: request a death, default False
         :param scar: request scars, default False
         """
