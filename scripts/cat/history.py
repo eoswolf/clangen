@@ -426,14 +426,12 @@ class History:
             "moon": game.clan.age
         })
 
-    @staticmethod
-    def add_lead_ceremony(cat):
+    def add_lead_ceremony(self):
         """
         generates and adds lead ceremony to history
         """
-        cat.load_history()
 
-        cat.history.lead_ceremony = cat.generate_lead_ceremony()
+        self.lead_ceremony = self.cat.generate_lead_ceremony()
 
     # ---------------------------------------------------------------------------- #
     #                                 retrieving                                   #
