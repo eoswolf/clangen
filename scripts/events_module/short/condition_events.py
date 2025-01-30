@@ -612,6 +612,7 @@ class Condition_Events:
 
             # heal the cat
             elif cat.healed_condition is True:
+                cat.load_history()
                 cat.history.remove_possible_history(illness)
                 game.switches["skip_conditions"].append(illness)
                 # gather potential event strings for healed illness
