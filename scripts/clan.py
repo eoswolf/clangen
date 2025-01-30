@@ -103,7 +103,6 @@ class Clan:
         starting_season="Newleaf",
         self_run_init_functions=True,
     ):
-        self.history = History()
         if name == "":
             return
 
