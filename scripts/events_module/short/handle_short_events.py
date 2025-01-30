@@ -109,7 +109,8 @@ class HandleShortEvents:
         # checking if a murder reveal should happen
         if event_type == "misc":
             self.victim_cat = None
-            cat_history = History.get_murders(self.main_cat)
+            self.main_cat.load_history()
+            cat_history = self.main_cat.history.murder
             if cat_history:
                 if "is_murderer" in cat_history:
                     murder_history = cat_history["is_murderer"]

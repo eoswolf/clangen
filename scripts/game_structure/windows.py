@@ -1047,6 +1047,9 @@ class KillCat(UIWindow):
             object_id="#kill_cat_window",
             resizable=False,
         )
+
+        cat.load_history()
+
         self.the_cat = cat
         self.take_all = False
         self.back_button = UIImageButton(
@@ -1124,7 +1127,7 @@ class KillCat(UIWindow):
                 container=self,
             )
 
-        elif History.get_death_or_scars(self.the_cat, death=True):
+        elif self.the_cat.history.get_death_or_scars(death=True):
             # This should only occur for retired leaders.
 
             self.prompt = process_text(i18n.t("windows.death_prompt"), cat_dict)

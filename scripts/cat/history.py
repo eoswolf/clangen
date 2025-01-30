@@ -437,76 +437,17 @@ class History:
     #                                 retrieving                                   #
     # ---------------------------------------------------------------------------- #
 
-    @staticmethod
-    def get_beginning(cat):
-        """
-        returns the beginning info, example of structure:
-
-        "beginning":{
-            "clan_born": bool,
-            "birth_season": season,
-            "age": age,
-            "moon": moon
-            },
-
-        if beginning info is empty, a NoneType is returned
-        :param cat: cat object
-        """
-        cat.load_history()
-        return cat.history.beginning
-
-    @staticmethod
-    def get_mentor_influence(cat):
-        """
-        Returns mentor influence dict, example of structure:
-
-        "mentor_influence":{
-            "mentor": ID
-            "skill": skill
-            "second_skill": second skill
-            "trait": {
-                "mentor_id":
-                    "lawfulness": 0,
-                    ...
-                    "strings": []
-            },
-            "skill": skill
-        }
-
-        if mentor influence is empty, a NoneType is returned
-        """
-        cat.load_history()
-        return cat.history.mentor_influence
-
-    @staticmethod
-    def get_app_ceremony(cat):
-        """
-        Returns app_ceremony dict, example of structure:
-
-        "app_ceremony": {
-            "honor": honor,
-            "graduation_age": age,
-            "moon": moon
-            },
-
-        if app_ceremony is empty, a NoneType is returned
-        """
-        cat.load_history()
-        return cat.history.app_ceremony
-
-    @staticmethod
-    def get_lead_ceremony(cat):
+    def get_lead_ceremony(self):
         """
         returns the leader ceremony text
         :param cat: cat object
         """
-        cat.load_history()
-        if not cat.history.lead_ceremony:
-            History.add_lead_ceremony(cat)
-        return str(cat.history.lead_ceremony)
 
-    @staticmethod
-    def get_possible_history(cat, condition=None):
+        if not self.lead_ceremony:
+            self.add_lead_ceremony()
+        return str(self.lead_ceremony)
+
+    def get_possible_history(self, condition=None):
         """
         Returns the requested death/scars dict, example of single event structure:
 
@@ -535,17 +476,15 @@ class History:
         :param cat: cat object
         :param condition: which condition that caused the death/scar, default None
         """
-        cat.load_history()
 
-        if condition in cat.history.possible_history:
-            return cat.history.possible_history[condition]
+        if condition in self.possible_history:
+            return self.possible_history[condition]
         elif condition:
             return None
         else:
-            return cat.history.possible_history
+            return self.possible_history
 
-    @staticmethod
-    def get_death_or_scars(cat, death=False, scar=False):
+    def get_death_or_scars(self, death=False, scar=False):
         """
         This returns the death/scar history list for the cat.  example of list structure:
 
@@ -568,58 +507,17 @@ class History:
         :param scar: request scars, default False
         """
 
-        cat.load_history()
-
-        event_type = None
-        if scar:
-            event_type = "scar_events"
-        elif death:
-            event_type = "died_by"
-
-        if not event_type:
+        if not death and not scar:
             print('WARNING: event type was not specified during scar/death history retrieval, '
                   'did you remember to set scar or death as True?')
-            return
-
-        if event_type == 'scar_events':
-            return cat.history.scar_events
-        else:
-            return cat.history.died_by
-
-    @staticmethod
-    def get_murders(cat):
-        """Returns the cat's murder dict. Example return:
-
-        "murder": {
-            "is_murderer": [
-                    {
-                    "victim": ID,
-                    "revealed": bool,
-                    "moon": moon
-                    },
-                ]
-            "is_victim": [
-                    {
-                    "murderer": ID,
-                    "revealed": bool,
-                    "text": same text as the death history for this murder (revealed history)
-                    "unrevealed_text": unrevealed death history
-                    "moon": moon
-                    },
-                ]
-            }
-
-        if murders is empty, a NoneType is returned
-        :param cat: cat object
-        """
-
-        cat.load_history()
-
-        return cat.history.murder
+        elif scar:
+            return self.scar_events
+        elif death:
+            return self.died_by
 
     @staticmethod
     def reveal_murder(cat, other_cat, cat_class, victim, murder_index):
-        """ Reveals the murder properly in all associated history text.
+        """Reveals the murder properly in all associated history text.
 
         :param cat: The murderer
         :param other_cat: The cat who discovers the truth about the murder
@@ -628,8 +526,10 @@ class History:
         :param murder_index: Index of the murder"""
 
         victim = cat_class.fetch_cat(victim)
-        murder_history = History.get_murders(cat)
-        victim_history = History.get_murders(victim)
+        cat.load_history()
+        victim.load_history()
+        murder_history = cat.history.murder
+        victim_history = victim.history.murder
 
         if murder_history:
             if "is_murderer" in murder_history:
