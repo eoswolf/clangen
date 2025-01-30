@@ -1212,7 +1212,7 @@ class KillCat(UIWindow):
 
                 self.the_cat.die()
                 self.the_cat.load_history()
-                self.the_cat.add_death(death_message)
+                self.the_cat.history.add_death(death_message)
                 update_sprite(self.the_cat)
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
