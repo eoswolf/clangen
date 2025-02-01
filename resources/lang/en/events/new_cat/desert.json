@@ -104,7 +104,7 @@
             "any"
         ],
         "weight": 5,
-        "event_text": "m_c finds an abandoned litter while on patrol and rushes them back to camp. Such young cats were lucky to have survived under the hot, desert sun.",
+        "event_text": "m_c finds an abandoned litter while on patrol and rushes them back to camp. Such young cats were lucky to have survived under the hot desert sun.",
         "m_c": {
             "age": [
                 "young adult",
