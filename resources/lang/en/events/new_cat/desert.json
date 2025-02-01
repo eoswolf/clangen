@@ -18,7 +18,9 @@
             ],
             "status": ["any"]
           },
-        "new_cat": ["loner"],
+        "new_cat": [
+          ["loner"]
+        ],
         "relationships": [
             {
               "cats_from": ["m_c"],
@@ -54,7 +56,9 @@
             ],
             "status": ["leader", "deputy", "medicine cat", "warrior"]
           },
-        "new_cat": ["loner"],
+        "new_cat": [
+          ["loner"]
+        ],
           "outsider": {
               "current_rep": [
                   "hostile"
@@ -81,7 +85,9 @@
             ],
             "status": ["leader", "deputy", "medicine cat", "warrior"]
           },
-        "new_cat": ["loner"],
+        "new_cat": [
+          ["loner"]
+        ],
           "outsider": {
               "current_rep": [
                   "neutral", "welcoming"
