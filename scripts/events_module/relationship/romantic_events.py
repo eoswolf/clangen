@@ -531,6 +531,14 @@ class RomanticEvents:
             game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         else:
             text = i18n.t("hardcoded.breakup_chill")
+        game.cur_events_list.append(
+            Single_Event(
+                text,
+                ["relation", "misc"],
+                [cat_from.ID, cat_to.ID],
+                cat_dict={"m_c": cat_from, "r_c": cat_to},
+            )
+        )
         return True
 
     @staticmethod
