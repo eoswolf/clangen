@@ -34,6 +34,7 @@ class RomanticEvents:
     # ---------------------------------------------------------------------------- #
 
     MATE_DICTS = {}
+    BREAKUP_STRINGS = {}
     POLY_MATE_DICTS = {}
     current_loaded_lang = None
     ROMANTIC_EVENTS: Dict = {}
@@ -52,6 +53,7 @@ class RomanticEvents:
 
         resources = [
             ("MATE_DICTS", "become_mates.json"),
+            ("BREAKUP_STRINGS", "breakup_mates.json"),
             (
                 "POLY_MATE_DICTS",
                 "become_mates_poly.json",
@@ -452,6 +454,9 @@ class RomanticEvents:
         # Determine if this is a nice breakup or a fight breakup
         # TODO - make this better
         had_fight = not int(random.random() * 3)
+        decided_to_be_friends = not int(random.random() * 3)
+        lost_feelings = not int(random.random() * 3)
+        awkward_breakup = not int(random.random() * 3)
 
         # TODO : more varied breakup text.
         cat_from.unset_mate(cat_to, breakup=False)
@@ -472,27 +477,60 @@ class RomanticEvents:
         relationship_to.comfortable -= 10
         relationship_from.comfortable -= 10
         if had_fight:
-            relationship_to.romantic_love -= 5
-            relationship_from.romantic_love -= 5
+            relationship_to.romantic_love -= 15
+            relationship_from.romantic_love -= 15
             relationship_from.platonic_like -= 10
             relationship_to.platonic_like -= 10
             relationship_from.trust -= 10
             relationship_to.trust -= 10
             relationship_to.dislike += 10
             relationship_from.dislike += 10
+        elif decided_to_be_friends:
+            relationship_to.romantic_love -= 15
+            relationship_from.romantic_love -= 15
+            relationship_from.platonic_like += 30
+            relationship_to.platonic_like += 30
+            relationship_from.trust += 20
+            relationship_to.trust += 20
+            relationship_to.comfortable += 10
+            relationship_from.comfortable += 10
+        elif lost_feelings:
+            relationship_to.romantic_love -= 30
+            relationship_from.romantic_love -= 30
+            relationship_from.platonic_like -= 10
+            relationship_to.platonic_like -= 10
+            relationship_to.comfortable -= 10
+            relationship_from.comfortable -= 10
+        elif awkward_breakup:
+            relationship_to.romantic_love -= 15
+            relationship_from.romantic_love -= 10
+            relationship_from.platonic_like -= 10
+            relationship_to.platonic_like -= 10
+            relationship_from.trust -= 10
+            relationship_to.trust -= 10
+            relationship_to.comfortable -= 10
+            relationship_from.comfortable -= 10
+            relationship_to.dislike += 15
+            relationship_from.dislike += 10
 
         if had_fight:
-            text = i18n.t("hardcoded.breakup_angy")
+            text = choice(Romantic_Events.BREAKUP_STRINGS["had_fight"])
+            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
+            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
+        elif decided_to_be_friends:
+            text = choice(Romantic_Events.BREAKUP_STRINGS["decided_to_be_friends"])
+            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
+            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
+        elif lost_feelings:
+            text = choice(Romantic_Events.BREAKUP_STRINGS["lost_feelings"])
+            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
+            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
+        elif awkward_breakup:
+            text = choice(Romantic_Events.BREAKUP_STRINGS["awkward_breakup"])
+            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
+            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         else:
             text = i18n.t("hardcoded.breakup_chill")
-        game.cur_events_list.append(
-            Single_Event(
-                text,
-                ["relation", "misc"],
-                [cat_from.ID, cat_to.ID],
-                cat_dict={"m_c": cat_from, "r_c": cat_to},
-            )
-        )
         return True
 
     @staticmethod
