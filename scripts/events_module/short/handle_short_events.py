@@ -249,13 +249,8 @@ class HandleShortEvents:
                 other_cat = None
             else:
                 other_cat = self.random_cat
-            History.reveal_murder(
-                cat=self.main_cat,
-                other_cat=other_cat,
-                cat_class=Cat,
-                victim=self.victim_cat,
-                murder_index=self.murder_index,
-            )
+            History.reveal_murder(cat_class=Cat, murderer=self.main_cat, discoverer=other_cat, victim=self.victim_cat,
+                                  murder_index=self.murder_index)
 
         # change outsider rep
         if self.chosen_event.outsider:
