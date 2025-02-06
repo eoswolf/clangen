@@ -9,7 +9,7 @@
 	],
 	"decided_to_be_friends":[
 		"m_c and r_c realized that they were better off as friends, so they decided to break up.",
-		"After thinking for some time, m_c told r_c that {PRONOUN/m_c/subject} now {VERB/m_c/see/sees} {PRONOUN/r_c/object} as more like a sibling to {PRONOUN/m_c/object} than a mate. It turns out, r_c feels the same way, and they decide to remain close, but not together. As friends, not lovers.",
+		"After thinking for some time, m_c told r_c that {PRONOUN/m_c/subject} now {VERB/m_c/see/sees} {PRONOUN/r_c/object} as more like a close friend to {PRONOUN/m_c/object} than a mate. It turns out, r_c feels the same way, and they decide to remain close, but not together. As friends, not lovers.",
 		"m_c realizes that {PRONOUN/m_c/subject} {VERB/m_c/don't/doesn't} have the mentality to keep a romantic relationship right now. After a little talk with r_c, they have decided that they should just be friends, for now atleast.",
 		"r_c is an amazing cat, perfect in every way, shape, and form. That's why m_c feels like {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} a good enough mate for {PRONOUN/r_c/object} anymore. After a talk with r_c, they've decided to stay friends, giving m_c the incentive to work on {PRONOUN/m_c/self} more.",
 		"m_c isn't so sure about continuing a romantic relationship with r_c anymore. After a little talk, they have decided that they should just be friends.",
@@ -25,7 +25,7 @@
 	"awkward_breakup":[
 		"Out of the blue, m_c bluntly tells r_c that {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} interested in {PRONOUN/r_c/object} anymore, so {PRONOUN/m_c/subject} calls off their relationship and r_c walks away heartbroken and confused.",
             	"Things sadly just didn't work out the way m_c and r_c thought it would... with heaviness in their hearts, they have decided to break up.",
-            	"Some relationships turn out good, some don't, but for m_c and r_c's relationship, things <i>really</i> didn't turn out so well. They've broken up.",
+            	"Some relationships turn out good, some don't, but for m_c and r_c's relationship, things <i>really</i> didn't turn out so well. They've broken up.", 
             	"One day, m_c and r_c were crazy in love with eachother. The next day, they're distant, refusing to talk to one another. This continues for a while, making it clear that they're no longer mates.",
 		"m_c doesn't see r_c the same way {PRONOUN/m_c/subject} used to anymore, so {PRONOUN/m_c/subject} dumps {PRONOUN/r_c/object} and r_c walks away heartbroken."
 	]
