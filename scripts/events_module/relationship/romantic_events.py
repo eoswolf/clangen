@@ -514,21 +514,17 @@ class RomanticEvents:
             relationship_from.dislike += 10
 
         if had_fight:
-            text = choice(Romantic_Events.BREAKUP_STRINGS["had_fight"])
+            text = choice(RomanticEvents.BREAKUP_STRINGS["had_fight"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         elif decided_to_be_friends:
-            text = choice(Romantic_Events.BREAKUP_STRINGS["decided_to_be_friends"])
+            text = choice(RomanticEvents.BREAKUP_STRINGS["decided_to_be_friends"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         elif lost_feelings:
-            text = choice(Romantic_Events.BREAKUP_STRINGS["lost_feelings"])
+            text = choice(RomanticEvents.BREAKUP_STRINGS["lost_feelings"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         elif awkward_breakup:
-            text = choice(Romantic_Events.BREAKUP_STRINGS["awkward_breakup"])
+            text = choice(RomanticEvents.BREAKUP_STRINGS["awkward_breakup"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-            game.cur_events_list.append(Single_Event(text, ["relation", "misc"], [cat_from.ID, cat_to.ID]))
         else:
             text = i18n.t("hardcoded.breakup_chill")
         game.cur_events_list.append(
