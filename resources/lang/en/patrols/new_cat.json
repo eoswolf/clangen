@@ -4460,7 +4460,7 @@
                 "outsider_rep": 0
             },
             {
-                "text": "What in StarClan's name is a <i>kittypet</i> doing here? c_n's territory is no place for such a pampered creature, so p_l approaches the other young cat, intending to send {PRONOUN/n_c:0/object} back to wherever {PRONOUN/n_c:0/subject} came from. However, p_l's presence clearly intimidates the kittypet, who takes a swipe at p_l and bolts away the moment {PRONOUN/n_c:0/subject} {VERB/n_c:0/see/sees} {PRONOUN/p_l/object}.",
+                "text": "What in StarClan's name is a <i>kittypet</i> doing here? c_n's territory is no place for such a pampered creature. p_l approaches the other young cat, intending to send {PRONOUN/n_c:0/object} back to wherever {PRONOUN/n_c:0/subject} came from. However, p_l's presence clearly intimidates the kittypet, who takes a swipe at p_l and bolts away the moment {PRONOUN/n_c:0/subject} {VERB/n_c:0/see/sees} {PRONOUN/p_l/object}.",
                 "exp": 0,
                 "weight": 5,
                 "new_cat": [
