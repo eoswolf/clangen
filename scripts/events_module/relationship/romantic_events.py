@@ -456,7 +456,7 @@ class RomanticEvents:
         had_fight = not int(random.random() * 3)
         decided_to_be_friends = not int(random.random() * 3)
         lost_feelings = not int(random.random() * 3)
-        awkward_breakup = not int(random.random() * 3)
+        bad_breakup = not int(random.random() * 3)
 
         # TODO : more varied breakup text.
         cat_from.unset_mate(cat_to, breakup=False)
@@ -492,8 +492,8 @@ class RomanticEvents:
             relationship_to.platonic_like += 30
             relationship_from.trust += 20
             relationship_to.trust += 20
-            relationship_to.comfortable += 10
-            relationship_from.comfortable += 10
+            relationship_to.comfortable += 5
+            relationship_from.comfortable += 5
         elif lost_feelings:
             relationship_to.romantic_love -= 30
             relationship_from.romantic_love -= 30
@@ -501,7 +501,7 @@ class RomanticEvents:
             relationship_to.platonic_like -= 10
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
-        elif awkward_breakup:
+        elif bad_breakup:
             relationship_to.romantic_love -= 15
             relationship_from.romantic_love -= 10
             relationship_from.platonic_like -= 10
@@ -522,8 +522,8 @@ class RomanticEvents:
         elif lost_feelings:
             text = choice(RomanticEvents.BREAKUP_STRINGS["lost_feelings"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif awkward_breakup:
-            text = choice(RomanticEvents.BREAKUP_STRINGS["awkward_breakup"])
+        elif bad_breakup:
+            text = choice(RomanticEvents.BREAKUP_STRINGS["bad_breakup"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
         else:
             text = i18n.t("hardcoded.breakup_chill")
