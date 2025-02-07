@@ -454,9 +454,9 @@ class RomanticEvents:
         # Determine if this is a nice breakup or a fight breakup
         # TODO - make this better
         had_fight = not int(random.random() * 3)
-        decided_to_be_friends = not int(random.random() * 3)
+        decided_to_be_friends = not int(random.random() * 2)
         lost_feelings = not int(random.random() * 3)
-        bad_breakup = not int(random.random() * 3)
+        bad_breakup = not int(random.random() * 4)
 
         # TODO : more varied breakup text.
         cat_from.unset_mate(cat_to, breakup=False)
