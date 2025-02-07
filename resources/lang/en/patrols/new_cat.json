@@ -4382,7 +4382,7 @@
                 "outsider_rep": 1
             },
             {
-                "text": "A loner? Interesting. Never one to pass up a good conversation, s_c saunters up to the outsider and begins chatting with {PRONOUN/n_c:0/object} as though they're old friends. And by the time the two young cats part ways, it feels like they are.",
+                "text": "A loner? Interesting. Never one to pass up a good conversation, s_c saunters up to the outsider and begins chatting with {PRONOUN/n_c:0/object}. The two cats end up talking as though they're old friends: which, by the time they part ways, it feels like they are.",
                 "exp": 10,
                 "weight": 40,
                 "stat_trait": ["charismatic", "confident", "playful"],
@@ -4431,7 +4431,7 @@
                 "outsider_rep": 0
             },
             {
-                "text": "What in StarClan's name is a <i>kittypet</i> doing here? c_n's territory is no place for such a pampered creature, so p_l approaches the other young cat, intending to send {PRONOUN/n_c:0/object} back to wherever {PRONOUN/n_c:0/subject} came from. However, p_l's presence clearly intimidates the kittypet, who bolts away the moment {PRONOUN/n_c:0/subject} {VERB/n_c:0/see/sees} {PRONOUN/p_l/object}.",
+                "text": "What in StarClan's name is a <i>kittypet</i> doing here? c_n's territory is no place for such a pampered creature! p_l approaches the other young cat, intending to guide {PRONOUN/n_c:0/object} back to wherever {PRONOUN/n_c:0/subject} came from. However, p_l's presence clearly intimidates the kittypet, who bolts away the moment {PRONOUN/n_c:0/subject} {VERB/n_c:0/see/sees} {PRONOUN/p_l/object}.",
                 "exp": 0,
                 "weight": 10,
                 "new_cat": [
@@ -4559,16 +4559,21 @@
                         "injuries": ["battle_injury", "minor_injury", "torn ear"],
                         "scars": ["ONE", "TWO", "THREE", "FOUR", "RIGHTEAR", "LEFTEAR", "RIGHTBLIND", "LEFTBLIND", "BOTHBLIND", "MANLEG", "MANTAIL", "CATBITE", "CATBITETWO", "BRIDGE", "FACE", "SNOUT", "CHEEK", "THROAT", "TAILBASE", "TAILSCAR", "BACK", "SCRATCHSIDE", "SIDE", "BELLY"],
                         "no_results": true
+                    },
+                    {
+                        "cats": ["patrol"],
+                        "injuries": ["sore", "bruises", "scrapes", "torn ear", "torn pelt"],
+                        "scars": ["RIGHTEAR", "LEFTEAR"]
                     }
                 ],
                 "history_text": {
-                    "scar": "m_c was scarred after foolishly trying to take on a c_n apprentice.",
-                    "death": "m_c died from injuries sustained after foolishly trying to take on a c_n apprentice."
+                    "scar": "m_c was scarred after fighting with another cat.",
+                    "death": "m_c died from injuries sustained after fighting with another cat."
                 },
                 "outsider_rep": -1
             },
             {
-                "text": "p_l hisses out a warning but, surprisingly, the kittypet refuses to leave without a fight. <i>Un</i>surprisingly, {PRONOUN/n_c:0/subject}{VERB/n_c:0/'re/'s} quickly put in {PRONOUN/n_c:0/poss} place, with p_l <i>easily</i> winning the ensuing scuffle.",
+                "text": "p_l hisses out a warning and is surprised when the kittypet refuses to leave without a fight. <i>Un</i>surprisingly, {PRONOUN/n_c:0/subject}{VERB/n_c:0/'re/'s} quickly put in {PRONOUN/n_c:0/poss} place, with p_l easily winning the ensuing scuffle.",
                 "exp": 10,
                 "weight": 5,
                 "new_cat": [
@@ -4640,7 +4645,7 @@
                         "amount": -5
                     }
                 ],
-                "outsider_rep": -2
+                "outsider_rep": -1
             },
             {
                 "text": "p_l hisses out a warning, but the loner refuses to leave without a fight, which ends in a humiliating loss for p_l.",
@@ -4669,10 +4674,10 @@
                     "scar": "m_c was scarred after losing a fight with a loner.",
                     "death": "m_c died from injuries sustained after losing a fight with a loner."
                 },
-                "outsider_rep": -2
+                "outsider_rep": -1
             },
             {
-                "text": "p_l hisses out a warning but, surprisingly, the kittypet refuses to leave without a fight. Even more surprisingly, the kittypet <i>wins</i> said fight. Honestly, despite being in quite a bit of pain, p_l kind of respects the other cat's skills.",
+                "text": "p_l hisses out a warning and is surprised when the kittypet refuses to leave without a fight. Even more surprisingly, the kittypet <i>wins</i> said fight. Honestly, despite being in quite a bit of pain, p_l kind of respects the other cat's skills.",
                 "exp": 0,
                 "weight": 5,
                 "new_cat": [
@@ -4712,7 +4717,7 @@
                     "scar": "m_c was scarred after losing a fight with a kittypet.",
                     "death": "m_c died from injuries sustained after losing a fight with a kittypet."
                 },
-                "outsider_rep": -2
+                "outsider_rep": -1
             }
         ]
     }
