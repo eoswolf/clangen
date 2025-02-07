@@ -4341,7 +4341,7 @@
             "apprentice": [1, 1]
         },
         "weight": 20,
-        "intro_text": "p_l is out doing some solo training when, suddenly, {PRONOUN/p_l/subject} {VERB/p_l/spot/spots} another cat around {PRONOUN/p_l/poss} age.",
+        "intro_text": "p_l is out doing some solo training when {PRONOUN/p_l/subject} suddenly {VERB/p_l/spot/spots} another cat around {PRONOUN/p_l/poss} age.",
         "decline_text": "{PRONOUN/p_l/subject/CAP} {VERB/p_l/elect/elects} to ignore the stranger and focus on {PRONOUN/p_l/poss} training.",
         "chance_of_success": 50,
         "success_outcomes": [
