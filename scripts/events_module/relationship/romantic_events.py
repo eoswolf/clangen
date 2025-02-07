@@ -502,16 +502,16 @@ class RomanticEvents:
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
         elif bad_breakup:
-            relationship_to.romantic_love -= 15
-            relationship_from.romantic_love -= 10
+            relationship_to.romantic_love -= 10
+            relationship_from.romantic_love -= 5
             relationship_from.platonic_like -= 10
             relationship_to.platonic_like -= 10
             relationship_from.trust -= 10
             relationship_to.trust -= 10
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
-            relationship_to.dislike += 15
-            relationship_from.dislike += 10
+            relationship_to.dislike += 10
+            relationship_from.dislike += 5
 
         if had_fight:
             text = choice(RomanticEvents.BREAKUP_STRINGS["had_fight"])
