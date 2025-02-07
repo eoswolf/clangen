@@ -4615,7 +4615,7 @@
                         "amount": 10
                     }
                 ],
-                "outsider_rep": -2
+                "outsider_rep": -1
             },
             {
                 "text": "A kittypet? This'll be <i>easy...</i> Or maybe not. p_l simply can't believe {PRONOUN/p_l/subject} failed to chase off a <i>kittypet!</i> Nobody else saw that, right?",
