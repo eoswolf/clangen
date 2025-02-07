@@ -4401,7 +4401,7 @@
                 "outsider_rep": 1
             },
             {
-                "text": "Oh wow, a kittypet! Sure, <i>technically</i> s_c should be sending the outsider away, but {PRONOUN/s_c/subject} just {VERB/s_c/have/has} so many questions! Luckily, the kittypet is willing to sate s_c's curiosity, and the Clancat eventually returns to camp with a new understanding, and potentially a new friend.",
+                "text": "Oh wow, a kittypet! Sure, <i>technically</i> s_c should be sending the outsider away, but {PRONOUN/s_c/subject} just {VERB/s_c/have/has} so many questions! Luckily, the kittypet is willing to sate {PRONOUN/s_c/poss} curiosity, and {PRONOUN/s_c/subject} eventually {VERB/s_c/return/returns} to camp with a new understanding... and, potentially, a new friend.",
                 "exp": 10,
                 "weight": 20,
                 "stat_trait": ["charismatic", "confident", "playful"],
