@@ -4364,7 +4364,7 @@
                 "outsider_rep": 1
             },
             {
-                "text": "Is that...a kittypet? In c_n territory? How strange. p_l knows that {PRONOUN/p_l/subject} should chase the kittypet back home to {PRONOUN/n_c:0/poss} twolegs but...{PRONOUN/p_l/subject} can't help but be a little curious. Besides, what harm could a <i>kittypet</i> do? p_l approaches the kittypet and strikes up a conversation and, without either cat realizing it, they wind up talking for hours.",
+                "text": "Is that... a kittypet? In c_n territory? How strange. p_l knows that {PRONOUN/p_l/subject} should chase the kittypet back home to {PRONOUN/n_c:0/poss} Twolegs, but... {PRONOUN/p_l/subject} can't help but be a little curious. Besides, what harm could a <i>kittypet</i> do? p_l approaches the kittypet and strikes up a conversation. Without either cat realizing it, they wind up talking for hours.",
                 "exp": 10,
                 "weight": 10,
                 "new_cat": [
