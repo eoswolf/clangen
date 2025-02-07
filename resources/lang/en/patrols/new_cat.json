@@ -4449,8 +4449,8 @@
                 "injury": [
                     {
                         "cats": ["patrol"],
-                        "injuries": ["claw-wound", "torn pelt", "torn ear", "minor_injury"],
-                        "scars": ["ONE", "TWO", "THREE", "RIGHTEAR", "LEFTEAR", "RIGHTBLIND", "LEFTBLIND", "BRIDGE", "FACE", "SNOUT", "CHEEK", "THROAT"]
+                        "injuries": ["torn pelt", "torn ear", "minor_injury"],
+                        "scars": ["RIGHTEAR", "LEFTEAR"]
                     }
                 ],
                 "history_text": {
@@ -4469,8 +4469,8 @@
                 "injury": [
                     {
                         "cats": ["patrol"],
-                        "injuries": ["claw-wound", "torn pelt", "torn ear", "minor_injury"],
-                        "scars": ["ONE", "TWO", "THREE", "RIGHTEAR", "LEFTEAR", "RIGHTBLIND", "LEFTBLIND", "BRIDGE", "FACE", "SNOUT", "CHEEK", "THROAT"]
+                        "injuries": ["torn pelt", "torn ear", "minor_injury"],
+                        "scars": ["RIGHTEAR", "LEFTEAR"]
                     }
                 ],
                 "history_text": {
