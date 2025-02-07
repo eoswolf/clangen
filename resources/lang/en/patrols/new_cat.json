@@ -4499,7 +4499,7 @@
                 "outsider_rep": 1
             },
             {
-                "text": "It's positively <i>shameful</i> but, upon approaching the kittypet and speaking with {PRONOUN/n_c:0/object}, p_l finds {PRONOUN/p_l/self}...<i>intrigued</i> by the tales of the kittypet's life. Surely it'd be okay for a few days, right? For p_l to go and experience the life of a kittypet? Just a few days, nobody has to know...",
+                "text": "It's positively <i>shameful,</i> but upon approaching the kittypet and speaking with {PRONOUN/n_c:0/object}, p_l finds {PRONOUN/p_l/self}... <i>intrigued</i> by the tales of the kittypet's life. Surely it'd be okay for a few days, right? For {PRONOUN/p_l/object} to go and experience that life? Just a few days, nobody has to know...",
                 "exp": 0,
                 "weight": 2,
                 "new_cat": [
