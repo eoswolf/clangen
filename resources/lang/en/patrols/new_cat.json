@@ -4440,7 +4440,7 @@
                 "outsider_rep": 0
             },
             {
-                "text": "A loner? How interesting. p_l approaches the outsider but, before {PRONOUN/p_l/subject} can even meow out a greeting, the loner takes a swipe at {PRONOUN/p_l/object} and bolts away.",
+                "text": "A loner? How interesting. p_l approaches the outsider, but before {PRONOUN/p_l/subject} can even meow out a greeting, the loner takes a swipe at {PRONOUN/p_l/object} and bolts away.",
                 "exp": 0,
                 "weight": 10,
                 "new_cat": [
