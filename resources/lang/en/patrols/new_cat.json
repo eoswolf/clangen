@@ -4422,7 +4422,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "A loner? How interesting. p_l approaches the outsider but, before {PRONOUN/p_l/subject} can even meow out a greeting, the loner takes off, evidently startled by the c_n cat's appearance.",
+                "text": "A loner? How interesting. p_l approaches the outsider, but before {PRONOUN/p_l/subject} can even meow out a greeting, the loner takes off, evidently startled by the c_n cat's appearance.",
                 "exp": 0,
                 "weight": 20,
                 "new_cat": [
