@@ -557,11 +557,11 @@ class Events:
         healthy_hunter = [
             cat
             for cat in Cat.all_cats.values()
-            if c.status in ("warrior", "apprentice", "leader", "deputy")
-            and not c.dead
-            and not c.outside
-            and not c.exiled
-            and not c.not_working()
+            if cat.status in ("warrior", "apprentice", "leader", "deputy")
+            and not cat.dead
+            and not cat.outside
+            and not cat.exiled
+            and not cat.not_working()
         ]
 
         prey_amount = 0
@@ -690,11 +690,11 @@ class Events:
             healthy_warriors = [
                 cat
                 for cat in Cat.all_cats.values()
-                if c.status in ("warrior", "leader", "deputy")
-               and not c.dead
-               and not c.outside
-               and not c.exiled
-               and not c.not_working()
+                if cat.status in ("warrior", "leader", "deputy")
+                and not cat.dead
+                and not cat.outside
+                and not cat.exiled
+                and not cat.not_working()
             ]
             warrior_amount = len(healthy_warriors) * info_dict["prey_warrior"]
             game.clan.freshkill_pile.add_freshkill(warrior_amount)
