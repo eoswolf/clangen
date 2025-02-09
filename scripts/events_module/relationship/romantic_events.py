@@ -512,20 +512,7 @@ class RomanticEvents:
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
 
-        if breakup_type == "had_fight":
-            text = choice(RomanticEvents.BREAKUP_STRINGS["had_fight"])
-            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif breakup_type == "decided_to_be_friends":
-            text = choice(RomanticEvents.BREAKUP_STRINGS["decided_to_be_friends"])
-            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif breakup_type == "lost_feelings":
-            text = choice(RomanticEvents.BREAKUP_STRINGS["lost_feelings"])
-            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif breakup_type == "bad_breakup":
-            text = choice(RomanticEvents.BREAKUP_STRINGS["bad_breakup"])
-            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        else:
-            text = choice(RomanticEvents.BREAKUP_STRINGS["chill_breakup"])
+        text = choice(RomanticEvents.BREAKUP_STRINGS[breakup_type])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
         game.cur_events_list.append(
             Single_Event(
