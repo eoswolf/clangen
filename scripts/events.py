@@ -108,7 +108,7 @@ class Events:
         self.check_war()
 
         if (
-            game.clan.game_mode in ["expanded", "cruel season"]
+            game.clan.game_mode in ("expanded", "cruel season")
             and game.clan.freshkill_pile
         ):
             # feed the cats and update the nutrient status
@@ -252,7 +252,7 @@ class Events:
             Cat.dead_cats.clear()
 
         if (
-            game.clan.game_mode in ["expanded", "cruel season"]
+            game.clan.game_mode in ("expanded", "cruel season")
             and game.clan.freshkill_pile
         ):
             # make a notification if the Clan does not have enough prey
@@ -277,7 +277,7 @@ class Events:
             )
         )
 
-        if game.clan.game_mode in ["expanded", "cruel season"]:
+        if game.clan.game_mode in ("expanded", "cruel season"):
             amount_per_med = get_amount_cat_for_one_medic(game.clan)
             med_fulfilled = medical_cats_condition_fulfilled(
                 Cat.all_cats.values(), amount_per_med
@@ -413,7 +413,7 @@ class Events:
                     outsider_cat.exiled = True
                     outsider_cat.driven_out = True
 
-                elif info_dict["interaction_type"] in ["invite", "search"]:
+                elif info_dict["interaction_type"] in ("invite", "search"):
                     # ADD TO CLAN AND CHECK FOR KITS
                     additional_kits = outsider_cat.add_to_clan()
 
@@ -430,13 +430,13 @@ class Events:
 
                     for cat_ID in invited_cats:
                         invited_cat = Cat.fetch_cat(cat_ID)
-                        if invited_cat.status.lower() in [
+                        if invited_cat.status.lower() in (
                             "kittypet",
                             "loner",
                             "rogue",
                             "former clancat",
                             "exiled",
-                        ]:
+                        ):
                             if (
                                 "guided" in invited_cat.backstory
                                 and invited_cat.status != "exiled"
@@ -451,7 +451,7 @@ class Events:
                             ):
                                 invited_cat.status = "medicine cat"
 
-                            elif invited_cat.age in ["newborn", "kitten"]:
+                            elif invited_cat.age in ("newborn", "kitten"):
                                 invited_cat.status = invited_cat.age
                                 if not invited_cat.name.suffix:
                                     invited_cat.name = Name(
@@ -524,7 +524,7 @@ class Events:
     def mediator_events(self, cat):
         """Check for mediator events"""
         # If the cat is a mediator, check if they visited other clans
-        if cat.status in ["mediator", "mediator apprentice"] and not cat.not_working():
+        if cat.status in ("mediator", "mediator apprentice") and not cat.not_working():
             # 1/10 chance
             if not int(random.random() * 10):
                 random_cat = get_random_moon_cat(Cat, main_cat=cat)
@@ -554,16 +554,15 @@ class Events:
 
     def get_moon_freshkill(self):
         """Adding auto freshkill for the current moon."""
-        healthy_hunter = list(
-            filter(
-                lambda c: c.status in ["warrior", "apprentice", "leader", "deputy"]
-                and not c.dead
-                and not c.outside
-                and not c.exiled
-                and not c.not_working(),
-                Cat.all_cats.values(),
-            )
-        )
+        healthy_hunter = [
+            cat
+            for cat in Cat.all_cats.values()
+            if c.status in ("warrior", "apprentice", "leader", "deputy")
+            and not c.dead
+            and not c.outside
+            and not c.exiled
+            and not c.not_working()
+        ]
 
         prey_amount = 0
         for cat in healthy_hunter:
@@ -607,16 +606,15 @@ class Events:
             return
         elif game.clan.clan_settings.get("hunting"):
             # handle warrior
-            healthy_warriors = list(
-                filter(
-                    lambda c: c.status in ["warrior", "leader", "deputy"]
-                    and not c.dead
-                    and not c.outside
-                    and not c.exiled
-                    and not c.not_working(),
-                    Cat.all_cats.values(),
-                )
-            )
+            healthy_warriors = [
+                cat
+                for cat in Cat.all_cats.values()
+                if cat.status in ("warrior", "leader", "deputy")
+                and not cat.dead
+                and not cat.outside
+                and not cat.exiled
+                and not cat.not_working()
+            ]
             warrior_amount = (
                 len(healthy_warriors) * game.config["focus"]["hunting"]["warrior"]
             )
@@ -689,16 +687,15 @@ class Events:
 
             involved_cats = {"injured": [], "sick": []}
             # handle prey
-            healthy_warriors = list(
-                filter(
-                    lambda c: c.status in ["warrior", "leader", "deputy"]
-                    and not c.dead
-                    and not c.outside
-                    and not c.exiled
-                    and not c.not_working(),
-                    Cat.all_cats.values(),
-                )
-            )
+            healthy_warriors = [
+                cat
+                for cat in Cat.all_cats.values()
+                if c.status in ("warrior", "leader", "deputy")
+               and not c.dead
+               and not c.outside
+               and not c.exiled
+               and not c.not_working()
+            ]
             warrior_amount = len(healthy_warriors) * info_dict["prey_warrior"]
             game.clan.freshkill_pile.add_freshkill(warrior_amount)
             game.freshkill_event_list.append(
@@ -732,7 +729,7 @@ class Events:
                     "raid other clans"
                 ) or random.getrandbits(1):
                     status_use = cat.status
-                    if status_use in ["deputy", "leader"]:
+                    if status_use in ("deputy", "leader"):
                         status_use = "warrior"
                     chance = info_dict[f"injury_chance_{status_use}"]
                     if game.clan.clan_settings.get("raid other clans"):
@@ -810,13 +807,13 @@ class Events:
                 if (
                     cat.outside
                     and cat.status
-                    not in [
+                    not in (
                         "kittypet",
                         "loner",
                         "rogue",
                         "former Clancat",
                         "driven off",
-                    ]
+                    )
                     and not cat.exiled
                     and not cat.dead
                 ):

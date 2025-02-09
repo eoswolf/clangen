@@ -144,13 +144,13 @@ class AllegiancesScreen(Screens):
                 living_warriors.append(cat)
             elif cat.status == "mediator":
                 living_mediators.append(cat)
-            elif cat.status in [
+            elif cat.status in (
                 "apprentice",
                 "medicine cat apprentice",
                 "mediator apprentice",
-            ]:
+            ):
                 living_apprentices.append(cat)
-            elif cat.status in ["kitten", "newborn"]:
+            elif cat.status in ("kitten", "newborn"):
                 living_kits.append(cat)
             elif cat.status == "elder":
                 living_elders.append(cat)
