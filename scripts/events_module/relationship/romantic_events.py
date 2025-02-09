@@ -485,8 +485,8 @@ class RomanticEvents:
             relationship_to.dislike += 10
             relationship_from.dislike += 10
         elif decided_to_be_friends:
-            relationship_to.romantic_love -= 15
-            relationship_from.romantic_love -= 15
+            relationship_to.romantic_love -= 30
+            relationship_from.romantic_love -= 30
             relationship_from.platonic_like += 30
             relationship_to.platonic_like += 30
             relationship_from.trust += 20
@@ -501,14 +501,14 @@ class RomanticEvents:
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
         elif bad_breakup:
-            relationship_to.romantic_love -= 10
-            relationship_from.romantic_love -= 5
+            relationship_to.romantic_love -= 20
+            relationship_from.romantic_love -= 15
             relationship_from.platonic_like -= 10
-            relationship_to.platonic_like -= 10
-            relationship_from.trust -= 10
-            relationship_to.trust -= 10
-            relationship_to.comfortable -= 10
-            relationship_from.comfortable -= 10
+            relationship_to.platonic_like -= 15
+            relationship_from.trust -= 20
+            relationship_to.trust -= 25
+            relationship_to.comfortable -= 20
+            relationship_from.comfortable -= 20
             relationship_to.dislike += 10
             relationship_from.dislike += 5
 
