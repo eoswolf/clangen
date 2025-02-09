@@ -457,6 +457,7 @@ class RomanticEvents:
         decided_to_be_friends = not int(random.random() * 3)
         lost_feelings = not int(random.random() * 2)
         bad_breakup = not int(random.random() * 5)
+        chill_breakup = not int(random.random() * 5)
 
         cat_from.unset_mate(cat_to, breakup=False)
 
@@ -471,10 +472,6 @@ class RomanticEvents:
             relationship_to = cat_to.create_one_relationship(cat_from)
 
         # These are large decreases - they are to prevent becoming mates again on the same moon.
-        relationship_to.romantic_love -= 15
-        relationship_from.romantic_love -= 15
-        relationship_to.comfortable -= 10
-        relationship_from.comfortable -= 10
         if had_fight:
             relationship_to.romantic_love -= 15
             relationship_from.romantic_love -= 15
@@ -511,6 +508,11 @@ class RomanticEvents:
             relationship_from.comfortable -= 20
             relationship_to.dislike += 10
             relationship_from.dislike += 5
+        elif chill_breakup:
+            relationship_to.romantic_love -= 15
+            relationship_from.romantic_love -= 15
+            relationship_to.comfortable -= 10
+            relationship_from.comfortable -= 10
 
         if had_fight:
             text = choice(RomanticEvents.BREAKUP_STRINGS["had_fight"])
@@ -525,7 +527,8 @@ class RomanticEvents:
             text = choice(RomanticEvents.BREAKUP_STRINGS["bad_breakup"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
         else:
-            text = i18n.t("hardcoded.breakup_chill")
+            text = choice(RomanticEvents.BREAKUP_STRINGS["chill_breakup"])
+            text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
         game.cur_events_list.append(
             Single_Event(
                 text,
