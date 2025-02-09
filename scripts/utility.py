@@ -617,7 +617,7 @@ def create_new_cat_block(
             loner=cat_type in ("loner", "rogue"),
             kittypet=cat_type == "kittypet",
             other_clan=cat_type == "former Clancat",
-            kit=False if litter else status in ("kitten", "newborn"),
+            kit=(not litter) and status in ("kitten", "newborn"),
             # this is for singular kits, litters need this to be false
             litter=litter,
             backstory=chosen_backstory,
