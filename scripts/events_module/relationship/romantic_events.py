@@ -453,11 +453,9 @@ class RomanticEvents:
 
         # Determine if this is a nice breakup or a fight breakup
         # TODO - make this better
-        had_fight = not int(random.random() * 3)
-        decided_to_be_friends = not int(random.random() * 3)
-        lost_feelings = not int(random.random() * 2)
-        bad_breakup = not int(random.random() * 5)
-        chill_breakup = not int(random.random() * 5)
+        breakup_options = ["had_fight", "decided_to_be_friends", "lost_feelings", "bad_breakup", "chill_breakup"]
+        if breakup_options:
+            breakup_type = random.choice(breakup_options)
 
         cat_from.unset_mate(cat_to, breakup=False)
 
@@ -472,7 +470,7 @@ class RomanticEvents:
             relationship_to = cat_to.create_one_relationship(cat_from)
 
         # These are large decreases - they are to prevent becoming mates again on the same moon.
-        if had_fight:
+        if breakup_type == "had_fight":
             relationship_to.romantic_love -= 15
             relationship_from.romantic_love -= 15
             relationship_from.platonic_like -= 10
@@ -481,7 +479,7 @@ class RomanticEvents:
             relationship_to.trust -= 10
             relationship_to.dislike += 10
             relationship_from.dislike += 10
-        elif decided_to_be_friends:
+        elif breakup_type == "decided_to_be_friends":
             relationship_to.romantic_love -= 30
             relationship_from.romantic_love -= 30
             relationship_from.platonic_like += 30
@@ -490,14 +488,14 @@ class RomanticEvents:
             relationship_to.trust += 20
             relationship_to.comfortable += 5
             relationship_from.comfortable += 5
-        elif lost_feelings:
+        elif breakup_type == "lost_feelings":
             relationship_to.romantic_love -= 30
             relationship_from.romantic_love -= 30
             relationship_from.platonic_like -= 10
             relationship_to.platonic_like -= 10
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
-        elif bad_breakup:
+        elif breakup_type == "bad_breakup":
             relationship_to.romantic_love -= 20
             relationship_from.romantic_love -= 15
             relationship_from.platonic_like -= 10
@@ -508,22 +506,22 @@ class RomanticEvents:
             relationship_from.comfortable -= 20
             relationship_to.dislike += 10
             relationship_from.dislike += 5
-        elif chill_breakup:
+        elif breakup_type == "chill_breakup":
             relationship_to.romantic_love -= 15
             relationship_from.romantic_love -= 15
             relationship_to.comfortable -= 10
             relationship_from.comfortable -= 10
 
-        if had_fight:
+        if breakup_type == "had_fight":
             text = choice(RomanticEvents.BREAKUP_STRINGS["had_fight"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif decided_to_be_friends:
+        elif breakup_type == "decided_to_be_friends":
             text = choice(RomanticEvents.BREAKUP_STRINGS["decided_to_be_friends"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif lost_feelings:
+        elif breakup_type == "lost_feelings":
             text = choice(RomanticEvents.BREAKUP_STRINGS["lost_feelings"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
-        elif bad_breakup:
+        elif breakup_type == "bad_breakup":
             text = choice(RomanticEvents.BREAKUP_STRINGS["bad_breakup"])
             text = event_text_adjust(Cat, text, main_cat=cat_from, random_cat=cat_to)
         else:
