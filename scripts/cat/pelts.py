@@ -2,10 +2,6 @@ import random
 from random import choice
 from re import sub
 
-from typing import (
-    Sequence
-)
-
 import i18n
 
 from scripts.cat.sprites import sprites
