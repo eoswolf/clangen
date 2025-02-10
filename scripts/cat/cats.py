@@ -2153,6 +2153,14 @@ class Cat:
         """Returns true if the cat have permanent condition"""
         return len(self.permanent_condition) > 0
 
+    def available_to_work(self):
+        return (
+            not self.dead
+            and not self.outside
+            and not self.exiled
+            and not self.not_working()
+        )
+
     def contact_with_ill_cat(self, cat: Cat):
         """handles if one cat had contact with an ill cat"""
 

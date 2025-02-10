@@ -205,15 +205,13 @@ def get_random_moon_cat(
     random_cat = None
 
     # grab list of possible random cats
-    possible_r_c = list(
-        filter(
-            lambda c: not c.dead
-                      and not c.exiled
-                      and not c.outside
-                      and (c.ID != main_cat.ID),
-            Cat.all_cats.values(),
-        )
-    )
+    possible_r_c = [
+        cat for cat in Cat.all_cats.values()
+        if not cat.dead
+        and not cat.exiled
+        and not cat.outside
+        and (cat.ID != main_cat.ID)
+    ]
 
     if possible_r_c:
         random_cat = choice(possible_r_c)

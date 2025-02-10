@@ -188,17 +188,12 @@ class Events:
                 )
 
                 if len(ghost_names) > 2:
-                    alive_cats = list(
-                        filter(
-                            lambda kitty: (
-                                kitty.status != "leader"
-                                and not kitty.dead
-                                and not kitty.outside
-                                and not kitty.exiled
-                            ),
-                            Cat.all_cats.values(),
-                        )
-                    )
+                    alive_cats = [
+                        kitty for kitty in Cat.all_cats.values()
+                        if not kitty.dead
+                        and not kitty.outside
+                        and not kitty.exiled
+                    ]
                     # finds a percentage of the living Clan to become shaken
 
                     if len(alive_cats) == 0:
@@ -558,10 +553,7 @@ class Events:
             cat
             for cat in Cat.all_cats.values()
             if cat.status in ("warrior", "apprentice", "leader", "deputy")
-            and not cat.dead
-            and not cat.outside
-            and not cat.exiled
-            and not cat.not_working()
+            and cat.available_to_work()
         ]
 
         prey_amount = 0
@@ -607,29 +599,20 @@ class Events:
         elif game.clan.clan_settings.get("hunting"):
             # handle warrior
             healthy_warriors = [
-                cat
-                for cat in Cat.all_cats.values()
+                cat for cat in Cat.all_cats.values()
                 if cat.status in ("warrior", "leader", "deputy")
-                and not cat.dead
-                and not cat.outside
-                and not cat.exiled
-                and not cat.not_working()
+                and cat.available_to_work()
             ]
             warrior_amount = (
                 len(healthy_warriors) * game.config["focus"]["hunting"]["warrior"]
             )
 
             # handle apprentices
-            healthy_apprentices = list(
-                filter(
-                    lambda c: c.status == "apprentice"
-                    and not c.dead
-                    and not c.outside
-                    and not c.exiled
-                    and not c.not_working(),
-                    Cat.all_cats.values(),
-                )
-            )
+            healthy_apprentices = [
+                cat for cat in Cat.all_cats.values()
+                if cat.status == "apprentice"
+                and cat.available_to_work()
+            ]
             app_amount = (
                 len(healthy_apprentices) * game.config["focus"]["hunting"]["apprentice"]
             )
@@ -688,13 +671,9 @@ class Events:
             involved_cats = {"injured": [], "sick": []}
             # handle prey
             healthy_warriors = [
-                cat
-                for cat in Cat.all_cats.values()
-                if cat.status in ("warrior", "leader", "deputy")
-                and not cat.dead
-                and not cat.outside
-                and not cat.exiled
-                and not cat.not_working()
+                cat for cat in Cat.all_cats.values()
+                if cat.available_to_work()
+                and cat.status in ("warrior", "leader", "deputy")
             ]
             warrior_amount = len(healthy_warriors) * info_dict["prey_warrior"]
             game.clan.freshkill_pile.add_freshkill(warrior_amount)
@@ -703,16 +682,10 @@ class Events:
             )
 
             # handle herbs
-            healthy_meds = list(
-                filter(
-                    lambda c: c.status == "medicine cat"
-                    and not c.dead
-                    and not c.outside
-                    and not c.exiled
-                    and not c.not_working(),
-                    Cat.all_cats.values(),
-                )
-            )
+            healthy_meds = [
+                cat for cat in Cat.all_cats.values()
+                if cat.available_to_work() and cat.status == "medicine cat"
+            ]
 
             herb_focus_text = game.clan.herb_supply.handle_focus(healthy_meds)
 
@@ -1848,14 +1821,10 @@ class Events:
         """
         chance = 200
 
-        alive_cats = list(
-            filter(
-                lambda kitty: (
-                    kitty.status != "leader" and not kitty.dead and not kitty.outside
-                ),
-                Cat.all_cats.values(),
-            )
-        )
+        alive_cats = [
+            kitty for kitty in Cat.all_cats.values()
+            if kitty.status != "leader" and not kitty.dead and not kitty.outside
+        ]
 
         clan_size = len(alive_cats)
 
@@ -2175,23 +2144,17 @@ class Events:
             return
 
         # check how many kitties are already ill
-        already_sick = list(
-            filter(
-                lambda kitty: (not kitty.dead and not kitty.outside and kitty.is_ill()),
-                Cat.all_cats.values(),
-            )
-        )
+        already_sick = [
+            kitty for kitty in Cat.all_cats.values()
+            if not kitty.dead and not kitty.outside and kitty.is_ill()
+        ]
         already_sick_count = len(already_sick)
 
         # round up the living kitties
-        alive_cats = list(
-            filter(
-                lambda kitty: (
-                    not kitty.dead and not kitty.outside and not kitty.is_ill()
-                ),
-                Cat.all_cats.values(),
-            )
-        )
+        alive_cats = [
+            kitty for kitty in Cat.all_cats.values()
+            if not kitty.dead and not kitty.outside and not kitty.is_ill()
+        ]
         alive_count = len(alive_cats)
 
         # if large amount of the population is already sick, stop spreading
@@ -2225,16 +2188,11 @@ class Events:
 
                 if illness == "kittencough":
                     # adjust alive cats list to only include kittens
-                    alive_cats = list(
-                        filter(
-                            lambda kitty: (
-                                kitty.status in ["kitten", "newborn"]
-                                and not kitty.dead
-                                and not kitty.outside
-                            ),
-                            Cat.all_cats.values(),
-                        )
-                    )
+                    alive_cats = [
+                        kitty for kitty in Cat.all_cats.values()
+                        if kitty.status in ("kitten", "newborn")
+                        and not kitty.dead and not kitty.outside
+                    ]
                     alive_count = len(alive_cats)
 
                 max_infected = int(alive_count / 2)  # 1/2 of alive cats
