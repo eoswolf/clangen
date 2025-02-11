@@ -190,6 +190,12 @@ class HandleShortEvents:
             self.handle_mass_death()
             if len(self.multi_cat) <= 2:
                 return
+            
+        # remove cats from involved_cats if theyre supposed to be
+        if self.chosen_event.r_c and "r_c" in self.chosen_event.exclude_involved:
+            self.involved_cats.remove(self.random_cat.ID)
+        if "m_c" in self.chosen_event.exclude_involved:
+            self.involved_cats.remove(self.main_cat.ID)
 
         # create new cats (must happen here so that new cats can be included in further changes)
         self.handle_new_cats()
