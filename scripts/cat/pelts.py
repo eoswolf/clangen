@@ -177,7 +177,7 @@ class Pelt:
         "GREENYELLOW",
         "BRONZE",
         "SILVER",
-        "ORANGE"
+        "ORANGE",
     ]
     yellow_eyes = [
         "YELLOW",
@@ -188,7 +188,7 @@ class Pelt:
         "GREENYELLOW",
         "BRONZE",
         "SILVER",
-        "ORANGE"
+        "ORANGE",
     ]
     blue_eyes = [
         "BLUE",
@@ -507,7 +507,7 @@ class Pelt:
         "GREENYELLOW",
         "BRONZE",
         "SILVER",
-        "ORANGE"
+        "ORANGE",
     ]
     little_white = [
         "LITTLE",
@@ -1664,7 +1664,7 @@ def _describe_torties(cat, color_name, short=False) -> [str, str]:
             "rosette",
             "speckled",
         ]:
-            base = f"cat.pelts.{base}_long"  # the extra space is intentional
+            base = f"cat.pelts.{cat.pelt.tortiebase.capitalize()}_long"  # the extra space is intentional
         else:
             base = ""
         return base, color_name
@@ -1707,7 +1707,9 @@ def unpack_appearance_ruleset(cat, rule, short, pelt, color):
             for scar in cat.pelt.scars:
                 if scar in _scar_details:
                     scarlist.append(i18n.t(f"cat.pelts.{scar}"))
-            return adjust_list_text(list(set(scarlist))) if len(scarlist) > 0 else "" # note: this doesn't preserve order!
+            return (
+                adjust_list_text(list(set(scarlist))) if len(scarlist) > 0 else ""
+            )  # note: this doesn't preserve order!
     else:
         raise Exception(f"Unmatched ruleset item {rule} in describe_appearance!")
     return ""

@@ -1068,7 +1068,9 @@ class LeaderDenScreen(Screens):
             },
         )
 
-        self.handle_outsider_interaction(action)
+        # because our groups are "hunt", "search", "invite" and "drive"
+        # we remove the descriptor ("hunt_down", "drive_off", "invite_in")
+        self.handle_outsider_interaction(action.split("_")[0])
 
     def handle_outsider_interaction(self, action):
         """
