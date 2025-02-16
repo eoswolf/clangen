@@ -25,7 +25,7 @@
 		"m_c realizes that {PRONOUN/m_c/subject} {VERB/m_c/don't/doesn't} have the mentality to keep a romantic relationship right now. After a little talk with r_c, they have decided to break up."
 	],
 	"bad_breakup":[
-		"Out of the blue, m_c bluntly tells r_c that {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} interested in {PRONOUN/r_c/object} anymore, so {PRONOUN/m_c/subject} calls off their relationship and r_c walks away heartbroken and confused.",
+		"Out of the blue, m_c bluntly tells r_c that {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} interested in {PRONOUN/r_c/object} anymore, so {PRONOUN/m_c/subject} {VERB/m_c/call/calls} off their relationship and r_c walks away heartbroken and confused.",
             	"Some relationships turn out good, some don't, but for m_c and r_c's relationship, things really didn't turn out so well. They've broken up.", 
             	"Things have become tense and sour in m_c and r_c’s relationship. They decided to break up before any fight breaks out between them.",
 		"r_c broke up with m_c and m_c hasn’t been quite the same since r_c left {PRONOUN/m_c/object}, refusing participate in clan duties with {PRONOUN/r_c/object} or eat while {PRONOUN/r_c/subject}{VERB/r_c/‘re/‘s} eating. m_c's trying really hard to get over {PRONOUN/r_c/object}, but can't. Break ups can be very hard sometimes…"
