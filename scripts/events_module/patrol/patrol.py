@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: ascii -*-
 import random
-import re
 from copy import deepcopy
 from itertools import repeat
 from os.path import exists as path_exists
@@ -16,9 +15,9 @@ from scripts.cat.cats import Cat
 from scripts.cat.enums import CatAgeEnum
 from scripts.clan import Clan
 from scripts.game_structure.game_essentials import game
+from scripts.events_module.event_filters import event_for_tags
 from scripts.events_module.patrol.patrol_event import PatrolEvent
 from scripts.events_module.patrol.patrol_outcome import PatrolOutcome
-from scripts.special_dates import get_special_date, contains_special_date_tag
 from scripts.utility import (
     get_personality_compatibility,
     check_relationship_value,
@@ -28,7 +27,6 @@ from scripts.utility import (
     filter_relationship_type,
     get_special_snippet_list,
     adjust_list_text,
-    get_alive_status_cats,
 )
 from scripts.game_structure.localization import load_lang_resource
 
@@ -554,7 +552,6 @@ class Patrol:
     ):
         filtered_patrols = []
         romantic_patrols = []
-        special_date = get_special_date()
         # This make sure general only gets hunting, border, or training patrols
         # chose fix type will make it not depending on the content amount
         if patrol_type == "general":
@@ -574,11 +571,6 @@ class Patrol:
             ):
                 continue
 
-            # filtering for dates
-            if contains_special_date_tag(patrol.tags):
-                if not special_date or special_date.patrol_tag not in patrol.tags:
-                    continue
-
             if not (patrol.min_cats <= len(self.patrol_cats) <= patrol.max_cats):
                 continue
 
@@ -594,27 +586,7 @@ class Patrol:
             if flag:
                 continue
 
-            flag = False
-            for _tag in patrol.tags:
-                rank_match = re.match(r"clan:(.+)", _tag)
-                if not rank_match:
-                    continue
-                ranks = [x for x in rank_match.group(1).split(",")]
-
-                for rank in ranks:
-                    if rank == "apps":
-                        if not get_alive_status_cats(
-                                Cat,
-                                ["apprentice", "medicine cat apprentice", "mediator apprentice"]):
-                            flag = True
-                        else:
-                            continue
-
-                    if rank in ["leader", "deputy"] and not get_alive_status_cats(Cat, [rank]):
-                        flag = True
-                    elif not len(get_alive_status_cats(Cat, [rank])) >= 2:
-                        flag = True
-            if flag:
+            if not event_for_tags(patrol.tags, Cat):
                 continue
 
             if biome not in patrol.biome and "any" not in patrol.biome:
@@ -632,11 +604,6 @@ class Patrol:
                 continue
             elif "herb_gathering" not in patrol.types and patrol_type == "med":
                 continue
-
-            # cruel season tag check
-            if "cruel_season" in patrol.tags:
-                if game.clan and game.clan.game_mode != "cruel_season":
-                    continue
 
             if "romantic" in patrol.tags:
                 romantic_patrols.append(patrol)
