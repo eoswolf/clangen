@@ -612,6 +612,8 @@ class Patrol:
 
                     if rank in ["leader", "deputy"] and not get_alive_status_cats(Cat, [rank]):
                         flag = True
+                    elif not len(get_alive_status_cats(Cat, [rank])) >= 2:
+                        flag = True
             if flag:
                 continue
 
