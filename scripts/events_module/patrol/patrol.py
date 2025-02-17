@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: ascii -*-
 import random
+import re
 from copy import deepcopy
 from itertools import repeat
 from os.path import exists as path_exists
@@ -27,6 +28,7 @@ from scripts.utility import (
     filter_relationship_type,
     get_special_snippet_list,
     adjust_list_text,
+    get_alive_status_cats,
 )
 from scripts.game_structure.localization import load_lang_resource
 
@@ -589,6 +591,27 @@ class Patrol:
                 if not (num[0] <= self.patrol_statuses.get(sta, -1) <= num[1]):
                     flag = True
                     break
+            if flag:
+                continue
+
+            flag = False
+            for _tag in patrol.tags:
+                rank_match = re.match(r"clan:(.+)", _tag)
+                if not rank_match:
+                    continue
+                ranks = [x for x in rank_match.group(1).split(",")]
+
+                for rank in ranks:
+                    if rank == "apps":
+                        if not get_alive_status_cats(
+                                Cat,
+                                ["apprentice", "medicine cat apprentice", "mediator apprentice"]):
+                            flag = True
+                        else:
+                            continue
+
+                    if rank in ["leader", "deputy"] and not get_alive_status_cats(Cat, [rank]):
+                        flag = True
             if flag:
                 continue
 
