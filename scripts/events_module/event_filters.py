@@ -102,7 +102,8 @@ def event_for_tags(tags: list, cat, other_cat=None) -> bool:
 
             if rank in ["leader", "deputy"] and not get_alive_status_cats(cat, [rank]):
                 return False
-            elif not len(get_alive_status_cats(cat, [rank])) >= 2:
+            
+            if rank not in ["leader", "deputy"] and not len(get_alive_status_cats(cat, [rank])) >= 2:
                 return False
     
     special_date = get_special_date()
