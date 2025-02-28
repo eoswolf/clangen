@@ -2731,7 +2731,7 @@
             ]
         },
         {
-            "text": "As p_l investigates the new tunnel, its owner comes snuffling through the grass. app1 calls out, but p_l has {PRONOUN/p_l/poss} head down the burrow, and app1 runs in instead, distracting the badger, jumping on its back with claws stretched out. It saves p_l's life. It costs app1 {PRONOUN/app1/poss}s.",
+            "text": "As p_l investigates the new tunnel, its owner comes snuffling through the grass. app1 calls out, but p_l has {PRONOUN/p_l/poss} head down the burrow, and app1 runs in instead, distracting the badger, jumping on its back with claws stretched out. It saves p_l's life. It costs app1 {PRONOUN/app1/poss}.",
             "exp": 0,
             "weight": 20,
             "art": "gen_dead_cat_app_ghost_EXPLICIT",
