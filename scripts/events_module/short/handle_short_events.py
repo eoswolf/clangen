@@ -807,7 +807,7 @@ class HandleShortEvents:
 
         # adjust entire herb store
         if supply_type == "all_herb":
-            for herb, count in herb_supply.entire_supply.items():
+            for herb, count in herb_supply.entire_supply.copy():
                 herb_list.append(herb)
                 if adjustment == "reduce_full":
                     herb_supply.remove_herb(herb, count)
@@ -819,7 +819,7 @@ class HandleShortEvents:
                     herb_supply.remove_herb(herb, count / 8)
                 elif "increase" in adjustment:
                     herb_supply.add_herb(herb, adjustment.split("_")[1])
-            print("Ran without crashing yay")
+            print("all_herb ran without crashing.")
 
         # if we weren't adjusted the whole herb store, then adjust an individual
         else:
