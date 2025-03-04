@@ -742,7 +742,7 @@
         "chance_of_success": 30,
         "success_outcomes": [
             {
-                "text": "p_l thinks {PRONOUN/p_l/subject} knows what to expect as {PRONOUN/p_l/subject} urges {PRONOUN/p_l/poss} patrol forward, towards the noise. Yet, {PRONOUN/p_l/subject} {VERB/p_l/are/is} shocked to find a pack of wild dogs feasting on an animal big enough to feed c_n for six moons. The cats stare in awe for a moment before r_c orders them to leave; if these animals can take down a beast like that, what's stopping the creatures from killing them, too?",
+                "text": "p_l thinks {PRONOUN/p_l/subject} {VERB/p_l/know/knows} what to expect as {PRONOUN/p_l/subject} {VERB/p_l/urge/urges} {PRONOUN/p_l/poss} patrol forward towards the noise, yet {PRONOUN/p_l/subject} {VERB/p_l/are/is} shocked to find a pack of wild dogs feasting on an animal big enough to feed c_n for six moons. The cats stare in awe for a moment before r_c orders them to leave; if these animals can take down a beast like that, what's stopping the creatures from killing them, too?",
                 "exp": 10,
                 "weight": 5,
                 "relationships": [
