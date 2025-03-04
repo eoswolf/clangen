@@ -763,7 +763,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "p_l instructs {PRONOUN/p_l/poss} cats forward, nearing the noise rather quickly. The group strides out in front of a wild dog, the creature yipping excitably. Before any of them can react, another one leaps from the right, then the left.. They're surrounded, hollers and yips deafening them as they try, and failed, to escape. A gaggle of cats are no match for hungry canines.",
+                "text": "p_l instructs {PRONOUN/p_l/poss} cats forward, nearing the noise rather quickly. The group strides out in front of a wild dog, the creature yipping excitably. Before any of them can react, another one leaps from the right, then the left... They're surrounded, hollers and yips deafening them as they try and fail to escape. A gaggle of cats are no match for hungry canines.",
                 "exp": 0,
                 "weight": 5,
                 "dead_cats": ["patrol"],
