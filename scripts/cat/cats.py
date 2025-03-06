@@ -28,7 +28,8 @@ from scripts.conditions import (
     Injury,
     PermanentCondition,
     get_amount_cat_for_one_medic,
-    medical_cats_condition_fulfilled,
+    medicine_cats_can_cover_clan,
+    amount_clanmembers_covered,
 )
 from scripts.event_class import Single_Event
 from scripts.events_module.generate_events import GenerateEvents
@@ -1851,7 +1852,7 @@ class Cat:
 
         amount_per_med = get_amount_cat_for_one_medic(game.clan)
 
-        if medical_cats_condition_fulfilled(Cat.all_cats.values(), amount_per_med):
+        if medicine_cats_can_cover_clan(Cat.all_cats.values(), amount_per_med):
             duration = med_duration
         if severity != "minor":
             duration += randrange(-1, 1)
@@ -1919,7 +1920,7 @@ class Cat:
         med_duration = injury["medicine_duration"]
 
         injury_severity = injury["severity"] if severity == "default" else severity
-        if medical_cats_condition_fulfilled(
+        if medicine_cats_can_cover_clan(
             Cat.all_cats.values(), get_amount_cat_for_one_medic(game.clan)
         ):
             duration = med_duration
