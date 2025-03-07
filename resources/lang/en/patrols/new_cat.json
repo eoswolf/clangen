@@ -4480,7 +4480,7 @@
                 "outsider_rep": 0
             },
             {
-                "text": "p_l never planned for things to happen like this, but when {PRONOUN/p_l/subject} {VERB/p_l/approach/approaches} the loner and {PRONOUN/p_l/begin/begins} talking with {PRONOUN/n_c:0/object}, {PRONOUN/p_l/subject} can't help but feel intrigued by the life the other young cat leads. Perhaps it would do {PRONOUN/p_l/object} good to experience what the world has to offer outside of c_n...",
+                "text": "p_l never planned for things to happen like this, but when {PRONOUN/p_l/subject} {VERB/p_l/approach/approaches} the loner and {VERB/p_l/begin/begins} talking with {PRONOUN/n_c:0/object}, {PRONOUN/p_l/subject} can't help but feel intrigued by the life the other young cat leads. Perhaps it would do {PRONOUN/p_l/object} good to experience what the world has to offer outside of c_n...",
                 "exp": 0,
                 "weight": 5,
                 "new_cat": [
