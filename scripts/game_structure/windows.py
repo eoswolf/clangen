@@ -1467,7 +1467,6 @@ class UpdateAvailablePopup(UIWindow):
         return super().process_event(event)
 
     def announce_restart_callback(self):
-        self.x.kill()
         y = AnnounceRestart(game.switches["cur_screen"])
         y.update(1)
 
