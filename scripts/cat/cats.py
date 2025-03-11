@@ -520,6 +520,7 @@ class Cat:
 
     @property
     def history(self) -> History:
+        """load history if it is None"""
         if self._history is None:
             self.load_history()
         return self._history
