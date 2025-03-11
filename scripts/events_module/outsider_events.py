@@ -45,7 +45,6 @@ class OutsiderEvents:
                         "m_c died while being lost and trying to get back to the Clan."
                     )
 
-                cat.load_history()
                 cat.history.add_death(death_text=death_history)
                 cat.die()
                 game.cur_events_list.append(

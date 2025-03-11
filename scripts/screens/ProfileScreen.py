@@ -529,7 +529,6 @@ class ProfileScreen(Screens):
         """Rebuild builds the cat profile. Run when you switch cats
         or for changes in the profile."""
         self.the_cat = Cat.all_cats.get(game.switches["cat"])
-        self.the_cat.load_history()
 
         # use these attributes to create differing profiles for StarClan cats etc.
         is_sc_instructor = False

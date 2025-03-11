@@ -175,7 +175,6 @@ class Condition_Events:
 
             event = event_text_adjust(Cat, event.strip(), main_cat=cat)
 
-            cat.load_history()
 
             if cat.status == "leader":
                 history_event = history_event.replace("m_c ", "").replace(".", "")
@@ -589,7 +588,6 @@ class Condition_Events:
 
                 event = event_text_adjust(Cat, event, main_cat=cat)
 
-                cat.load_history()
 
                 if cat.status == "leader":
                     event = event + " " + get_leader_life_notice()
@@ -612,7 +610,6 @@ class Condition_Events:
 
             # heal the cat
             elif cat.healed_condition is True:
-                cat.load_history()
                 cat.history.remove_possible_history(illness)
                 game.switches["skip_conditions"].append(illness)
                 # gather potential event strings for healed illness
@@ -676,7 +673,6 @@ class Condition_Events:
             if skipped:
                 continue
 
-            cat.load_history()
 
             if cat.dead or (
                 cat.status == "leader" and starting_life_count != game.clan.leader_lives
@@ -703,7 +699,6 @@ class Condition_Events:
 
                 event = event_text_adjust(Cat, event, main_cat=cat)
 
-                cat.load_history()
 
                 if cat.status == "leader":
                     event = event + " " + get_leader_life_notice()
@@ -887,7 +882,6 @@ class Condition_Events:
                     )
                 event_list.append(event)
 
-                cat.load_history()
 
                 if cat.status == "leader":
                     cat.history.add_death(

@@ -109,7 +109,6 @@ class HandleShortEvents:
         # checking if a murder reveal should happen
         if event_type == "misc":
             self.victim_cat = None
-            self.main_cat.load_history()
             cat_history = self.main_cat.history.murder
             if cat_history:
                 if "is_murderer" in cat_history:
@@ -528,7 +527,6 @@ class HandleShortEvents:
             if "m_c" in block["cats"]:
                 # death history
                 if self.chosen_event.m_c["dies"]:
-                    self.main_cat.load_history()
 
                     # find history
                     if self.main_cat.status == "leader":
@@ -570,7 +568,6 @@ class HandleShortEvents:
             if "r_c" in block["cats"]:
                 # death history
                 if self.chosen_event.r_c["dies"]:
-                    self.random_cat.load_history()
 
                     if self.random_cat.status == "leader":
                         death_history = history_text_adjust(
@@ -603,7 +600,6 @@ class HandleShortEvents:
             # multi_cat history
             if "multi_cat" in block["cats"]:
                 for cat in self.multi_cat:
-                    cat.load_history()
 
                     if cat.status == "leader":
                         death_history = history_text_adjust(
@@ -709,7 +705,6 @@ class HandleShortEvents:
                     history_text = history_text_adjust(
                         block["scar"], self.other_clan_name, game.clan, self.random_cat
                     )
-                    cat.load_history()
                     cat.history.add_scar(history_text)
                     break
         else:

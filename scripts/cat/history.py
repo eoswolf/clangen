@@ -400,8 +400,6 @@ class History:
         """
         if not game.clan:
             return
-        victim.load_history()
-        murderer.load_history()
         if "is_murderer" not in murderer.history.murder:
             murderer.history.murder["is_murderer"] = []
         if 'is_victim' not in victim.history.murder:
@@ -517,8 +515,6 @@ class History:
         :param murder_index: Index of the murder"""
 
         victim = cat_class.fetch_cat(victim)
-        murderer.load_history()
-        victim.load_history()
         murder_history = murderer.history.murder
         victim_history = victim.history.murder
 

@@ -63,9 +63,6 @@ class Relationship:
         self.jealousy = jealousy
         self.trust = trust
 
-        cat_from.load_history()
-        cat_to.load_history()
-
     def link_relationship(self):
         """Add the other relationship object to this easily access and change the other side."""
         if self.cat_from.ID in self.cat_to.relationships:

@@ -202,7 +202,6 @@ class Scar_Events:
                 return None, None
 
             # If we've reached this point, we can move forward with giving history.
-            cat.load_history()
             cat.history.add_scar(
                 i18n.t(
                     "cat.history.scar_from_injury",

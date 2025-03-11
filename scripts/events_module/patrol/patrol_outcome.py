@@ -885,14 +885,12 @@ class PatrolOutcome:
                 )
                 affect_skills = cat.skills.mentor_influence(mentor)
                 if affect_personality:
-                    cat.load_history()
 
                     cat.history.add_facet_mentor_influence(
                         mentor.ID, affect_personality[0], affect_personality[1]
                     )
                     print(str(cat.name), affect_personality)
                 if affect_skills:
-                    cat.load_history()
 
                     cat.history.add_skill_mentor_influence(
                         affect_skills[0], affect_skills[1], affect_skills[2]
@@ -948,7 +946,6 @@ class PatrolOutcome:
                 else history_text.replace("o_c_n", f"{str(patrol.other_clan.name)}Clan")
             )
 
-            cat.load_history()
             cat.history.add_scar(history_text)
         else:
             print("WARNING: Scar occured, but scar history is missing")
@@ -994,7 +991,6 @@ class PatrolOutcome:
                 else history_scar.replace("o_c_n", f"{str(patrol.other_clan.name)}Clan")
             )
 
-        cat.load_history()
 
         cat.history.add_possible_history(condition=condition, death_text=final_death_history, scar_text=history_scar)
 
@@ -1019,5 +1015,4 @@ class PatrolOutcome:
                 "o_c_n", f"{str(patrol.other_clan.name)}Clan"
             )
 
-        cat.load_history()
         cat.history.add_death(death_text=final_death_history)

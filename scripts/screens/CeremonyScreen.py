@@ -30,7 +30,6 @@ class CeremonyScreen(Screens):
         self.show_mute_buttons()
 
         self.the_cat = Cat.all_cats.get(game.switches["cat"])
-        self.the_cat.load_history()
 
         if self.the_cat.status == "leader":
             self.header = pygame_gui.elements.UITextBox(

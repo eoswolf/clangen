@@ -699,7 +699,6 @@ class GroupEvents:
 
             if possible_death or possible_scar:
                 for condition in injuries:
-                    injured_cat.load_history()
 
                     injured_cat.history.add_possible_history(condition, death_text=possible_death,
                                                              scar_text=possible_scar)

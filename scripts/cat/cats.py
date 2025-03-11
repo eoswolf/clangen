@@ -144,7 +144,7 @@ class Cat:
         :param kwargs: TODO what are the possible args here? ["biome", ]
         """
 
-        self.history = None
+        self._history = None
 
         if (
             faded
@@ -217,8 +217,6 @@ class Cat:
 
         self.specsuffix_hidden = specsuffix_hidden
         self.inheritance = None
-
-        self.history = None
 
         # setting ID
         if ID is None:
@@ -518,6 +516,17 @@ class Cat:
             # possibly old-style pronouns
             self._pronouns[i18n.config.get("locale")] = val
             return
+
+
+    @property
+    def history(self) -> History:
+        if self._history is None:
+            self.load_history()
+        return self._history
+
+    @history.setter
+    def history(self, val: History):
+        self._history = val
 
     def get_genderalign_string(self):
         # translate it if it's default
@@ -860,7 +869,6 @@ class Cat:
         are coming with them."""
         self.outside = False
         if not self.exiled:
-            self.load_history()
             self.history.add_beginning()
         self.exiled = False
         game.clan.add_to_clan(self)
@@ -877,7 +885,6 @@ class Cat:
                 and child.moons < 12
             ):
                 child.add_to_clan()
-                child.load_history()
                 child.history.add_beginning()
                 ids.append(child_id)
 
@@ -954,7 +961,6 @@ class Cat:
         """Updates trait and skill upon ceremony"""
 
         if self.status in ["warrior", "medicine cat", "mediator"]:
-            self.load_history()
 
             # Give a couple doses of mentor influence:
             if mentor:
@@ -1026,7 +1032,7 @@ class Cat:
 
     def load_history(self):
         """Load this cat's history"""
-        if self.history:
+        if self._history:
             return
 
         try:
@@ -1042,7 +1048,7 @@ class Cat:
         cat_history_directory = history_directory + self.ID + "_history.json"
 
         if not os.path.exists(cat_history_directory):
-            self.history = History(
+            self._history = History(
                 beginning={},
                 mentor_influence={},
                 app_ceremony={},
@@ -1057,7 +1063,7 @@ class Cat:
         try:
             with open(cat_history_directory, "r", encoding="utf-8") as read_file:
                 history_data = ujson.loads(read_file.read())
-                self.history = History(
+                self._history = History(
                     beginning=(
                         history_data["beginning"] if "beginning" in history_data else {}
                     ),
@@ -1093,7 +1099,7 @@ class Cat:
                     cat=self
                 )
         except Exception:
-            self.history = None
+            self._history = None
             print(
                 f"WARNING: There was an error reading the history file of cat #{self} or their history file was "
                 f"empty. Default history info was given. Close game without saving if you have save information "

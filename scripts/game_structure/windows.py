@@ -1048,7 +1048,6 @@ class KillCat(UIWindow):
             resizable=False,
         )
 
-        cat.load_history()
 
         self.the_cat = cat
         self.take_all = False
@@ -1211,7 +1210,6 @@ class KillCat(UIWindow):
                         game.clan.leader_lives -= 1
 
                 self.the_cat.die()
-                self.the_cat.load_history()
                 self.the_cat.history.add_death(death_message)
                 update_sprite(self.the_cat)
                 game.all_screens["profile screen"].exit_screen()
