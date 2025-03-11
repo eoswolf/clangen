@@ -1,4 +1,5 @@
 import os
+import platform
 import shutil
 import subprocess
 import threading
@@ -1427,10 +1428,21 @@ class UpdateAvailablePopup(UIWindow):
     def process_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.continue_button:
-                self.x = UpdateWindow(
-                    game.switches["cur_screen"], self.announce_restart_callback
-                )
-                self.kill()
+                # For the time being, we're not going to install the update ourselves.
+                # The auto-updater will take some time to be fully rewritten, so it's best we
+                # don't offer people a broken install option.
+
+                url = "https://clangen.io/download"
+
+                if get_version_info().is_dev():
+                    url = "https://clangen.io/download-development"
+
+                if platform.system() == "Darwin":
+                    subprocess.Popen(["open", "-u", url])
+                elif platform.system() == "Windows":
+                    os.system(f"start \"\" {url}")
+                elif platform.system() == "Linux":
+                    subprocess.Popen(["xdg-open", url])
             elif (
                 event.ui_element == self.close_button
                 or event.ui_element == self.cancel_button
@@ -1455,7 +1467,6 @@ class UpdateAvailablePopup(UIWindow):
         return super().process_event(event)
 
     def announce_restart_callback(self):
-        self.x.kill()
         y = AnnounceRestart(game.switches["cur_screen"])
         y.update(1)
 
