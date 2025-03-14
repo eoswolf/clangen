@@ -775,7 +775,7 @@ class Events:
             for condition_type, value in involved_cats.items():
                 game.cur_events_list.append(
                     Single_Event(
-                        i18n.t(text_snippet, condition=condition_type, count=value),
+                        i18n.t(text_snippet, condition=condition_type, count=len(value)),
                         "health",
                         value,
                     )
