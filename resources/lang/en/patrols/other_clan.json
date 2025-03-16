@@ -468,7 +468,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "p_l starts to step over the border but a hiss stops {PRONOUN/p_l/object} in {PRONOUN/p_l/poss} tracks. A o_c_n patrol is running {PRONOUN/p_l/poss} way. They force {PRONOUN/p_l/poss} fur to lie flat as the patrol approaches and swiftly blurt out that {PRONOUN/p_l/subject}{VERB/p_l/'re/'s} a medicine cat. One of the warrior snarls that they can't spare any herbs for other Clans and p_l needs to leave. They oblige quickly.",
+                "text": "p_l starts to step over the border but a hiss stops {PRONOUN/p_l/object} in {PRONOUN/p_l/poss} tracks. A o_c_n patrol is running {PRONOUN/p_l/poss} way. They force {PRONOUN/p_l/poss} fur to lie flat as the patrol approaches and swiftly blurt out that {PRONOUN/p_l/subject}{VERB/p_l/'re/'s} a medicine cat. One of the warrior snarls that they can't spare any herbs for other Clans and p_l needs to leave. {PRONOUN/p_l/subject} {VERB/p_l/oblige/obliges} quickly.",
                 "exp": 0,
                 "weight": 20,
                 "other_clan_rep": -1
