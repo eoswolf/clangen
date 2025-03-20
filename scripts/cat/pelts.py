@@ -1233,9 +1233,11 @@ class Pelt:
             acc_display_choice = random.randint(0, 100)
 
         if acc_display_choice == 1:
-            self.accessory = [choice(
-                [choice(Pelt.plant_accessories), choice(Pelt.wild_accessories)]
-            )]
+            self.accessory = [
+                choice(
+                    [choice(Pelt.plant_accessories), choice(Pelt.wild_accessories)]
+                )
+            ]
         else:
             self.accessory = []
 
