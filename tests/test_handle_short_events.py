@@ -27,7 +27,9 @@ class TestHandleAccessories(unittest.TestCase):
             wild_accessories=["WILD1", "WILD2"],
             plant_accessories=["PLANT1", "PLANT2"],
             collars=["COLLAR1", "COLLAR2"],
-            tail_accessories=["TAIL1", "TAIL2"]
+            head_accessories=["HEAD1", "HEAD2"],
+            body_accessories=["BODY1", "BODY2"],
+            tail_accessories=["TAIL1", "TAIL2"],
         ))
 
     def setUp(self):
@@ -46,7 +48,7 @@ class TestHandleAccessories(unittest.TestCase):
         self.test.chosen_event.new_accessory = ["TEST"]
 
         self.test.handle_accessories()
-        self.assertIs(self.test.main_cat.pelt.accessory, "TEST")
+        self.assertIs(self.test.main_cat.pelt.accessory, ["TEST"])
 
     def test_cat_gets_random_wild_accessory(self):
         self.test.chosen_event.new_accessory = ["WILD"]
