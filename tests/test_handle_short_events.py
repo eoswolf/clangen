@@ -38,6 +38,9 @@ class TestHandleAccessories(unittest.TestCase):
         self.test.main_cat = Cat()
         self.pelts = self.pelt_class()
 
+    def assert_intersection(self, a, b):
+        self.assertTrue(bool(set(a) & set(b)))
+
     def test_misc_appended_to_types(self):
         self.test.types = []
 
@@ -54,19 +57,19 @@ class TestHandleAccessories(unittest.TestCase):
         self.test.chosen_event.new_accessory = ["WILD"]
 
         self.test.handle_accessories(pelts=self.pelt_class)
-        self.assertIn(self.test.main_cat.pelt.accessory, self.pelts.wild_accessories)
+        self.assert_intersection(self.test.main_cat.pelt.accessory, self.pelts.wild_accessories)
 
     def test_cat_gets_random_plant_accessory(self):
         self.test.chosen_event.new_accessory = ["PLANT"]
 
         self.test.handle_accessories(pelts=self.pelt_class)
-        self.assertIn(self.test.main_cat.pelt.accessory, self.pelts.plant_accessories)
+        self.assert_intersection(self.test.main_cat.pelt.accessory, self.pelts.plant_accessories)
 
     def test_cat_gets_random_collar_accessory(self):
         self.test.chosen_event.new_accessory = ["COLLAR"]
 
         self.test.handle_accessories(pelts=self.pelt_class)
-        self.assertIn(self.test.main_cat.pelt.accessory, self.pelts.collars)
+        self.assert_intersection(self.test.main_cat.pelt.accessory, self.pelts.collars)
 
     def test_notail_cats_do_not_get_tail_accessories(self):
         self.test.chosen_event.new_accessory = self.pelts.tail_accessories
