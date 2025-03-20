@@ -846,6 +846,8 @@ class Pelt:
 
         if isinstance(self.accessory, str):
             self.accessory = [self.accessory]
+        elif self.accessory is None:
+            self.accessory = []
 
 
     def init_eyes(self, parents):
