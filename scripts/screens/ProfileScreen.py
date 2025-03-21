@@ -42,18 +42,6 @@ from ..ui.icon import Icon
 
 
 # ---------------------------------------------------------------------------- #
-#             change how accessory info displays on cat profiles               #
-# ---------------------------------------------------------------------------- #
-def accessory_display_name(cat):
-    accessory = cat.pelt.accessory
-
-    if not accessory:
-        return ""
-
-    return ', '.join(i18n.t(f"cat.accessories.{acc}", count=0) for acc in accessory)
-
-
-# ---------------------------------------------------------------------------- #
 #               assigns backstory blurbs to the backstory                      #
 # ---------------------------------------------------------------------------- #
 def bs_blurb_text(cat):

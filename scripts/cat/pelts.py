@@ -844,10 +844,10 @@ class Pelt:
         elif self.pattern == "MINIMAL4":
             self.pattern = "MINIMALFOUR"
 
-        if isinstance(self.accessory, str):
-            self.accessory = [self.accessory]
-        elif self.accessory is None:
+        if self.accessory is None:
             self.accessory = []
+        elif isinstance(self.accessory, str):
+            self.accessory = [self.accessory]
 
 
     def init_eyes(self, parents):
