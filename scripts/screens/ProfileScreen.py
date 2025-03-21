@@ -50,7 +50,7 @@ def accessory_display_name(cat):
     if not accessory:
         return ""
 
-    return i18n.t(f"cat.accessories.{accessory}", count=0)
+    return ', '.join(i18n.t(f"cat.accessories.{acc}", count=0) for acc in accessory)
 
 
 # ---------------------------------------------------------------------------- #
