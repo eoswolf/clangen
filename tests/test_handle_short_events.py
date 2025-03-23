@@ -39,7 +39,9 @@ class TestHandleAccessories(unittest.TestCase):
         self.pelts = self.pelt_class()
 
     def assert_intersection(self, a, b):
-        self.assertTrue(bool(set(a) & set(b)))
+        """assert that the intersection of iterables a and b is non-empty"""
+        
+        self.assertTrue(set(a) & set(b))
 
     def test_misc_appended_to_types(self):
         self.test.types = []
