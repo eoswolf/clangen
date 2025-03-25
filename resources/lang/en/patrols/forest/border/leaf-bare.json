@@ -2941,7 +2941,7 @@
                 ]
             },
             {
-                "text": "This is going to be such a cool story to tell back at camp, app1 tells {PRONOUN/app1/self}. Checking the tunnel out, it looks like a collapsedroof into a wider tunnel system, smelling faintly of something app1 can't identify. Awesome!",
+                "text": "This is going to be such a cool story to tell back at camp, app1 tells {PRONOUN/app1/self}. Checking the tunnel out, it looks like a collapsed roof into a wider tunnel system, smelling faintly of something app1 can't identify. Awesome!",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_train_patrolapprenticesessionsuccess",
