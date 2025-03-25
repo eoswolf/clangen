@@ -3239,7 +3239,7 @@
                 ]
             },
             {
-                "text": "s_c overconfident, tries to jump a muddy puddle, doesn't make it, and slides face first into a tree. Also there's snow within the puddle, not quite melted. Fantastic.",
+                "text": "s_c, overconfident, tries to jump a muddy puddle, doesn't make it, and slides face first into a tree. Also there's snow within the puddle, not quite melted. Fantastic.",
                 "exp": 0,
                 "weight": 10,
                 "stat_trait": ["bold", "daring"],
