@@ -405,8 +405,8 @@ class Clan:
         """
         TODO: DOCS
         """
-        if leader:
 
+        if leader:
             leader.history.add_lead_ceremony()
             self.leader = leader
             Cat.all_cats[leader.ID].status_change("leader")
