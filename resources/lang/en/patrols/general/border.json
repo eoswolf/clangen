@@ -111,7 +111,7 @@
                 "herbs": ["tansy"]
             },
             {
-                "text": "p_l detects the scent of a fellow clanmate, possibly on a solo patrol of their own, but it was nothing to worry about.",
+                "text": "p_l detects the scent of a fellow Clanmate, possibly on a solo patrol of their own, but it was nothing to worry about.",
                 "exp": 5,
                 "weight": 20
             }
@@ -170,7 +170,7 @@
                 "weight": 20
             },
             {
-                "text": "p_l identifies the tracks as belonging to a fellow clanmate.",
+                "text": "p_l identifies the tracks as belonging to a fellow Clanmate.",
                 "exp": 5,
                 "weight": 20
             },
@@ -219,7 +219,7 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "Upon closer inspection, it was just remarking from a clanmate.",
+                "text": "Upon closer inspection, it was just remarking from a Clanmate.",
                 "exp": 0,
                 "weight": 20
             },
