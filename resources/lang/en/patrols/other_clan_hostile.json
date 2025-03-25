@@ -4302,7 +4302,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "r_c throws {PRONOUN/r_c/self} into battle, determined to throw o_c_n off {PRONOUN/r_c/poss} territory, but as {PRONOUN/r_c/subject} {VERB/r_c/twist and turn/twists and turns} in combat, two warriors from o_c_n surround {PRONOUN/r_c/object}. r_c calls to {PRONOUN/r_c/poss} Clanmate to back them up. But is instead knocked to the ground, pain spreading through the back of {PRONOUN/r_c/object} neck. {PRONOUN/r_c/subject/CAP} struggle for breath, fading rapidly - where was {PRONOUN/r_c/poss} backup, the rest of {PRONOUN/r_c/poss} patrol?",
+                "text": "r_c throws {PRONOUN/r_c/self} into battle, determined to throw o_c_n off {PRONOUN/r_c/poss} territory, but as {PRONOUN/r_c/subject} {VERB/r_c/twist and turn/twists and turns} in combat, two warriors from o_c_n surround {PRONOUN/r_c/object}. r_c calls to {PRONOUN/r_c/poss} Clanmate to back them up, but is instead knocked to the ground, pain spreading through the back of {PRONOUN/r_c/object} neck. {PRONOUN/r_c/subject/CAP} struggle for breath, fading rapidly - where was {PRONOUN/r_c/poss} backup, the rest of {PRONOUN/r_c/poss} patrol?",
                 "exp": 0,
                 "weight": 10,
                 "dead_cats": ["r_c"],
