@@ -2670,7 +2670,7 @@
         "chance_of_success": 30,
         "success_outcomes": [
             {
-                "text": "While p_l notes the possible-tunnel's location, {PRONOUN/p_l/subject} {VERB/p_l/don't/doesn't} leave the safe-ish tracked path of the border. {PRONOUN/p_l/subject/CAP} {VERB/p_l/don't/doesn't} know if snow has built up in that dip in the landscape, if the tunnel is inhabited, if the soil is stable, and alone and vulnerableis not the time to investigate.",
+                "text": "While p_l notes the possible-tunnel's location, {PRONOUN/p_l/subject} {VERB/p_l/don't/doesn't} leave the safe-ish tracked path of the border. {PRONOUN/p_l/subject/CAP} {VERB/p_l/don't/doesn't} know if snow has built up in that dip in the landscape, if the tunnel is inhabited, if the soil is stable, and alone and vulnerable is not the time to investigate.",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_hunt_strange"
