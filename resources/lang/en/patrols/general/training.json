@@ -1846,7 +1846,7 @@
                 ]
             },
             {
-                "text": "s_c doesn't take charge or lead the patrol haring off after some grand adventure. That just isn't {PRONOUN/s_c/poss} style. Instead, the cats are reminded of the kindness in their leader's heart as they watch s_c help r_c up off the ground, and reassure another Clanmate when they get a move wrong. The warmth of these little sparks of empathy reminds everyone why c_n follows s_c.",
+                "text": "s_c doesn't take charge or lead the patrol haring off after some grand adventure. That just isn't {PRONOUN/s_c/poss} style. Instead, the cats are reminded of the kindness in their leader's heart as they watch s_c help r_c up off the ground and reassure another Clanmate when they get a move wrong. The warmth of these little sparks of empathy reminds everyone why c_n follows s_c.",
                 "exp": 40,
                 "weight": 20,
                 "can_have_stat":["p_l"],
@@ -2238,7 +2238,7 @@
                 ]
             },
             {
-                "text": "This is unlike app1. s_c stops in {PRONOUN/s_c/poss} tracks, sitting {PRONOUN/s_c/poss} but down in the middle of the path and refusing to move until app1 tells {PRONOUN/s_c/object} what's bothering {PRONOUN/app1/object}. No, what's <i>actually</i> bothering {PRONOUN/app1/object}.",
+                "text": "This is unlike app1. s_c stops in {PRONOUN/s_c/poss} tracks, sitting {PRONOUN/s_c/poss} butt down in the middle of the path and refusing to move until app1 tells {PRONOUN/s_c/object} what's bothering {PRONOUN/app1/object}. No, what's <i>actually</i> bothering {PRONOUN/app1/object}.",
                 "exp": 20,
                 "weight": 20,
                 "stat_trait": [
@@ -6417,7 +6417,7 @@
                 ]
             },
             {
-                "text": "As r_c creeps forward, practicing {PRONOUN/r_c/poss} crouch, p_l notices {PRONOUN/r_c/poss} but wiggling in excitement. {PRONOUN/p_l/subject/CAP} {VERB/p_l/purr/purrs} to {PRONOUN/p_l/self} softly and {VERB/p_l/pad/pads} over to give r_c a heads-up about the bad habit.",
+                "text": "As r_c creeps forward, practicing {PRONOUN/r_c/poss} crouch, p_l notices {PRONOUN/r_c/poss} butt wiggling in excitement. {PRONOUN/p_l/subject/CAP} {VERB/p_l/purr/purrs} to {PRONOUN/p_l/self} softly and {VERB/p_l/pad/pads} over to give r_c a heads-up about the bad habit.",
                 "exp": 10,
                 "weight": 5,
                 "relationships": [
@@ -7459,7 +7459,7 @@
         "relationship_constraint": ["dislike_30", "romantic_30"],
         "success_outcomes": [
             {
-                "text": "p_l snaps. Great StarClan, is r_c incapable of shutting up for <i>one heartbeat</i>?! Falling onto {PRONOUN/p_l/poss} rump, horrified at {PRONOUN/p_l/self}, p_l has a fantastic view of r_c as {PRONOUN/r_c/poss} ears prick up with shock and {PRONOUN/r_c/subject} {VERB/r_c/twist/twists} round to gape at {PRONOUN/p_l/object}. Which lasts for a fraction of a heartbeat before r_c is calling p_l mouse-brained and about as helpful as Twolegs in leaf-bare, {PRONOUN/r_c/poss} tirade barely interrupted by p_l's outburst. Maybe there are some cats in the Clan p_l is still just another cat too. The thought is strangely comforting.",
+                "text": "p_l snaps. Great StarClan, is r_c incapable of shutting up for <i>one heartbeat</i>?! Falling onto {PRONOUN/p_l/poss} rump, horrified at {PRONOUN/p_l/self}, p_l has a fantastic view of r_c as {PRONOUN/r_c/poss} ears prick up with shock and {PRONOUN/r_c/subject} {VERB/r_c/twist/twists} round to gape at {PRONOUN/p_l/object}. Which lasts for a fraction of a heartbeat before r_c is calling p_l mouse-brained and about as helpful as Twolegs in leaf-bare, {PRONOUN/r_c/poss} tirade barely interrupted by p_l's outburst. Maybe there are some cats in the Clan p_l is still just another cat to. The thought is strangely comforting.",
                 "exp": 15,
                 "weight": 20,
                 "relationships": [
@@ -7815,7 +7815,7 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "p_l and r_c twine around each other in camp, chirping excitedly with the anticipation of getting to go out training together - it's been forever since they've been able to hang out!",
-        "decline_text": "Unfortunately, the cats just don't have time to go out training today. They headbut softly, promising to catch up another time.",
+        "decline_text": "Unfortunately, the cats just don't have time to go out training today. They headbutt softly, promising to catch up another time.",
         "chance_of_success": 60,
         "relationship_constraint": ["platonic_50", "not_mates"],
         "success_outcomes": [
