@@ -662,6 +662,10 @@ class Sprites:
         for row, dry in enumerate(dryherbs_data):
             for col, dryherbs in enumerate(dry):
                 self.make_group("medcatherbs", (col, 3), f"acc_herbs{dryherbs}")
+        # wetlandherbs
+        for row, wetherbs in enumerate(wetlandherbs_data):
+            for col, wetlandherbs in enumerate(wetherbs):
+                self.make_group("medcatherbs", (col, 3), f"acc_herbs{wetlandherbs}")
         # wild
         for row, wilds in enumerate(wild_data):
             for col, wild in enumerate(wilds):
