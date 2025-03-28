@@ -599,6 +599,7 @@ class Sprites:
             ],
         ]
         dryherbs_data = [["DRY HERBS", "DRY CATMINT", "DRY NETTLES", "DRY LAURELS"]]
+        wetlandherbs_data = [["WISTERIA", "ROSE MALLOW", "PICKLEWEED", "GOLDEN CREEPING JENNY"]]
         wild_data = [
             [
                 "RED FEATHERS",
