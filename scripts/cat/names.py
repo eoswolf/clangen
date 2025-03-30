@@ -264,7 +264,6 @@ class Name:
         # then suffixes based on ages (fixes #2004, just trust me)
 
         # Handles suffix assignment with outside cats
-        if self.cat.status in ("exiled", "lost"):
         if self.cat.status not in ("rogue", "loner", "kittypet") and self.cat.outside:
             adjusted_status: str = ""
             if self.cat.moons >= 15:
