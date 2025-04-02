@@ -3394,7 +3394,8 @@
                     "m_c"
                 ],
                 "scar": "m_c was scarred by a Clanmate that r_c encouraged {PRONOUN/m_c/object} to fight.",
-                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after a fight with a Clanmate that r_c encouraged."
+                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after a fight with a Clanmate that r_c encouraged.",
+                "lead_death": "died from {PRONOUN/m_c/poss} wounds after a fight with a Clanmate that r_c encouraged"
             }
         ],
         "relationships": [
@@ -3440,12 +3441,10 @@
         "m_c": {
             "age": [
                 "adolescent",
-                "young adult",
-                "adult",
-                "senior adult"
+                "young adult"
             ],
             "status": [
-                "any"
+                "apprentice"
             ],
             "not_skill": [
                 "FIGHTER,3"
