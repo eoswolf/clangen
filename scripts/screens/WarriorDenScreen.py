@@ -302,8 +302,6 @@ class WarriorDenScreen(Screens):
         # delete previous created text if possible
         if "current_focus" in self.focus_information:
             self.focus_information["current_focus"].kill()
-        if "time" in self.focus_information:
-            self.focus_information["time"].kill()
         if self.focus_text:
             self.focus_text.kill()
 
@@ -322,7 +320,7 @@ class WarriorDenScreen(Screens):
 
         last_change_text = "unknown"
         next_change = "0 moons"
-        if game.clan.last_focus_change:
+        if game.clan.last_focus_change == 0 or game.clan.last_focus_change:
             last_change_text = "moon " + str(game.clan.last_focus_change)
             moons = (
                 game.clan.last_focus_change
