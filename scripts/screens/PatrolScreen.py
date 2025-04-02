@@ -1334,6 +1334,8 @@ class PatrolScreen(Screens):
         self.elements = {}
 
     def clear_cat_buttons(self):
+        if self.selected_cat:
+            self.selected_cat = None
         for cat in self.cat_buttons:
             self.cat_buttons[cat].kill()
         self.cat_buttons = {}
