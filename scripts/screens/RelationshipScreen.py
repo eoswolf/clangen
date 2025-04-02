@@ -552,11 +552,11 @@ class RelationshipScreen(Screens):
             col1 += f"{self.inspect_cat.moons} moons\n"
 
             # Trait
-            col1 += f"{self.inspect_cat.personality.trait}\n"
+            col1 += shorten_text_to_fit(f"{self.inspect_cat.personality.trait}\n", 110)
 
             self.inspect_cat_elements["col1"] = pygame_gui.elements.UITextBox(
                 col1,
-                ui_scale(pygame.Rect((15, 185), (90, 70))),
+                ui_scale(pygame.Rect((15, 185), (90, 120))),
                 object_id="#text_box_22_horizleft_spacing_95",
                 manager=MANAGER,
                 container=self.selected_cat_container,
