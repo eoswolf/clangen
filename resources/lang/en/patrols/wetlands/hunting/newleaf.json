@@ -4642,7 +4642,8 @@
             {
                 "text": "p_l carefully traipses along the water's edge, making sure to avoid wading in too far whenever {PRONOUN/p_l/subject} <i>{VERB/p_l/do/does}</i> enter the water. And {PRONOUN/p_l/poss} tenacity pays off! It's not the haul to end all hauls, but it'll surely be enough to fill a hungry belly or two.",
                 "exp": 20,
-                "weight": 20
+                "weight": 20,
+                "prey": ["medium"]
             },
             {
                 "text": "p_l carefully traipses along the water's edge, making sure to avoid wading in too far whenever {PRONOUN/p_l/subject} <i>{VERB/p_l/do/does}</i> enter the water. And p_l's tenacity pays off with a catch so big that {PRONOUN/p_l/subject} almost can't haul it back to camp!",
