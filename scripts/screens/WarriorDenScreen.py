@@ -320,7 +320,7 @@ class WarriorDenScreen(Screens):
 
         last_change_text = "unknown"
         next_change = "0 moons"
-        if game.clan.last_focus_change == 0 or game.clan.last_focus_change:
+        if isinstance(game.clan.last_focus_change, int):
             last_change_text = "moon " + str(game.clan.last_focus_change)
             moons = (
                 game.clan.last_focus_change
