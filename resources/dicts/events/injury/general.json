@@ -3394,8 +3394,8 @@
                     "m_c"
                 ],
                 "scar": "m_c was scarred by a Clanmate that r_c encouraged {PRONOUN/m_c/object} to fight.",
-                "reg_death": "m_c died after r_c encouraged {PRONOUN/m_c/object} to fight a Clanmate",
-                "lead_death": "died after r_c encouraged {PRONOUN/m_c/object} to fight a Clanmate"
+                "reg_death": "m_c died from wounds sustained during a fight that r_c encouraged.",
+                "lead_death": "died from wounds sustained during a fight that r_c encouraged"
             }
         ],
         "relationships": [
