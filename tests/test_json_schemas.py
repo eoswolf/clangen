@@ -7,6 +7,9 @@ HOWEVER,
  Please keep the raw python script, so it can be run by the GitHub action.
 """
 
+import itertools
+import os
+
 import json
 import jsonschema
 from pathlib import Path
@@ -16,16 +19,21 @@ import unittest
 
 ROOT_DIR = Path(__file__).parent.parent
 SCHEMA_DIR = ROOT_DIR / "schemas"
-RESOURCES_DIR = ROOT_DIR / "resources" / "lang" / "en"
+RESOURCES_DIR = ROOT_DIR / "resources"
 
 COMMON_SCHEMA = json.loads((SCHEMA_DIR / "common.schema.json").read_text())
 THOUGHT_SCHEMA = json.loads((SCHEMA_DIR / "thought.schema.json").read_text())
 PATROL_SCHEMA = json.loads((SCHEMA_DIR / "patrol.schema.json").read_text())
 SHORTEVENT_SCHEMA = json.loads((SCHEMA_DIR / "shortevent.schema.json").read_text())
 
-THOUGHT_DIR = RESOURCES_DIR / "thoughts"
-PATROL_DIR = RESOURCES_DIR / "patrols"
-EVENT_DIR = RESOURCES_DIR / "events"
+def get_dirs(subdirectory_name):
+    """Returns the subdirectory in each language"""
+
+    return RESOURCES_DIR.glob(f"lang/*/{subdirectory_name}/")
+
+THOUGHT_DIRS = get_dirs("thoughts")
+PATROL_DIRS = get_dirs("patrols")
+EVENT_DIRS = get_dirs("events")
 
 registry = Registry().with_resources(
     [
@@ -36,12 +44,12 @@ registry = Registry().with_resources(
     ]
 )
 
-
 def all_thought_files():
     """
     Iterator for Paths for all thought files
     """
-    yield from THOUGHT_DIR.glob("**/*.json")
+    for directory in THOUGHT_DIRS:
+        yield from directory.glob("**/*.json")
 
 
 def all_patrol_files():
@@ -49,12 +57,12 @@ def all_patrol_files():
     Iterator for Paths for all patrol files
     """
     EXCLUSIONS = [
-        PATROL_DIR / "explicit_patrol_art.json",
-        PATROL_DIR / "prey_text_replacements.json",
+        "explicit_patrol_art.json",
+        "prey_text_replacements.json",
     ]
-    for filename in PATROL_DIR.glob("**/*.json"):
-        if filename not in EXCLUSIONS:
-            yield filename
+
+    for directory in PATROL_DIRS:
+        yield from (file for file in directory.glob("**/*.json") if os.path.basename(file) not in EXCLUSIONS)
 
 
 def all_shortevent_files():
@@ -64,9 +72,9 @@ def all_shortevent_files():
 
     INCLUSION_GLOBS = ["death/*.json", "injury/*.json", "misc/*.json", "new_cat/*.json"]
 
-    for glob in INCLUSION_GLOBS:
-        yield from EVENT_DIR.glob(glob)
-
+    for directory in EVENT_DIRS:
+        for glob in INCLUSION_GLOBS:
+            yield from directory.glob(glob)
 
 def test_thoughts_schema():
     """Test that all thought JSONs are correct according to the JSON schema"""
