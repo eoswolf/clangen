@@ -601,7 +601,7 @@ class Sprites:
                 "WISTERIA",
                 "ROSE MALLOW",
                 "PICKLEWEED",
-                "GOLDEN CREEPING JENNY"
+                "GOLDEN CREEPING JENNY",
             ],
         ]
         dryherbs_data = [["DRY HERBS", "DRY CATMINT", "DRY NETTLES", "DRY LAURELS"]]
