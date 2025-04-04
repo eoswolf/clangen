@@ -7,8 +7,7 @@ HOWEVER,
  Please keep the raw python script, so it can be run by the GitHub action.
 """
 
-import itertools
-import os
+from itertools import chain
 
 import json
 import jsonschema
@@ -26,15 +25,6 @@ THOUGHT_SCHEMA = json.loads((SCHEMA_DIR / "thought.schema.json").read_text())
 PATROL_SCHEMA = json.loads((SCHEMA_DIR / "patrol.schema.json").read_text())
 SHORTEVENT_SCHEMA = json.loads((SCHEMA_DIR / "shortevent.schema.json").read_text())
 
-def get_dirs(subdirectory_name):
-    """Returns the subdirectory in each language"""
-
-    return RESOURCES_DIR.glob(f"lang/*/{subdirectory_name}/")
-
-THOUGHT_DIRS = get_dirs("thoughts")
-PATROL_DIRS = get_dirs("patrols")
-EVENT_DIRS = get_dirs("events")
-
 registry = Registry().with_resources(
     [
         ("common.schema.json", DRAFT7.create_resource(COMMON_SCHEMA)),
@@ -48,9 +38,7 @@ def all_thought_files():
     """
     Iterator for Paths for all thought files
     """
-    for directory in THOUGHT_DIRS:
-        yield from directory.glob("**/*.json")
-
+    yield from RESOURCES_DIR.glob("lang/*/thoughts/**/*.json")
 
 def all_patrol_files():
     """
@@ -61,9 +49,11 @@ def all_patrol_files():
         "prey_text_replacements.json",
     ]
 
-    for directory in PATROL_DIRS:
-        yield from (file for file in directory.glob("**/*.json") if os.path.basename(file) not in EXCLUSIONS)
-
+    yield from (
+        file for file in
+        RESOURCES_DIR.glob("lang/*/patrols/**/*.json")
+        if file.name not in EXCLUSIONS
+    )
 
 def all_shortevent_files():
     """
@@ -72,9 +62,10 @@ def all_shortevent_files():
 
     INCLUSION_GLOBS = ["death/*.json", "injury/*.json", "misc/*.json", "new_cat/*.json"]
 
-    for directory in EVENT_DIRS:
-        for glob in INCLUSION_GLOBS:
-            yield from directory.glob(glob)
+    yield from chain.from_iterable(
+        RESOURCES_DIR.glob("lang/*/events/" + glob)
+        for glob in INCLUSION_GLOBS
+    )
 
 def test_thoughts_schema():
     """Test that all thought JSONs are correct according to the JSON schema"""
@@ -84,7 +75,6 @@ def test_thoughts_schema():
             data, THOUGHT_SCHEMA, cls=jsonschema.Draft7Validator, registry=registry
         )
 
-
 def test_patrols_schema():
     """Test that all patrol JSONs are correct according to the JSON schema"""
     for patrol_file in all_patrol_files():
@@ -93,7 +83,6 @@ def test_patrols_schema():
             data, PATROL_SCHEMA, cls=jsonschema.Draft7Validator, registry=registry
         )
 
-
 def test_shortevent_schema():
     """Tests that all shortevent JSONs are correct according to the JSON schema"""
     for shortevent_file in all_shortevent_files():
@@ -101,7 +90,6 @@ def test_shortevent_schema():
         jsonschema.validate(
             data, SHORTEVENT_SCHEMA, cls=jsonschema.Draft7Validator, registry=registry
         )
-
 
 class TestJsonSchemas(unittest.TestCase):
     """Unittest for local use to test that JSON files
