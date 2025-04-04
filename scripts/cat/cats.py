@@ -2040,7 +2040,7 @@ class Cat:
                     "CLOVER",
                     "DAISY",
                     "WISTERIA",
-                    "GOLDEN CREEPING JENNY"
+                    "GOLDEN CREEPING JENNY",
                 )
             ]
 
