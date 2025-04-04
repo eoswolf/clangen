@@ -34,11 +34,13 @@ registry = Registry().with_resources(
     ]
 )
 
+
 def all_thought_files():
     """
     Iterator for Paths for all thought files
     """
     yield from RESOURCES_DIR.glob("lang/*/thoughts/**/*.json")
+
 
 def all_patrol_files():
     """
@@ -55,6 +57,7 @@ def all_patrol_files():
         if file.name not in EXCLUSIONS
     )
 
+
 def all_shortevent_files():
     """
     Iterator for Paths for all shortevent files
@@ -67,6 +70,7 @@ def all_shortevent_files():
         for glob in INCLUSION_GLOBS
     )
 
+
 def test_thoughts_schema():
     """Test that all thought JSONs are correct according to the JSON schema"""
     for thought_file in all_thought_files():
@@ -74,6 +78,7 @@ def test_thoughts_schema():
         jsonschema.validate(
             data, THOUGHT_SCHEMA, cls=jsonschema.Draft7Validator, registry=registry
         )
+
 
 def test_patrols_schema():
     """Test that all patrol JSONs are correct according to the JSON schema"""
@@ -90,6 +95,7 @@ def test_shortevent_schema():
         jsonschema.validate(
             data, SHORTEVENT_SCHEMA, cls=jsonschema.Draft7Validator, registry=registry
         )
+
 
 class TestJsonSchemas(unittest.TestCase):
     """Unittest for local use to test that JSON files
