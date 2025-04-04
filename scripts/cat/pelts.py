@@ -447,7 +447,7 @@ class Pelt:
     body_accessories = [
         "HERBS",
         "PETALS",
-        "DRY HERBS"
+        "DRY HERBS",
     ]
 
     tabbies = ["Tabby", "Ticked", "Mackerel", "Classic", "Sokoke", "Agouti"]
