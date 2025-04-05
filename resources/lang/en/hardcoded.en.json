@@ -71,7 +71,7 @@
         },
         "focus_injury_hoarding": {
             "zero": "Luckily, nobody in the Clan got %{condition} due to hoarding.",
-			"one": "A cat got %{condition} due to hoarding herbs and prey.",
+            "one": "A cat got %{condition} due to hoarding herbs and prey.",
             "many": "Multiple cats got %{condition} due to hoarding herbs and prey."
         },
         "focus_injury_raiding": {
