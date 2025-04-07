@@ -2457,7 +2457,8 @@ def ceremony_text_adjust(
 def get_pronouns(cat: "Cat"):
     """Get a cat's pronoun even if the cat has faded to prevent crashes (use gender-neutral pronouns when the cat has faded)"""
     if not cat.pronouns:
-        return localization.get_new_pronouns("default")
+        # since get_new_pronouns returns a list with length 1
+        return localization.get_new_pronouns("default")[0]
     else:
         return choice(cat.pronouns)
 
