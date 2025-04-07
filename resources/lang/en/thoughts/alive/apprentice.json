@@ -34,16 +34,16 @@
             "Claims prey tastes better under moonlight",
             "Complains about having to hunt at night",
             "Hesitates to go out hunting at night",
-            "Stretches out in the apprentice's den carelessly",
-            "Huffs {PRONOUN/m_c/subject} {VERB/m_c/need/needs} to soak in every ray of sunlight",
+            "Stretches out in the apprentices' den carelessly",
+            "Huffs about needing to soak in every ray of sunlight before training",
             "Insists on sharpening {PRONOUN/m_c/poss} claws on a specific surface",
             "Is jumpy after battle practice",
             "Whirls around and bares {PRONOUN/m_c/poss} fangs, only to realize training is over",
             "Was overzealous during battle training and got a stern lecture",
             "Hopes {PRONOUN/m_c/subject}'ll be remembered as a mighty warrior",
             "Wonders if there would ever be a story about {PRONOUN/m_c/poss} deeds",
-            "Puffs out {PRONOUN/m_c/poss} chest hearing someone praise {PRONOUN/m_c/object}",
-            "Boasts {PRONOUN/m_c/subject} {VERB/m_c/were/was} a rabbit in {PRONOUN/m_c/poss} past life because of {PRONOUN/m_c/poss} mighty leap",
+            "Puffs out {PRONOUN/m_c/poss} chest after hearing someone praise {PRONOUN/m_c/object}",
+            "Boasts that {PRONOUN/m_c/subject} {VERB/m_c/were/was} a rabbit in {PRONOUN/m_c/poss} past life because of {PRONOUN/m_c/poss} mighty leap",
             "Swears {PRONOUN/m_c/poss} haunches have given up on being the best jumper",
             "Hopes everyone ignores {PRONOUN/m_c/poss} failed leap",
             "Prances around camp after being given the title of highest jumper",
@@ -63,7 +63,7 @@
             "Struts through camp with a venomous snake",
             "Tries to convince {PRONOUN/m_c/self} that a bug has the same worth as a mouse",
             "Mistook a spider for a mouse...",
-            "Grins upon remembering {PRONOUN/m_c/object} best hunt ever",
+            "Grins upon remembering {PRONOUN/m_c/poss} best hunt ever",
             "Spends the night thinking about what it means to be a warrior",
             "Questions if {PRONOUN/m_c/subject} still {VERB/m_c/want/wants} to be a warrior after a brush with death",
             "Is trembling at the thought of not being strong enough to save someone",
@@ -307,7 +307,7 @@
             "Is letting r_c see the apprentices' den",
             "Takes time to play with r_c in between training sessions",
             "Tries to teach r_c something new... but {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} not listening",
-            "Wonders if all kits are gross or it's just r_c"
+            "Wonders if all kits are gross or if it's just r_c"
         ],
         "random_status_constraint": [
             "kitten"
