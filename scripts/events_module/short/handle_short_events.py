@@ -157,8 +157,8 @@ class HandleShortEvents:
                     break
             if not found:
                 # this print is very spammy, but can be helpful if unsure why a debug event isn't triggering
-                # print(f"debug_ensure_event_id: {game.config['event_generation']['debug_ensure_event_id']} "
-                #      f"was not possible for {self.main_cat.name}.  {self.main_cat.name} was looking for a {event_type}: {self.sub_types} event")
+                print(f"debug_ensure_event_id: {game.config['event_generation']['debug_ensure_event_id']} "
+                     f"was not possible for {self.main_cat.name}.  {self.main_cat.name} was looking for a {event_type}: {self.sub_types} event")
                 pass
         # ---------------------------------------------------------------------------- #
         #                               do the event                                   #
@@ -807,7 +807,7 @@ class HandleShortEvents:
 
         # adjust entire herb store
         if supply_type == "all_herb":
-            for herb, count in herb_supply.entire_supply.copy():
+            for (herb, count) in herb_supply.entire_supply.items():
                 herb_list.append(herb)
                 if adjustment == "reduce_full":
                     herb_supply.remove_herb(herb, count)
