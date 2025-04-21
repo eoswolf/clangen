@@ -79,8 +79,8 @@
             "Longs to taste the power r_c has",
             "Gives it {PRONOUN/m_c/poss} all during battle training with r_c",
             "Shows off in front of r_c... Only to face-plant into the ground",
-            "Has been bragging about praise r_c gave {PRONOUN/m_c/object} all day",
-            "Attempts to prove {PRONOUN/r_c/poss} worth to r_c",
+            "Has been bragging about the praise r_c gave {PRONOUN/m_c/object} all day",
+            "Attempts to prove {PRONOUN/m_c/poss} worth to r_c",
             "Acts daring in hopes of gaining r_c's respect",
             "Finds r_c's work overwhelming to think about",
             "Catalogues r_c's day-to-day in {PRONOUN/m_c/poss} head",
@@ -131,7 +131,7 @@
             "Prays r_c doesn't wake {PRONOUN/m_c/object} up today",
             "Tries to ignore r_c attempting to wake {PRONOUN/m_c/object} up",
             "Debates biting r_c whenever {PRONOUN/m_c/subject} {VERB/m_c/hear/hears} {PRONOUN/r_c/object} entering the den",
-            "Pleads with r_c to allow them on a solo patrol",
+            "Pleads with r_c to allow {PRONOUN/m_c/object} on a solo patrol",
             "Tries to convince r_c that {PRONOUN/m_c/subject} {VERB/m_c/are/is} ready for an assessment",
             "Wants to show r_c {PRONOUN/m_c/poss} worth",
             "Shows off in front of r_c in hopes {PRONOUN/r_c/subject} {VERB/r_c/put/puts} in a good word for {PRONOUN/m_c/object}",
@@ -189,7 +189,7 @@
             "Glances at r_c tending to herbs and feels thankful to have chosen the path of a warrior",
             "Hates the strong stench of herbs",
             "Is swallowing a remark after being told to take something nasty",
-            "Gasps for air after leaving the medicine cats' den",
+            "Gasps for air after leaving the medicine cat den",
             "Is listening to r_c discuss the intricacies of StarClan",
             "Feels puzzled after asking r_c about StarClan",
             "Is tuning out during r_c's lecture about dangerous herbs",
@@ -201,8 +201,7 @@
             "Was tasked with helping r_c for the day",
             "Can't imagine what it is like to be in r_c's paws",
             "Wonders how r_c can handle having so many lives rely on {PRONOUN/r_c/object}",
-            "Is curious how plants of all things can heal wounds",
-            "Swears up and down {PRONOUN/r_c/subject} didn't touch r_c's catmint supply"
+            "Is curious how plants of all things can heal wounds"
         ],
         "random_living_status": [
             "living"
