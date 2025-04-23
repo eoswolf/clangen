@@ -2900,7 +2900,6 @@
             "Isn't ashamed of {PRONOUN/m_c/poss} past",
             "Wonders if {PRONOUN/m_c/poss} old kittypet friends miss {PRONOUN/m_c/object}",
             "Wonders how {PRONOUN/m_c/poss} old kittypet friends are doing",
-            "Hopes to earn some fierce scars to hide {PRONOUN/m_c/poss} past",
             "Enjoys the thrill of hunting after a kithood of dry kibble",
             "Hisses extra loudly at Twolegs on patrol",
             "Stiffens when a Clanmate mentions how lazy kittypets are",
@@ -2921,8 +2920,6 @@
     {
         "id": "gen_former_kittypet_apprentice",
         "thoughts": [
-            "Hopes to become a warrior soon so others will stop teasing {PRONOUN/m_c/object} about being a kittypet",
-            "Trains all day long to prove {PRONOUN/m_c/self} to be as good as any other apprentice",
             "Is worried {PRONOUN/m_c/subject} will never fit in",
             "Refuses to let {PRONOUN/m_c/poss} kittypet roots hold {PRONOUN/m_c/object} back",
             "Wants to play with {PRONOUN/m_c/poss} old kittypet toys",
@@ -2939,7 +2936,9 @@
             "guided1"
         ],
         "main_status_constraint": [
-            "apprentice"
+            "apprentice",
+            "mediator apprentice",
+            "medicine cat apprentice"
         ],
         "random_living_status": [
             "living"
@@ -2952,12 +2951,10 @@
             "Tells r_c about Twoleg behavior",
             "Is asking r_c about certain Clan customs",
             "Wonders if r_c thinks less of {PRONOUN/m_c/object} because of {PRONOUN/m_c/poss} past",
-            "Spends all day trying to outshine r_c and prove former kittypets are just as good as Clanborn apprentices",
             "Is jealous of how well r_c fits in, just because of {PRONOUN/r_c/poss} Clan roots",
             "Patiently answers r_c's slightly rude questions about kittypet life",
             "Pets r_c with a paw to the face, much to r_c's dismay",
             "Describes the inside of a Twolegs den to r_c in vivid detail",
-            "Convinces r_c to slice {PRONOUN/m_c/poss} ear in hopes it'll scar",
             "Makes up Clan names for {PRONOUN/m_c/poss} parents to tell r_c"
         ],
         "main_backstory_constraint": [
@@ -2970,10 +2967,14 @@
             "guided1"
         ],
         "main_status_constraint": [
-            "apprentice"
+            "apprentice",
+            "mediator apprentice",
+            "medicine cat apprentice"
         ],
         "random_status_constraint": [
-            "apprentice"
+            "apprentice",
+            "mediator apprentice",
+            "medicine cat apprentice"
         ],
         "random_backstory_constraint": [
             "clan_founder",
@@ -2984,83 +2985,9 @@
         ]
     },
     {
-        "id": "gen_former_kittypet_medcat",
-        "thoughts": [
-            "Uses knowledge from {PRONOUN/m_c/poss} time with Twolegs to improve a healing method",
-            "Wonders what {PRONOUN/m_c/poss} old vet would do for greencough",
-            "Is annoyed by Clan gossip surrounding {PRONOUN/m_c/poss} past and {PRONOUN/m_c/poss} connection to StarClan",
-            "Knows a great garden in the Twolegplace for gathering catmint",
-            "Wishes {PRONOUN/m_c/subject} could get {PRONOUN/m_c/poss} paws on the wrappings the vet uses",
-            "Wonders if there's a way to develop an immunizing poultice"
-        ],
-        "main_backstory_constraint": [
-            "kittypet1",
-            "kittypet2",
-            "kittypet3",
-            "kittypet4",
-            "refugee3",
-            "tragedy_survivor3",
-            "guided1"
-        ],
-        "main_status_constraint": [
-            "medicine cat"
-        ],
-        "random_living_status": [
-            "living"
-        ]
-    },
-    {
-        "id": "gen_former_kittypet_deputy",
-        "thoughts": [
-            "Is proud of how far {PRONOUN/m_c/subject} {verb/m_c/have/has} come from {PRONOUN/m_c/poss} kittypet life",
-            "Is annoyed to still hear gossip about {PRONOUN/m_c/poss} past",
-            "Would never wish to return to {PRONOUN/m_c/poss} old kittypet life",
-            "Wishes other cats would trust in the leader's choice of making {PRONOUN/m_c/object} deputy",
-            "Wouldn't mind bragging about {PRONOUN/m_c/poss} position in the Clan to some old kittypet friends",
-            "Treats Clanmates fairly regardless of their pasts"
-        ],
-        "main_backstory_constraint": [
-            "kittypet1",
-            "kittypet2",
-            "kittypet3",
-            "kittypet4",
-            "refugee3",
-            "tragedy_survivor3",
-            "guided1"
-        ],
-        "main_status_constraint": [
-            "deputy"
-        ]
-    },
-    {
-        "id": "gen_former_kittypet_leader",
-        "thoughts": [
-            "Is proud of how far {PRONOUN/m_c/subject} {verb/m_c/have/has} come from {PRONOUN/m_c/poss} kittypet life",
-            "Would never wish to return to {PRONOUN/m_c/poss} old kittypet life",
-            "Is happy to prove StarClan's trust in {PRONOUN/m_c/poss} leadership",
-            "Carefully practices the words to every ceremony in {PRONOUN/m_c/poss} den",
-            "Looks back on {PRONOUN/m_c/poss} life as a kittypet, amazed at how different things are now",
-            "Thinks about taking in some kittypets as apprentices",
-            "Wonders if {PRONOUN/m_c/poss} old Twolegs would even recognize {PRONOUN/m_c/object}",
-            "Wonders if new kits will be told of {PRONOUN/m_c/poss} past"
-        ],
-        "main_backstory_constraint": [
-            "kittypet1",
-            "kittypet2",
-            "kittypet3",
-            "kittypet4",
-            "refugee3",
-            "tragedy_survivor3",
-            "guided1"
-        ],
-        "main_status_constraint": [
-            "leader"
-        ]
-    },
-    {
         "id": "med_cats_to_alive_kit",
         "thoughts": [
-            "Is teaching kits about what plants to stay away from",
+            "Is teaching kits about which plants to stay away from",
             "Chases kits out of {PRONOUN/m_c/poss} den",
             "Is visiting the nursery to give r_c a checkup",
             "Keeps the dangerous herbs in the highest nooks in {PRONOUN/m_c/poss} den",
@@ -3430,10 +3357,7 @@
         "id": "apprentices_to_alive_med_cat_app",
         "thoughts": [
             "Wants to visit r_c at the medicine cat den",
-            "Talks to r_c about what being a medicine cat apprentice is like",
-            "Can't understand why r_c doesn't want to learn to fight",
-            "Shows r_c some defensive moves",
-            "Promises r_c that once {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} a warrior, {PRONOUN/m_c/subject}'ll take care of {PRONOUN/r_c/object}"
+            "Talks to r_c about what being a medicine cat apprentice is like"
         ],
         "main_status_constraint": [
             "apprentice",
@@ -3457,7 +3381,6 @@
             "Makes fun of r_c for not being an apprentice yet",
             "Playfights with r_c",
             "Teaches r_c a cool new trick that {PRONOUN/m_c/subject} learned",
-            "Is scolded by a warrior for wrestling with r_c",
             "Lords {PRONOUN/m_c/poss} rank over r_c",
             "Offers to be r_c's mentor when the time comes",
             "Tells r_c {PRONOUN/r_c/subject}'ll make a great denmate",
