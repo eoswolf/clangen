@@ -1246,7 +1246,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c approaches, casting a shrewd eye over m_c. Whatever this evaluation is looking for, r_c seems satisfied. {PRONOUN/r_c/subject/CAP} {VERB/r_c/promise/promises} m_c that this new life for [virtue] will ensure {PRONOUN/m_c/subject} can wreak all the vegeance {PRONOUN/m_c/subject} {VERB/m_c/want/wants}.",
+          "text": "r_c approaches, casting a shrewd eye over m_c. Whatever this evaluation is looking for, r_c seems satisfied. {PRONOUN/r_c/subject/CAP} {VERB/r_c/promise/promises} m_c that this new life for [virtue] will ensure {PRONOUN/m_c/subject} can deal out justice at {PRONOUN/m_c/poss} discretion.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
