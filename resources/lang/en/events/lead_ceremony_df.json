@@ -353,7 +353,7 @@
       "stubbornness", "authority"]
         },
         {
-          "text": "r_c's claws dug into the shadowy ooze underneath {PRONOUN/r_c/object} when {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. The dark spirit gives a life for [virtue]. It feels like the claws of all the foxes in the world are raking down m_c's pelt.",
+          "text": "r_c's claws dig into the shadowy ooze underneath {PRONOUN/r_c/object} when {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. The dark spirit gives a life for [virtue]. It feels like the claws of all the foxes in the world are raking down m_c's pelt.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
