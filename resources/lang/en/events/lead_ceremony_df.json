@@ -455,7 +455,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "Appearing behind m_c from the murk, a dark tail passes in front of m_c's eyes. The shadows distort the life giver's voice, but {PRONOUN/m_c/subject} swears {PRONOUN/m_c/subject} can hear r_c teasing {PRONOUN/m_c/object}. The life of [virtue] ebbed away before m_c can see if it was really {PRONOUN/r_c/object}.",
+          "text": "A dark tail passes in front of m_c's eyes as another cat approaches from behind. The shadows distort the life giver's voice, but {PRONOUN/m_c/subject} swears {PRONOUN/m_c/subject} can hear r_c teasing {PRONOUN/m_c/object}. The life of [virtue] soaked in before m_c can see if it was really {PRONOUN/r_c/object}.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
