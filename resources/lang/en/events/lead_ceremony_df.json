@@ -218,7 +218,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c steps forth with hypnotic grace, {PRONOUN/r_c/poss} presence pulling the very air into a hushed stillness. With calculated movement, {PRONOUN/r_c/subject} {VERB/r_c/exude/exudes} an unsettling tranquility, {PRONOUN/r_c/poss} eyes shining with ravening intelligence. {PRONOUN/r_c/subject/CAP} slowly {VERB/r_c/draw/draws} nearer, giving m_c a life for [virtue].",
+          "text": "r_c steps forth with hypnotic grace, {PRONOUN/r_c/poss} presence pulling the very air into a hushed stillness. {PRONOUN/r_c/subject/CAP} {VERB/r_c/exude/exudes} an unsettling tranquility, {PRONOUN/r_c/poss} eyes shining with ravening intelligence. {PRONOUN/r_c/subject/CAP} slowly {VERB/r_c/draw/draws} nearer with calculated movements, giving m_c a life for [virtue].",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "authority"]
         },
