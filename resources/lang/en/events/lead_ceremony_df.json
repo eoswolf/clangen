@@ -200,7 +200,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "The air becomes unsettling still as r_c, a cat with nefarious reputation, draws near. With deceptively calm steps, {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c, extending an offer of a life infused with the virtue of [virtue]. As the life surges through m_c, r_c vanishes into the veils of darkness from which {PRONOUN/r_c/subject} emerged.",
+          "text": "The air becomes unsettlingly still as r_c, a cat with a nefarious reputation, draws near. With deceptively calm steps, {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c, extending an offer of a life infused with the virtue of [virtue]. As the life surges through m_c, r_c vanishes into the veils of darkness from which {PRONOUN/r_c/subject} emerged.",
           "virtue": ["ambition", "certainty", "clear judgment", "confidence", "courage", "endurance", "farsightedness", "instincts", "cunningness", "shamelessness", "zealotry", "bloodlust", "authority"]
         },
         {
