@@ -573,7 +573,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "Whispering of a prank to pull on the other Clans, and how it would be SO funny, r_c gives m_c a life for [virtue].",
+          "text": "r_c gives m_c a life for [virtue], simultaneously whispering a prank into {PRONOUN/m_c/poss} ear that would be <i>so funny</i> to pull on the other Clans.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
