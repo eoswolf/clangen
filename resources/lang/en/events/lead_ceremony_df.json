@@ -811,7 +811,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c approaches, black slime dripping from {PRONOUN/r_c/poss} fur, blood oozing from corners of {PRONOUN/r_c/poss} eyes. Even m_c feels shaken to see such a vile form draw near, and closes {PRONOUN/m_c/poss} eyes as r_c reaches out to give a life for [virtue].",
+          "text": "r_c approaches, black slime dripping from {PRONOUN/r_c/poss} fur, blood oozing from the corners of {PRONOUN/r_c/poss} eyes. Even m_c feels shaken to see such a vile form draw near, closing {PRONOUN/m_c/poss} eyes as r_c reaches out to give a life for [virtue].",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
