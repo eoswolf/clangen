@@ -383,7 +383,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c slinks forward with an air of unsettling detachment. Rarely does a sound escape {PRONOUN/r_c/poss} lips, as this feline only speaks to hand m_c a life for [virtue], then fades into the shadows once more. {PRONOUN/r_c/poss/CAP} haunting presence lingers, leaving behind a trail of curiosity and unspoken whispers.",
+          "text": "r_c slinks forward with an air of unsettling detachment. Rarely does a sound escape {PRONOUN/r_c/poss} lips: {PRONOUN/r_c/subject} {VERB/r_c/speak/speaks} only to hand m_c a life for [virtue], then fades into the shadows once more. {PRONOUN/r_c/poss/CAP} haunting presence lingers, leaving behind a trail of curiosity and unspoken whispers.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
