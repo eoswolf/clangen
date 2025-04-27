@@ -4027,13 +4027,26 @@
         "id": "troublesome_apprentices",
         "thoughts": [
             "Is ignoring {PRONOUN/m_c/poss} mentor's orders",
-            "Is making other apprentices laugh",
             "Got in trouble for shirking {PRONOUN/m_c/poss} training the other day",
             "Is talking back to {PRONOUN/m_c/poss} mentor",
-            "Is mocking another apprentice",
             "Was told off by {PRONOUN/m_c/poss} mentor for not taking {PRONOUN/m_c/poss} training seriously enough",
             "Spreads rumors about {PRONOUN/m_c/poss} mentor",
-            "Ignores {PRONOUN/m_c/poss} mentor's advice and substitutes {PRONOUN/m_c/poss} own",
+            "Ignores {PRONOUN/m_c/poss} mentor's advice and substitutes {PRONOUN/m_c/poss} own"
+        ],
+        "main_status_constraint": [
+            "apprentice",
+            "medicine cat apprentice",
+            "mediator apprentice"
+        ],
+        "main_trait_constraint": [
+            "troublesome"
+        ]
+    },
+    {
+        "id": "troublesome_apprentices_to_apprentices",
+        "thoughts": [
+            "Is making other apprentices laugh",
+            "Is mocking another apprentice",
             "Tattletales on a fellow apprentice"
         ],
         "main_status_constraint": [
@@ -4043,6 +4056,14 @@
         ],
         "main_trait_constraint": [
             "troublesome"
+        ],
+        "random_status_constraint": [
+            "apprentice",
+            "medicine cat apprentice",
+            "mediator apprentice"
+        ],
+        "random_living_status": [
+            "living"
         ]
     },
     {
