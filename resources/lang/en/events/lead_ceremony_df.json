@@ -135,7 +135,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c next, giving {PRONOUN/m_c/object} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/growl/growls} a word of encouragement over the destruction of c_n's enemies before returning to the line of shadows.",
+          "text": "r_c walks up to m_c next, giving {PRONOUN/m_c/object} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/growl/growls} a word of encouragement about the destruction of c_n's enemies before returning to the line of shadows.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
@@ -172,9 +172,8 @@
       "life_giving": [
         {
           "text": "r_c's dark eyes glisten with the light of a thousand unrealized ambitions. As {PRONOUN/r_c/subject} {VERB/r_c/inflict/inflicts} a life for [virtue] on m_c, r_c hisses those goals into {PRONOUN/m_c/poss} ear.",
-          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
-      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
-      "stubbornness", "authority"]
+          "virtue": ["ambition", "bravery", "certainty", "confidence", "courage",
+      "determination", "endurance", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "authority"]
         }
       ]
     },
@@ -201,7 +200,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "The air falls into an unsettling stillness as r_c, a cat with nefarious reputation, draws near, exuding a deceptive calm. With measured steps, {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c, extending an offer of a life infused with the virtue of [virtue], to then vanish into the veils of darkness from which {PRONOUN/r_c/subject} emerged.",
+          "text": "The air becomes unsettling still as r_c, a cat with nefarious reputation, draws near. With deceptively calm steps, {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c, extending an offer of a life infused with the virtue of [virtue]. As the life surges through m_c, r_c vanishes into the veils of darkness from which {PRONOUN/r_c/subject} emerged.",
           "virtue": ["ambition", "certainty", "clear judgment", "confidence", "courage", "endurance", "farsightedness", "instincts", "cunningness", "shamelessness", "zealotry", "bloodlust", "authority"]
         },
         {
@@ -223,7 +222,7 @@
       "determination", "endurance", "farsightedness", "instincts", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "authority"]
         },
         {
-          "text": "r_c moves forward with deliberate precision, a testament to {PRONOUN/r_c/poss} innate awareness, like a predator stalking its prey with relentless focus. Eyes glinting with enmity, r_c surveys m_c, leaving no detail unnoticed. {PRONOUN/r_c/subject/CAP} {VERB/r_c/inch/inches} closer, offering a life for [virtue].",
+          "text": "r_c moves forward with deliberate precision, the relentless focus of a predator stalking its prey. Eyes glinting with enmity, r_c surveys m_c, leaving no detail unnoticed. {PRONOUN/r_c/subject/CAP} {VERB/r_c/inch/inches} closer, offering a life for [virtue]. Before the malevolent spirit vanishes, m_c sees {PRONOUN/r_c/object} dip {PRONOUN/r_c/poss} head.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "authority"]
         }
@@ -237,7 +236,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "Slinking across the ground to close the distance between them, r_c grins like {PRONOUN/r_c/subject} {VERB/r_c/are/is} watching a tiny, trapped mouse. r_c gives m_c a life for [virtue], vanishing before that maw could strike at {PRONOUN/m_c/poss} throat.",
+          "text": "Slinking across the ground to close the distance between them, r_c grins like {PRONOUN/r_c/subject} {VERB/r_c/are/is} watching a tiny, trapped mouse. r_c gives m_c a life for [virtue], vanishing before that maw can strike at {PRONOUN/m_c/poss} throat.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
@@ -335,7 +334,10 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c's eyes glitter with bleak conviction as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. Offering a life for [virtue], r_c murmurs that m_c must follow {PRONOUN/m_c/poss} beliefs - no matter what path those beliefs may lead {PRONOUN/m_c/object} down."
+          "text": "r_c's eyes glitter with bleak conviction as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. Offering a life for [virtue], r_c murmurs that m_c must follow {PRONOUN/m_c/poss} beliefs - no matter what path those beliefs may lead {PRONOUN/m_c/object} down.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
         }
       ]
     },
@@ -395,7 +397,7 @@
       "stubbornness", "authority"]
         },
         {
-          "text": "With steady footing, r_c approaches m_c, {PRONOUN/r_c/poss} velvet paws treading noiselessly upon the moss-covered ground. Brooding demeanor, accompanied by an ominous silence, alludes to a dark past that remains locked within {PRONOUN/r_c/poss} enigmatic spirit. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a life for [virtue], then {VERB/r_c/leave/leaves} without a sound escaping {PRONOUN/r_c/poss} tongue.",
+          "text": "With steady footing, r_c approaches m_c, {PRONOUN/r_c/poss} velvet paws treading noiselessly upon the spongy ground. r_c's brooding silence and ominous silence allude to the dark past that remains locked within {PRONOUN/r_c/poss} enigmatic spirit. {PRONOUN/r_c/subject/CAP} silently {VERB/r_c/give/gives} a life for [virtue], then {VERB/r_c/leave/leaves} without ever making a sound.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
@@ -410,7 +412,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c approaches and entwines {PRONOUN/r_c/poss} tail with m_c's. {PRONOUN/r_c/subject/CAP} {VERB/r_c/promise/promises} m_c that {PRONOUN/m_c/poss} destiny awaits, if only {PRONOUN/m_c/subject} will be ruthless enough to seize it. r_c gives a life for [virtue].",
+          "text": "r_c approaches m_c and entwines {PRONOUN/r_c/poss} tail with {PRONOUN/m_c/inposs}. {PRONOUN/r_c/subject/CAP} {VERB/r_c/promise/promises} m_c that {PRONOUN/m_c/poss} destiny awaits, if only {PRONOUN/m_c/subject} will be ruthless enough to seize it. r_c gives a life for [virtue]. r_c feels sure that this gift of [virtue] is the first pawprint on the path.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
@@ -442,7 +444,7 @@
         {
           "text": "r_c only watches the new leader with a rather forlorn look before giving {PRONOUN/m_c/object} a life for [virtue]. m_c doesn't even have a chance to talk to the Dark Forest cat before {PRONOUN/r_c/subject} {VERB/r_c/vanish/vanishes} into smoke.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
-      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "determination", "endurance", "farsightedness", "instincts", "strength", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
         }
       ]
@@ -470,7 +472,10 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "deputy", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c approaches m_c, a stern glow in {PRONOUN/r_c/poss} dark gaze. As {PRONOUN/r_c/subject} {VERB/r_c/give/gives} {PRONOUN/r_c/poss} life for [virtue], {PRONOUN/r_c/subject} {VERB/r_c/remind/reminds} m_c that true greatness can only be achieved through hard work and discipline."
+          "text": "r_c approaches m_c, a stern glow in {PRONOUN/r_c/poss} dark gaze. As {PRONOUN/r_c/subject} {VERB/r_c/give/gives} {PRONOUN/r_c/poss} life for [virtue], {PRONOUN/r_c/subject} {VERB/r_c/remind/reminds} m_c that true greatness can only be achieved through hard work and discipline.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
         }
       ]
     },
@@ -531,7 +536,10 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "A shape begins to form in the distance, then in the space of a pawstep, r_c is suddenly directly in front of m_c's muzzle. Before m_c can flinch away, the unearthly spirit gives a life for [virtue], then vanishes into the darkness like smoke gusted by the breeze. Only a trace of {PRONOUN/r_c/poss} glowing eyes remains."
+          "text": "A shape begins to form in the distance. Then, in the space of a pawstep, r_c is suddenly directly in front of m_c's muzzle. Before m_c can flinch away, the unearthly spirit gives a life for [virtue], then vanishes into the darkness like smoke gusted by the breeze. A trace of {PRONOUN/r_c/poss} glowing eyes remains, only for a heartbeat.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
         }
       ]
     },
@@ -543,7 +551,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
       {
-        "text": "r_c looms over m_c, a fierce light kindled in the depths of {PRONOUN/r_c/poss} gaze. {PRONOUN/r_c/subject/CAP} {VERB/r_c/snarl/snarls} that m_c, as leader, is now responsible for the code itself. This duty must not be shirked. r_c gives a life for [virtue].",
+        "text": "r_c looms over m_c, a fierce light kindled in the depths of {PRONOUN/r_c/poss} gaze. {PRONOUN/r_c/subject/CAP} {VERB/r_c/snarl/snarls} that m_c, as leader, is now the keeper of the Code itself, and must shape it to {PRONOUN/m_c/poss} will. This duty must not be shirked. With that warning, r_c gives a life for [virtue].",
         "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
     "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
     "stubbornness", "authority"]
@@ -802,6 +810,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "r_c approaches, black slime dripping from {PRONOUN/r_c/poss} fur, blood oozing from corners of {PRONOUN/r_c/poss} eyes. Even m_c feels shaken to see such a vile form draw near, and closes {PRONOUN/m_c/poss} eyes as r_c reaches out to give a life for [virtue].",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -811,7 +825,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
-
+          {
+            "text": "r_c appears so suddenly that m_c's heart jumps into {PRONOUN/m_c/poss} throat. With a wicked grin, r_c assures m_c that {PRONOUN/m_c/poss} wariness will be an asset - so long as m_c isn't a mouse-heart, of course. m_c meets {PRONOUN/r_c/poss} gaze coolly, accepting r_c's life for [virtue].",
+            "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+        "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+        "stubbornness", "authority"]
+          }
       ]
     },
   
@@ -863,6 +882,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "r_c stalks forward with unsheathed claws, but m_c doesn't let {PRONOUN/m_c/poss} fur rise. With a hiss of challenge, r_c thrusts {PRONOUN/r_c/poss} muzzle forward to give m_c a life for [virtue]. m_c meets the challenge with cold, unblinking eyes, and r_c stalks away, unsatisfied by {PRONOUN/m_c/poss} lack of response.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
 
@@ -933,6 +958,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "A cold chill washes over m_c as r_c approaches to give a life. m_c meets {PRONOUN/r_c/poss} calculating stare, unflinching. r_c hisses a warning of clinging too tightly to {PRONOUN/m_c/poss} precious rules - what matters is not faith, but <i>strength</i>. m_c bites {PRONOUN/m_c/poss} tongue as r_c gives {PRONOUN/m_c/object} a life for [virtue.]",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -984,6 +1015,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "r_c approaches m_c with a threatening air, winding around {PRONOUN/m_c/object} and hissing in {PRONOUN/m_c/poss} ear that power is lonely. m_c breathes a sigh of relief. r_c isn't sure how to respond and quickly gives a life for [virtue] before vanishing into the darkness.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -993,6 +1030,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "r_c arrives in a plume of gray smoke, prowling up to m_c with a snarl rumbling in {PRONOUN/r_c/poss} chest. {PRONOUN/r_c/subject/CAP} {VERB/r_c/warn/warns} m_c that {PRONOUN/m_c/poss} soft-hearted nature will be a weakness if {PRONOUN/m_c/subject} {VERB/m_c/want/wants} to hold onto power. With a last contemptuous look, r_c gives a life for [virtue].",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -1115,6 +1158,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "m_c keeps {PRONOUN/m_c/poss} head on a swivel, catching sight of r_c just as the dark spirit attempts to get the drop on {PRONOUN/m_c/object}. r_c snarls a threatening purr, recognizing the skills that the two of them share. {PRONOUN/r_c/subject/CAP} {VERB/r_c/assure/assures} {PRONOUN/m_c/object} these skills will serve {PRONOUN/m_c/object} well as leader, and gives a life for [virtue].",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -1196,6 +1245,12 @@
       "star_trait": [],
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
+        {
+          "text": "r_c approaches, casting a shrewd eye over m_c. Whatever this evaluation is looking for, r_c seems satisfied. {PRONOUN/r_c/subject/CAP} {VERB/r_c/promise/promises} m_c that this new life for [virtue] will ensure {PRONOUN/m_c/subject} can wreak all the vegeance {PRONOUN/m_c/subject} {VERB/m_c/want/wants}.",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
   
@@ -1239,6 +1294,12 @@
       "star_trait": [],
       "rank": ["warrior", "deputy"],
       "life_giving": [
+        {
+          "text": "r_c approaches m_c, a flare of challenge in {PRONOUN/r_c/poss} dark eyes. m_c straightens up and puffs out {PRONOUN/m_c/poss} chest. With a whisper about other great leaders, r_c challenges m_c to be greater, more powerful, more feared than them all. Visions of glory dance in m_c's mind as r_c gives {PRONOUN/m_c/object} a life for [virtue].",
+          "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
+      "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
+      "stubbornness", "authority"]
+        }
       ]
     },
         "flamboyant_warrior": {
@@ -1248,7 +1309,7 @@
       "rank": ["warrior", "deputy"],
       "life_giving": [
         {
-          "text": "Such a dramatic attitude has no place in the Dark Forest. But the gloom-covered spirit of r_c gives m_c a life for [virtue] with silent contempt in {PRONOUN/r_c/poss} eyes regardless of {PRONOUN/r_c/poss} feelings on the matter.",
+          "text": "m_c's a dramatic attitude has no place in the Dark Forest. Still, the gloom-covered spirit of r_c gives m_c a life for [virtue] with silent contempt in {PRONOUN/r_c/poss} eyes regardless of {PRONOUN/r_c/poss} feelings on the matter.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
           "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
           "stubbornness", "authority"]
