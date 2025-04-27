@@ -631,7 +631,7 @@
       "rank": ["warrior", "deputy", "leader"],
       "life_giving": [
         {
-          "text": "r_c knows that m_c will never be able to outdo {PRONOUN/r_c/object}, even with the Dark Forest on the leader's side. Even as the life for [virtue] fades into a dull, painful ache, r_c whispers how {PRONOUN/r_c/subject} will be here and watching m_c fail again and again compared to dark spirit.",
+          "text": "r_c knows that m_c will never be able to outdo {PRONOUN/r_c/object}, even with the Dark Forest on the new leader's side. Even as the life for [virtue] fades into a dull, painful ache, r_c whispers how {PRONOUN/r_c/subject} will be here, watching m_c fail again and again.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
           "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
           "stubbornness", "authority"]
