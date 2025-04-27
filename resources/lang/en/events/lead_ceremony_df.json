@@ -267,7 +267,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "Draped in an aura of chilling indifference, r_c slinks forward with stoic grace, {PRONOUN/r_c/poss} measured steps reverberating with an unsettling stillness that sent shivers down m_c's spine. Closing the haunting distance between them, r_c inches closer, extending an offer of a life in name of [virtue].",
+          "text": "Draped in an aura of chilling indifference, r_c slinks forward with stoic grace. {PRONOUN/r_c/poss/CAP} measured steps seem to reverberate with an unsettling stillness that sends shivers down m_c's spine. Closing the haunting distance between them, r_c extends an offer of a life in name of [virtue].",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunningness", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
