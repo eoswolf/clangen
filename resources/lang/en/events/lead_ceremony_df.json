@@ -186,7 +186,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c bares {PRONOUN/r_c/poss} teeth and looks like {PRONOUN/r_c/subject} {VERB/r_c/are/is} about to fight m_c. But r_c only presses {PRONOUN/r_c/poss} nose against m_c and snarls a life for [virtue].",
+          "text": "r_c bares {PRONOUN/r_c/poss} teeth. For a moment, it looks like {PRONOUN/r_c/subject} {VERB/r_c/are/is} about to fight m_c, but {PRONOUN/r_c/subject} only {VERB/r_c/press/presses} {PRONOUN/r_c/poss} nose against m_c and snarls a life for [virtue].",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
