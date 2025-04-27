@@ -555,6 +555,16 @@
     }
   },
   {
+    "interaction_type": "search",
+    "event_text": "When c_n finds m_c, they're shocked to hear that {PRONOUN/m_c/subject} {VERB/m_c/are/is}n't ready to come home just yet. They part on good terms, and {PRONOUN/m_c/subject} {VERB/m_c/promise/promises} to be home soon.",
+    "reputation": ["any"],
+    "rep_change": 0,
+    "m_c": {
+      "status": ["lost"],
+      "new_thought": "Is relieved to see {PRONOUN/m_c/poss} Clanmates again"
+    }
+  },
+  {
     "interaction_type": "hunt",
     "event_text": "Despite a long search, m_c could not be found by the Clan.",
     "reputation": ["any"],
