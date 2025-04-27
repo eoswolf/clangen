@@ -959,7 +959,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "A cold chill washes over m_c as r_c approaches to give a life. m_c meets {PRONOUN/r_c/poss} calculating stare, unflinching. r_c hisses a warning of clinging too tightly to {PRONOUN/m_c/poss} precious rules - what matters is not faith, but <i>strength</i>. m_c bites {PRONOUN/m_c/poss} tongue as r_c gives {PRONOUN/m_c/object} a life for [virtue.]",
+          "text": "A cold chill washes over m_c as r_c approaches to give a life. m_c meets {PRONOUN/r_c/poss} calculating stare, unflinching. r_c hisses a warning about clinging too tightly to {PRONOUN/m_c/poss} precious rules - what matters is not faith, but <i>strength</i>. m_c bites {PRONOUN/m_c/poss} tongue as r_c gives {PRONOUN/m_c/object} a life for [virtue].",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
