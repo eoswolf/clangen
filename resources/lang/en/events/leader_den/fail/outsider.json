@@ -1,7 +1,7 @@
 [
   {
     "interaction_type": "hunt",
-    "event_text": "The c_n patrol catches m_c's scent, but following it only leads them in circles.",
+    "event_text": "The c_n patrol catches m_c's scent, but it only leads them in circles.",
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
@@ -227,7 +227,7 @@
   },
   {
     "interaction_type": "drive",
-    "event_text": "The c_n patrol catches m_c's scent, but following it only leads them in circles.",
+    "event_text": "The c_n patrol catches m_c's scent, but it only leads them in circles.",
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
@@ -245,7 +245,7 @@
   },
   {
     "interaction_type": "drive",
-    "event_text": "c_n attacks and chases m_c beyond the borders, but only a few days later, a patrol catches a fresh scent on c_n's territory.",
+    "event_text": "c_n attacks and chases m_c beyond the borders, but only a few days later, a patrol catches {PRONOUN/m_c/poss} fresh scent on c_n's territory.",
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
@@ -347,7 +347,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "The c_n patrol catches m_c's scent, but following it only leads them in circles.",
+    "event_text": "The c_n patrol catches m_c's scent, but it only leads them in circles.",
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
@@ -486,7 +486,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "The c_n patrol catches m_c's scent, but following it only leads them in circles.",
+    "event_text": "The c_n patrol catches m_c's scent, but it only leads them in circles.",
     "reputation": ["any"],
     "rep_change": 0,
     "m_c": {
@@ -496,7 +496,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "A c_n patrol thought they caught a glimpse of m_c, but a search of the surrounding area turns up no sign of their old Clanmate.",
+    "event_text": "A c_n patrol thought they caught a glimpse of m_c, but their search of the surrounding area yields no sign of their old Clanmate.",
     "reputation": ["any"],
     "rep_change": 0,
     "m_c": {
@@ -546,17 +546,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "A c_n search patrol finally finds m_c, but {PRONOUN/m_c/poss} Clanmates are shocked to hear that m_c has unfinished business outside of the Clan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/promise/promises} to return soon.",
-    "reputation": ["any"],
-    "rep_change": 0,
-    "m_c": {
-      "status": ["lost"],
-      "new_thought": "Is relieved to see {PRONOUN/m_c/poss} Clanmates again"
-    }
-  },
-  {
-    "interaction_type": "search",
-    "event_text": "When c_n finds m_c, they're shocked to hear that {PRONOUN/m_c/subject} {VERB/m_c/are/is}n't ready to come home just yet. They part on good terms, and {PRONOUN/m_c/subject} {VERB/m_c/promise/promises} to be home soon.",
+    "event_text": "When c_n finds m_c, {PRONOUN/m_c/subject} {VERB/m_c/tell/tells} them {PRONOUN/m_c/subject} {VERB/m_c/are/is}n't ready to come home just yet. They part on good terms, and {PRONOUN/m_c/subject} {VERB/m_c/promise/promises} to be home soon.",
     "reputation": ["any"],
     "rep_change": 0,
     "m_c": {
