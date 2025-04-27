@@ -368,7 +368,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c darts a nervous look over {PRONOUN/r_c/poss} shoulder as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches}, studying the gloom for one skittish moment. {PRONOUN/r_c/subject/CAP} {VERB/r_c/turn/turns} back to m_c and {VERB/r_c/thrust/thrusts} {PRONOUN/r_c/poss} muzzle against m_c's hard enough to bruise, forcing a life for [virtue] on {PRONOUN/m_c/object} before withdrawing.",
+          "text": "r_c approaches, shooting a nervous look over {PRONOUN/r_c/poss} shoulder to study the gloom for one fleeting moment. {PRONOUN/r_c/subject/CAP} {VERB/r_c/turn/turns} back to m_c and {VERB/r_c/thrust/thrusts} {PRONOUN/r_c/poss} muzzle against {PRONOUN/m_c/inposs}, hard enough to bruise. r_c forces a life for [virtue] onto {PRONOUN/m_c/object} before withdrawing.",
           "virtue": ["ambition", "bravery", "certainty", "clear judgment", "confidence", "courage",
       "determination", "endurance", "farsightedness", "instincts", "strength", "ferocity", "cunning", "shamelessness", "zealotry", "bloodlust", "restless energy", 
       "stubbornness", "authority"]
