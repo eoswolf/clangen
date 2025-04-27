@@ -589,7 +589,7 @@
             "no_body"
         ],
         "weight": 40,
-        "event_text": "Distracted by other matters, m_c forgets the tide. {PRONOUN/m_c/subject/CAP} {VERB/m_c/die/dies} trapped between the waves and the cliffs as r_c watches.",
+        "event_text": "Distracted by other matters, m_c forgot the tide. {PRONOUN/m_c/subject/CAP} died trapped between the waves and the cliffs as r_c watched.",
         "m_c": {
             "status": [
                 "leader"
