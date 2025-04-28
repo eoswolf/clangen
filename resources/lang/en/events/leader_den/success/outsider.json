@@ -447,7 +447,7 @@
   },
   {
     "interaction_type": "hunt",
-    "event_text": "When c_n finds m_c, {PRONOUN/m_c/poss} fur bushes up and eyes widen at the sight of so many cats. It's the last sight {PRONOUN/m_c/subject}'ll ever see.",
+    "event_text": "When c_n finds m_c, {PRONOUN/m_c/poss} fur bushes up and eyes widen at the sight of so many cats. It's the last sight {PRONOUN/m_c/subject} ever {VERB/m_c/see/sees}.",
     "reputation": ["any"],
     "rep_change": -10,
     "m_c": {
