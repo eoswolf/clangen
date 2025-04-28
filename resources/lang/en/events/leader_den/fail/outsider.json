@@ -367,7 +367,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "When {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} found, m_c ignores the c_n's patrol invitation and runs off.",
+    "event_text": "When {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} found, m_c ignores the c_n patrol's invitation and runs off.",
     "reputation": ["any"],
     "rep_change": -1,
     "m_c": {
