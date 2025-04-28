@@ -1045,7 +1045,7 @@
     "rep_change": -1,
     "m_c": {
       "status": ["kittypet", "loner", "rogue"],
-      "new_thought": "Is stunned to discover Clan cats are much more vicious than {PRONOUN/m_c/subject} thought}",
+      "new_thought": "Is stunned to discover Clan cats are much more vicious than {PRONOUN/m_c/subject} thought",
       "relationships": [
         {
           "cats_from": ["m_c"],
