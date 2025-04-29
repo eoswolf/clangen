@@ -2457,6 +2457,7 @@
       "mountainous"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 10,
     "event_text": "The thornbush might be on o_c_n's side of the border, but both Clans benefit from uprooting it before it can block the path further.",
     "m_c": {
@@ -2493,8 +2494,9 @@
       "mountainous"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 10,
-    "event_text": "Tracks don't lie, even if o_c_n may. One of them has been traipsing across the border. It remains to be seen if that cat is a confused apprentice or a deliberate provacation.",
+    "event_text": "Tracks don't lie, even if o_c_n may. One of them has been traipsing across the border. It remains to be seen if that cat is a confused apprentice or a deliberate provocation.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
