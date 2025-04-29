@@ -4354,7 +4354,7 @@
             "text": "app1 takes the lead and finds a great patch from which to harvest. app2 is impressed and helps {PRONOUN/app1/object} carry plenty back.",
             "exp": 30,
             "weight": 5,
-            "herbs": ["many_herbs"],
+            "herbs": ["many_herbs", "random_herbs"],
                 "relationships": [
             {
                         "cats_to": ["app1"],
@@ -4379,7 +4379,7 @@
                 "weight": 10,
                 "stat_skill": ["HEALER,1", "SENSE,1"],
                 "can_have_stat": ["app1"],
-                "herbs": ["many_herbs"],
+                "herbs": ["many_herbs", "random_herbs"],
                     "relationships": [
                 {
                             "cats_to": ["app1"],
@@ -4405,7 +4405,7 @@
             "stat_skill": ["HEALER,1", "SENSE,1"],
             "stat_trait": ["confident", "ambitious", "shameless", "arrogant", "competitive", "confident", "bold"],
             "can_have_stat": ["app1"],
-            "herbs": ["many_herbs"],
+            "herbs": ["many_herbs", "random_herbs"],
                 "relationships": [
                     {
                         "cats_to": ["app1"],
@@ -4602,7 +4602,7 @@
                 "weight": 5,
                 "stat_trait": ["ambitious", "arrogant", "competitive", "daring", "childish", "troublesome"],
                 "can_have_stat": ["app1"],
-                "herbs": ["many_herbs"],
+                "herbs": ["many_herbs", "random_herbs"],
                     "relationships": [
                 {
                             "cats_to": ["app1"],
