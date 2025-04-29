@@ -4628,7 +4628,7 @@
                 "art": "gen_train_argueAA"
             },
             {
-                "text": "s_c does a poor job of leading the patrol, but r_c is actually relieved to see that even {PRONOUN/s_c/subject} {VERB/c_c/fail/fails} sometimes, too. Though they return empty-pawed, r_c feels closer to p_l.",
+                "text": "s_c does a poor job of leading the patrol, but r_c is actually relieved to see that even {PRONOUN/s_c/subject} {VERB/s_c/fail/fails} sometimes, too. Though they return empty-pawed, r_c feels closer to p_l.",
                 "exp": 0,
                 "weight": 30,
                 "stat_skill": ["SENSE,1", "HEALER,1"],
