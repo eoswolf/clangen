@@ -2042,6 +2042,8 @@ class Cat:
                     "SPARROW FEATHERS",
                     "CLOVER",
                     "DAISY",
+                    "WISTERIA",
+                    "GOLDEN CREEPING JENNY",
                 )
             ]
 
