@@ -2238,6 +2238,7 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "An outsider places their scent near the border, a polite courtesy that indicates they don't mean trouble.",
     "m_c": {
@@ -2255,8 +2256,9 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
-    "event_text": "Tracks cross the border and then hurriedly cross out again, indicating the stranger didn't intrude intentionally.",
+    "event_text": "c_n finds tracks crossing the border and then hurriedly crossing out again, indicating the owner didn't intrude intentionally.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
@@ -2272,6 +2274,7 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "Someone has been hunting in c_n territory, a stranger without a Clan scent. c_n doesn't know their face, but they memorise their smell.",
     "m_c": {
@@ -2289,6 +2292,7 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "c_n's vast territory can be difficult to defend due to its size. The tracks of a rogue have now crossed their border repeatedly.",
     "m_c": {
@@ -2306,6 +2310,7 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "m_c finds prey blood and the scent of an intruder.",
     "m_c": {
@@ -2323,6 +2328,7 @@
       "desert"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "Someone has been trying to conceal their presence out in the borderlands...",
     "m_c": {
@@ -2504,6 +2510,7 @@
       "mountainous"
     ],
     "season": ["any"],
+    "tags": ["clan_wide"],
     "weight": 10,
     "event_text": "An area of the border looks a little too pristine. Almost like o_c_n have been covering something up there.",
     "m_c": {
