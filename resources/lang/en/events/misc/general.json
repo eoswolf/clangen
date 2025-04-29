@@ -2238,7 +2238,6 @@
       "desert"
     ],
     "season": ["any"],
-    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "An outsider places their scent near the border, a polite courtesy that indicates they don't mean trouble.",
     "m_c": {
@@ -2246,7 +2245,8 @@
     },
     "new_cat": [
       ["meeting", "loner", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_hardtofind_outsider3",
@@ -2264,7 +2264,8 @@
     },
     "new_cat": [
       ["meeting", "loner", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_hardtofind_rogue1",
@@ -2274,7 +2275,6 @@
       "desert"
     ],
     "season": ["any"],
-    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "Someone has been hunting in c_n territory, a stranger without a Clan scent. c_n doesn't know their face, but they memorise their smell.",
     "m_c": {
@@ -2282,7 +2282,8 @@
     },
     "new_cat": [
       ["meeting", "rogue", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_hardtofind_rogue2",
@@ -2292,7 +2293,6 @@
       "desert"
     ],
     "season": ["any"],
-    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "c_n's vast territory can be difficult to defend due to its size. The tracks of a rogue have now crossed their border repeatedly.",
     "m_c": {
@@ -2300,7 +2300,8 @@
     },
     "new_cat": [
       ["meeting", "rogue", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_hardtofind_rogue3",
@@ -2310,7 +2311,6 @@
       "desert"
     ],
     "season": ["any"],
-    "tags": ["clan_wide"],
     "weight": 20,
     "event_text": "m_c finds prey blood and the scent of an intruder.",
     "m_c": {
@@ -2318,7 +2318,8 @@
     },
     "new_cat": [
       ["meeting", "rogue", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_hardtofind_rogue4",
@@ -2328,15 +2329,15 @@
       "desert"
     ],
     "season": ["any"],
-    "tags": ["clan_wide"],
     "weight": 20,
-    "event_text": "Someone has been trying to conceal their presence out in the borderlands...",
+    "event_text": "A cat has been trying to conceal their presence out in the borderlands...",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
     "new_cat": [
       ["meeting", "rogue", "exists"]
-    ]
+    ],
+    "exclude_involved": ["m_c"]
   },
   {
     "event_id": "multi_misc_any_scandalous_other_clan1",
