@@ -4938,7 +4938,7 @@
             "art": "gen_med_warappmedapp_herbcontest"
             },
             {
-            "text": "app1 takes the lead and finds a great patch from which to harvest. The other appretnices are impressed and help {PRONOUN/app1/object} carry plenty back.",
+            "text": "app1 takes the lead and finds a great patch from which to harvest. The other apprentices are impressed and help {PRONOUN/app1/object} carry plenty back.",
             "exp": 30,
             "weight": 5,
             "herbs": ["many_herbs", "random_herbs"],
@@ -4961,7 +4961,7 @@
             "art": "gen_med_warappmedapp_herbcontest"
             },
             {
-                "text": "s_c leads the patrol to a plentiful, herb-rich area and harvests them with the practiced ease of a full medicine cat. The rest of the patrol exchanges glances, wondering what the point of them being there is if s_c can do it all {PRONOUN/s_c/self}.",
+                "text": "s_c leads the patrol to a plentiful, herb-rich area and harvests them with the practiced ease of a full medicine cat. The rest of the patrol exchange glances, wondering what the point of them being there is if s_c can do it all {PRONOUN/s_c/self}.",
                 "exp": 30,
                 "weight": 10,
                 "stat_skill": ["HEALER,1", "SENSE,1"],
@@ -5273,7 +5273,7 @@
                 {
                     "cats_to": ["p_l"],
                     "cats_from": ["r_c"],
-                    "mutual": true,
+                    "mutual": false,
                     "values": ["jealous"],
                     "amount": -10
                 }
