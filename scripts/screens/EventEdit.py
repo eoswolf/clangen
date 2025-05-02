@@ -4,6 +4,7 @@ import pygame_gui
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton
 from scripts.screens.Screens import Screens
+from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
 from scripts.utility import ui_scale
 
@@ -41,4 +42,19 @@ class EventEdit(Screens):
             object_id="@buttonstyles_squoval",
             starting_height=1,
         )
+
+        self.list_frame = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((50, 70), (250, 580))),
+            get_box(BoxStyles.ROUNDED_BOX, (250, 580)),
+            starting_height=2,
+            manager=MANAGER,
+        )
+
+        self.editor_frame = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((290, 80), (470, 560))),
+            get_box(BoxStyles.FRAME, (470, 560)),
+            starting_height=1,
+            manager=MANAGER,
+        )
+
 
