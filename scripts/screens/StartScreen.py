@@ -99,6 +99,8 @@ class StartScreen(Screens):
                 UpdateAvailablePopup(game.switches["last_screen"])
             elif event.ui_element == self.quit:
                 quit(savesettings=False, clearevents=False)
+            elif event.ui_element == self.event_edit:
+                self.change_screen("event edit screen")
             elif event.ui_element == self.social_buttons["discord_button"]:
                 if platform.system() == "Darwin":
                     subprocess.Popen(["open", "-u", "https://discord.gg/clangen"])
@@ -153,6 +155,7 @@ class StartScreen(Screens):
         self.warning_label.kill()
         self.update_button.kill()
         self.quit.kill()
+        self.event_edit.kill()
         self.closebtn.kill()
         for btn in self.social_buttons:
             self.social_buttons[btn].kill()
@@ -224,6 +227,14 @@ class StartScreen(Screens):
             object_id="@buttonstyles_mainmenu",
             manager=MANAGER,
             anchors={"top_target": self.settings_button},
+        )
+        self.event_edit = UISurfaceImageButton(
+            ui_scale(pygame.Rect((70, 15), (200, 30))),
+            "buttons.event_edit",
+            image_dict=get_button_dict(ButtonStyles.MAINMENU, (200, 30)),
+            object_id="@buttonstyles_mainmenu",
+            manager=MANAGER,
+            anchors={"top_target": self.quit},
         )
 
         self.social_buttons["twitter_button"] = UIImageButton(

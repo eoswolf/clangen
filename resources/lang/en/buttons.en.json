@@ -5,6 +5,7 @@
         "new_clan": "new clan",
         "settings_info": "settings + info",
         "quit": "quit",
+        "event_edit": "event edit",
         "open_data_directory": "Open Data Directory",
         "open_data_directory_tooltip": "Opens the data directory. This is where save files and logs are stored.",
         "toggle_fullscreen": "Toggle Fullscreen",
