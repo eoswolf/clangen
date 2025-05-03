@@ -30,7 +30,12 @@ class EventEdit(Screens):
     }
     all_seasons = ("newleaf", "greenleaf", "leaf-fall", "leaf-bare")
 
-    event_types = ("death", "injury", "misc", "new_cat")
+    event_types = {
+        "death": ["war", "murder", "old_age", "mass_death"],
+        "injury": ["war"],
+        "misc": ["war", "murder_reveal", "accessory", "ceremony"],
+        "new_cat": ["war"]
+    }
 
     def __init__(self, name=None):
         super().__init__(name)
@@ -127,7 +132,7 @@ class EventEdit(Screens):
                      else self.type_element["type_dropdown"].close())
                 if event.ui_element in self.type_element["dropdown_container"].elements:
                     self.type_element["type_dropdown"].disable_child(event.ui_element)
-                    for event_type in self.event_types:
+                    for event_type in self.event_types.keys():
                         if self.type_element["type_dropdown"].selected_element == self.type_element[event_type]:
                             self.type_element["pick_type"].set_text(event_type)
                     # TODO: hook this up to save chosen type. remember this needs to be separate from self.chosen_type
@@ -536,7 +541,8 @@ class EventEdit(Screens):
                 "top_target": self.type_element["pick_type"]
             }
         )
-        for event_type in self.event_types:
+        big_types = list(self.event_types.keys())
+        for event_type in big_types:
             self.type_element[event_type] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((0, 0), (150, 30))),
                 event_type,
@@ -546,8 +552,8 @@ class EventEdit(Screens):
                 container=self.type_element["dropdown_container"],
                 anchors={
                     "top_target": (self.type_element["pick_type"]
-                                   if event_type == self.event_types[0]
-                                   else self.type_element[self.event_types[self.event_types.index(event_type) - 1]])
+                                   if event_type == big_types[0]
+                                   else self.type_element[big_types[big_types.index(event_type) - 1]])
                 }
             )
         self.type_element["dropdown_container"].hide()
