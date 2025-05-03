@@ -135,6 +135,7 @@ class EventEdit(Screens):
                      else self.type_element["type_dropdown"].close())
                 if event.ui_element in self.type_element["dropdown_container"].elements:
                     self.type_element["type_dropdown"].disable_child(event.ui_element)
+                    self.type_element["type_dropdown"].close()
                     for event_type in self.event_types.keys():
                         if self.type_element["type_dropdown"].selected_element == self.type_element[event_type]:
                             self.type_element["pick_type"].set_text(event_type)
@@ -235,7 +236,7 @@ class EventEdit(Screens):
         if self.sub_info:
             self.sub_element["sub_display"].set_text(f"{self.sub_info}")
         else:
-            self.season_element["sub_display"].set_text("['any']")
+            self.sub_element["sub_display"].set_text("['any']")
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -534,8 +535,6 @@ class EventEdit(Screens):
 
         # SUBTYPE
         self.create_subtype_editor()
-
-        
 
     def create_subtype_editor(self):
         self.sub_element["sub_text"] = UITextBoxTweaked(
