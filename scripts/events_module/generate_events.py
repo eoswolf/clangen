@@ -213,7 +213,12 @@ class GenerateEvents:
                 return event
 
     @staticmethod
-    def possible_short_events(event_type=None):
+    def possible_short_events(event_type=None, biome_lock=None):
+        """
+        :param event_type: the event type
+        :param biome_lock: use only if you wish to collect a single biomes events, without any general events.
+        Default is None, which will cause the function to use the game.clan biome
+        """
         event_list = []
 
         # skip the rest of the loading if there is an unrecognised biome
@@ -223,13 +228,15 @@ class GenerateEvents:
                 f"in clan.py?"
             )
 
-        biome = game.clan.biome.lower()
+        biome = biome_lock if biome_lock else game.clan.biome.lower()
 
         # biome specific events
-        event_list.extend(GenerateEvents.generate_short_events(event_type, biome))
+        if biome != "general":
+            event_list.extend(GenerateEvents.generate_short_events(event_type, biome))
 
         # any biome events
-        event_list.extend(GenerateEvents.generate_short_events(event_type, "general"))
+        if biome_lock == "general" or not biome_lock:
+            event_list.extend(GenerateEvents.generate_short_events(event_type, "general"))
 
         return event_list
 
