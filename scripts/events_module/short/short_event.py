@@ -108,3 +108,4 @@ class ShortEvent:
                 self.other_clan["changed"] = 0
         self.supplies = supplies if supplies else []
         self.new_gender = new_gender
+

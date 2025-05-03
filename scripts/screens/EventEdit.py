@@ -1,9 +1,12 @@
 import pygame
 import pygame_gui
+import os
+import platform
+import subprocess
 
 from scripts.events_module.generate_events import GenerateEvents
 from scripts.game_structure.screen_settings import MANAGER
-from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer
+from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -19,19 +22,32 @@ class EventEdit(Screens):
     def __init__(self, name=None):
         super().__init__(name)
 
+        self.editor_container = None
+        self.add_button = None
         self.event_list_container = None
         self.event_list = None
         self.editor_frame = None
         self.list_frame = None
         self.main_menu_button = None
+
         self.type_tab_buttons = {}
         self.biome_tab_buttons = {}
         self.event_buttons = {}
+        self.editor_element = {}
 
         self.chosen_type = None
         self.chosen_biome = None
+        self.chosen_event = None
 
     def handle_event(self, event):
+        if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
+            if platform.system() == "Darwin":
+                subprocess.Popen(["open", "-u", event.link_target])
+            elif platform.system() == "Windows":
+                os.system(f'start "" {event.link_target}')
+            elif platform.system() == "Linux":
+                subprocess.Popen(["xdg-open", event.link_target])
+
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
 
@@ -58,6 +74,13 @@ class EventEdit(Screens):
 
                     self.display_events()
 
+            elif event.ui_element in self.event_buttons.values():
+                self.chosen_event = event.ui_element.text
+
+            elif event.ui_element == self.add_button:
+                self.chosen_event = None
+                self.display_editor()
+
         pass
 
     def exit_screen(self):
@@ -67,7 +90,12 @@ class EventEdit(Screens):
         self.main_menu_button.kill()
         self.list_frame.kill()
         self.editor_frame.kill()
+        if self.event_list_container:
+            self.event_list_container.kill()
+        if self.editor_container:
+            self.editor_container.kill()
 
+        self.add_button.kill()
         self.kill_tabs()
         self.kill_event_buttons()
 
@@ -99,6 +127,31 @@ class EventEdit(Screens):
             get_box(BoxStyles.FRAME, (470, 540)),
             starting_height=1,
             manager=MANAGER,
+        )
+        self.add_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 580), (36, 36))),
+            Icon.NOTEPAD,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.add_event"
+        )
+
+        self.editor_container = UIModifiedScrollingContainer(
+            ui_scale(pygame.Rect((314, 104), (470, 540))),
+            starting_height=3,
+            manager=MANAGER,
+            allow_scroll_y=True,
+        )
+
+        self.editor_element["intro_text"] = UITextBoxTweaked(
+            "screens.event_edit.intro_text",
+            ui_scale(pygame.Rect((0, 0), (450, -1))),
+            object_id="#text_box_26_horizleft_pad_10_14",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container
         )
 
     def kill_tabs(self):
@@ -278,8 +331,8 @@ class EventEdit(Screens):
                 object_id="@buttonstyles_dropdown",
                 starting_height=1,
                 anchors={
-                    "top_target": self.event_buttons[x-1]
-                } if self.event_buttons.get(x-1) else None,
+                    "top_target": self.event_buttons[x - 1]
+                } if self.event_buttons.get(x - 1) else None,
                 container=self.event_list_container,
                 tool_tip_text=event.text
             )
@@ -288,3 +341,26 @@ class EventEdit(Screens):
     def kill_event_buttons(self):
         for event in self.event_buttons:
             self.event_buttons[event].kill()
+
+    def display_editor(self):
+
+        self.editor_element["intro_text"].kill()
+
+
+        self.editor_element["event_id_text"] = UITextBoxTweaked(
+            "event_id:",
+            ui_scale(pygame.Rect((0, 0), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container
+        )
+
+        self.editor_element["event_id_entry"] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((0, 3), (300, 29))),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "left_target": self.editor_element["event_id_text"]
+            }
+        )
