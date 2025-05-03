@@ -4,6 +4,8 @@ import os
 import platform
 import subprocess
 
+import ujson
+
 from scripts.events_module.generate_events import GenerateEvents
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
@@ -314,7 +316,25 @@ class EventEdit(Screens):
     def display_events(self):
         self.kill_event_buttons()
         self.event_list = None
-        self.event_list = GenerateEvents.possible_short_events(self.chosen_type, self.chosen_biome)
+
+        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome}"
+
+        try:
+            with open(path, "r", encoding="utf-8") as read_file:
+                events = read_file.read()
+                self.event_list = ujson.loads(events)
+        except:
+            print(f"Something went wrong with event loading. Is {path} valid?")
+
+        if not self.event_list:
+            self.editor_element["intro_text"].set_text("screens.event_edit.empty_event_list")
+            return
+
+        try:
+            if not isinstance(self.event_list[0], dict):
+                print(f"{path} isn't in the correct event format. Perhaps it isn't an event .json?")
+        except KeyError:
+            return
 
         self.event_list_container = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((70, 90), (230, 540))),
@@ -327,7 +347,7 @@ class EventEdit(Screens):
         for event in self.event_list:
             self.event_buttons[x] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((0, 0), (230, 36))),
-                event.event_id,
+                event["event_id"],
                 get_button_dict(ButtonStyles.DROPDOWN, (230, 36)),
                 manager=MANAGER,
                 object_id="@buttonstyles_dropdown",
@@ -336,7 +356,7 @@ class EventEdit(Screens):
                     "top_target": self.event_buttons[x - 1]
                 } if self.event_buttons.get(x - 1) else None,
                 container=self.event_list_container,
-                tool_tip_text=event.text
+                tool_tip_text=event["text"]
             )
             x += 1
 
@@ -422,6 +442,18 @@ class EventEdit(Screens):
             }
         )
 
+        # SEASON
+        self.editor_element["season_text"] = UITextBoxTweaked(
+            "season:",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["location_entry"]
+            }
+        )
 
     def update_camp_list(self, chosen_biome):
         all_camps = {
