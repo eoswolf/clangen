@@ -7,7 +7,7 @@ import pygame
 import pygame_gui
 from pygame_gui.core import UIContainer, IContainerLikeInterface, UIElement, ObjectID
 from pygame_gui.core.gui_type_hints import RectLike, Coordinate
-from pygame_gui.core.interfaces import IUIManagerInterface
+from pygame_gui.core.interfaces import IUIManagerInterface, IUIElementInterface
 from pygame_gui.core.text.html_parser import HTMLParser
 from pygame_gui.core.text.text_box_layout import TextBoxLayout
 from pygame_gui.core.utility import translate
@@ -457,6 +457,18 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
 
     def set_dimensions(self, dimensions, clamp_to_container: bool = False):
         super().set_dimensions(dimensions, clamp_to_container)
+
+    def on_contained_elements_changed(self, target: IUIElementInterface) -> None:
+        """
+        Update the positioning of the contained elements of this container. To be called when one of the contained
+        elements may have moved, been resized or changed its anchors.
+
+        :param target: the UI element that has been benn moved resized or changed its anchors.
+        """
+        for element in self.scrollable_container.elements:
+            if target in element.get_anchor_targets():
+                element.update_containing_rect_position()
+                self.on_contained_elements_changed(element)
 
     def _sort_out_element_container_scroll_bars(self):
         """
