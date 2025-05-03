@@ -3,10 +3,9 @@ import pygame_gui
 import os
 import platform
 import subprocess
-
 import ujson
+from itertools import chain
 
-from scripts.events_module.generate_events import GenerateEvents
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
@@ -23,6 +22,13 @@ class EventEdit(Screens):
     This screen provides an interface to allow devs to edit and create events.
     """
 
+    all_camps = {
+        "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
+        "Mountainous": ["Cliff", "Cavern", "Crystal River", "Ruins"],
+        "Plains": ["Ruins", "Grasslands", "Tunnels", "Wastelands"],
+        "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
+    }
+
     def __init__(self, name=None):
         super().__init__(name)
 
@@ -37,11 +43,17 @@ class EventEdit(Screens):
         self.type_tab_buttons = {}
         self.biome_tab_buttons = {}
         self.event_buttons = {}
+
         self.editor_element = {}
+        self.event_id_element = {}
+        self.location_element = {}
+        self.location_info = []
 
         self.chosen_type = None
         self.chosen_biome = None
         self.chosen_event = None
+
+        self.new_event = {}
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
@@ -85,7 +97,75 @@ class EventEdit(Screens):
                 self.chosen_event = None
                 self.display_editor()
 
+            # CHANGE LOCATION LIST
+            if event.ui_element in self.location_element.values():
+                biome_list = game.clan.BIOME_TYPES
+                for biome in biome_list:
+                    if event.ui_element == self.location_element[biome]:
+                        self.update_location_info(biome=biome)
+                for camp in [camp for biome in self.all_camps.values() for camp in biome]:
+                    if event.ui_element == self.location_element.get(camp):
+                        self.update_location_info(camp=camp)
+
+        if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+            # CHANGE EVENT ID
+            if event.ui_element == self.event_id_element["event_id_entry"]:
+                self.new_event.update({"event_id": self.event_id_element["event_id_entry"].text})
+
         pass
+
+    def update_location_info(self, biome=None, camp=None):
+
+        if biome:
+            biome = biome.casefold()
+            present = False
+            for location in self.location_info:
+                if biome in location:
+                    present = True
+            if not present:
+                self.location_info.append(biome)
+                self.update_camp_list(biome.capitalize())
+
+            else:
+                for location in self.location_info:
+                    if biome in location:
+                        self.location_info.remove(location)
+                        self.update_camp_list(None)
+                        break
+
+        if camp:
+            present = True
+            parent_biome = None
+            camp_index = 0
+            old_location_tag = None
+            new_string = None
+
+            for camp_biome in self.all_camps.keys():
+                if camp in self.all_camps[camp_biome]:
+                    parent_biome = camp_biome
+                    camp_index = self.all_camps[camp_biome].index(camp) + 1
+                    break
+
+            for location in self.location_info:
+                if parent_biome.casefold() in location:
+                    if f"camp{camp_index}" in location:
+                        break
+                    else:
+                        new_string = f"{location}_camp{camp_index}"
+                        present = False
+                        old_location_tag = location
+            if not present:
+                self.location_info.remove(old_location_tag)
+                self.location_info.append(new_string.casefold())
+            else:
+                for location in self.location_info:
+                    if parent_biome.casefold() in location:
+                        old_location_tag = location
+                        new_string = location.replace(f"_camp{camp_index}", "")
+                self.location_info.remove(old_location_tag)
+                self.location_info.append(new_string)
+
+        self.location_element["location_entry"].set_text(str(self.location_info) if self.location_info else "['any']")
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -317,7 +397,7 @@ class EventEdit(Screens):
         self.kill_event_buttons()
         self.event_list = None
 
-        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome}"
+        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome.casefold()}.json"
 
         try:
             with open(path, "r", encoding="utf-8") as read_file:
@@ -356,7 +436,7 @@ class EventEdit(Screens):
                     "top_target": self.event_buttons[x - 1]
                 } if self.event_buttons.get(x - 1) else None,
                 container=self.event_list_container,
-                tool_tip_text=event["text"]
+                tool_tip_text=event["event_text"]
             )
             x += 1
 
@@ -369,7 +449,7 @@ class EventEdit(Screens):
         self.editor_element["intro_text"].kill()
 
         # EVENT ID
-        self.editor_element["event_id_text"] = UITextBoxTweaked(
+        self.event_id_element["event_id_text"] = UITextBoxTweaked(
             "event_id:",
             ui_scale(pygame.Rect((0, 0), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
@@ -378,33 +458,34 @@ class EventEdit(Screens):
             container=self.editor_container
         )
 
-        self.editor_element["event_id_entry"] = pygame_gui.elements.UITextEntryLine(
+        self.event_id_element["event_id_entry"] = pygame_gui.elements.UITextEntryLine(
             ui_scale(pygame.Rect((0, 3), (300, 29))),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "left_target": self.editor_element["event_id_text"]
-            }
+                "left_target": self.event_id_element["event_id_text"]
+            },
+            placeholder_text="screens.event_edit.empty_event_id"
         )
 
         # LOCATION
-        self.editor_element["location_text"] = UITextBoxTweaked(
-            "location:",
-            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+        self.location_element["location_text"] = UITextBoxTweaked(
+            "screens.event_edit.location_info",
+            ui_scale(pygame.Rect((0, 10), (450, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.editor_element["event_id_text"]
+                "top_target": self.event_id_element["event_id_text"]
             }
         )
 
         biome_list = game.clan.BIOME_TYPES
 
         for biome in biome_list:
-            y_pos = 20 if biome == biome_list[0] else 0
-            self.editor_element[biome] = UISurfaceImageButton(
+            y_pos = 10 if biome == biome_list[0] else 0
+            self.location_element[biome] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((0, y_pos), (150, 30))),
                 biome,
                 get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
@@ -412,34 +493,22 @@ class EventEdit(Screens):
                 object_id="@buttonstyles_dropdown",
                 container=self.editor_container,
                 anchors={
-                    "left_target": self.editor_element["location_text"],
-                    "top_target": (self.editor_element["event_id_text"]
+                    "left_target": self.event_id_element["event_id_text"],
+                    "top_target": (self.location_element["location_text"]
                                    if biome == biome_list[0]
-                                   else self.editor_element[biome_list[biome_list.index(biome) - 1]])
+                                   else self.location_element[biome_list[biome_list.index(biome) - 1]])
                 }
             )
-        self.update_camp_list(biome_list[0])
 
-        self.editor_element["add_location"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((110, 10), (100, 30))),
-            "Add",
-            get_button_dict(ButtonStyles.SQUOVAL, (100, 30)),
-            manager=MANAGER,
-            object_id="@buttonstyles_squoval",
-            container=self.editor_container,
-            anchors={
-                "left_target": self.editor_element["location_text"],
-                "top_target": (self.editor_element[biome_list[-1]])
-            }
-        )
-        self.editor_element["location_entry"] = pygame_gui.elements.UITextEntryLine(
+        self.location_element["location_entry"] = pygame_gui.elements.UITextEntryLine(
             ui_scale(pygame.Rect((10, 10), (300, 29))),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "left_target": self.editor_element["location_text"],
-                "top_target": (self.editor_element["add_location"])
-            }
+                "left_target": self.event_id_element["event_id_text"],
+                "top_target": (self.location_element[biome_list[-1]])
+            },
+            placeholder_text="['any']"
         )
 
         # SEASON
@@ -451,27 +520,25 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.editor_element["location_entry"]
+                "top_target": self.location_element["location_entry"]
             }
         )
 
     def update_camp_list(self, chosen_biome):
-        all_camps = {
-            "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
-            "Mountainous": ["Cliff", "Cavern", "Crystal River", "Ruins"],
-            "Plains": ["Ruins", "Grasslands", "Tunnels", "Wastelands"],
-            "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
-        }
-        for biome in all_camps:
-            for camp in all_camps[biome]:
-                if self.editor_element.get(camp):
-                    self.editor_element[camp].kill()
 
-        camp_list = all_camps[chosen_biome]
+        for biome in self.all_camps:
+            for camp in self.all_camps[biome]:
+                if self.location_element.get(camp):
+                    self.location_element[camp].kill()
+
+        camp_list = self.all_camps.get(chosen_biome)
+
+        if not camp_list:
+            return
 
         for camp in camp_list:
-            y_pos = 20 if camp == camp_list[0] else 0
-            self.editor_element[camp] = UISurfaceImageButton(
+            y_pos = 10 if camp == camp_list[0] else 0
+            self.location_element[camp] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((20, y_pos), (150, 30))),
                 camp,
                 get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
@@ -479,9 +546,9 @@ class EventEdit(Screens):
                 object_id="@buttonstyles_dropdown",
                 container=self.editor_container,
                 anchors={
-                    "left_target": self.editor_element[chosen_biome],
-                    "top_target": (self.editor_element["event_id_text"]
+                    "left_target": self.location_element[chosen_biome],
+                    "top_target": (self.location_element["location_text"]
                                    if camp == camp_list[0]
-                                   else self.editor_element[camp_list[camp_list.index(camp) - 1]])
+                                   else self.location_element[camp_list[camp_list.index(camp) - 1]])
                 }
             )
