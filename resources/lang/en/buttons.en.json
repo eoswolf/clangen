@@ -18,6 +18,7 @@
         "edit_desert": "edit desert",
         "edit_wetlands": "edit wetlands",
         "add_event": "write new event",
+        "pick_type": "pick type",
         "open_data_directory": "Open Data Directory",
         "open_data_directory_tooltip": "Opens the data directory. This is where save files and logs are stored.",
         "toggle_fullscreen": "Toggle Fullscreen",

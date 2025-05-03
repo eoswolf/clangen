@@ -996,11 +996,11 @@ class UIDropDownContainer(UIAutoResizingContainer):
         self,
         relative_rect: RectLike,
         container: UIContainer,
-        object_id: str,
-        starting_height: int,
         parent_button: UIImageButton,
         child_button_container: UIContainer,
         manager: IUIManagerInterface,
+        starting_height: int = 1,
+        object_id: str = None,
         visible: bool = False,
         anchors: dict = None
     ):
