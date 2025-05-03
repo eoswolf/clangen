@@ -120,18 +120,18 @@ class EventEdit(Screens):
                         self.update_season_info(season)
 
             # CHANGE TYPE
-            if event.ui_element == self.type_element["pick_type"]:
-                (self.type_element["type_dropdown"].open()
-                 if not self.type_element["type_dropdown"].is_open
-                 else self.type_element["type_dropdown"].close())
-            if event.ui_element in self.type_element["dropdown_container"].elements:
-                self.type_element["type_dropdown"].disable_child(event.ui_element)
-                for event_type in self.event_types:
-                    if self.type_element["type_dropdown"].selected_element == self.type_element[event_type]:
-                        self.type_element["pick_type"].set_text(event_type)
-                # TODO: hook this up to save chosen type. remember this needs to be separate from self.chosen_type
-                # so that players can still search through event database
-
+            if event.ui_element in self.type_element.values():
+                if event.ui_element == self.type_element["pick_type"]:
+                    (self.type_element["type_dropdown"].open()
+                     if not self.type_element["type_dropdown"].is_open
+                     else self.type_element["type_dropdown"].close())
+                if event.ui_element in self.type_element["dropdown_container"].elements:
+                    self.type_element["type_dropdown"].disable_child(event.ui_element)
+                    for event_type in self.event_types:
+                        if self.type_element["type_dropdown"].selected_element == self.type_element[event_type]:
+                            self.type_element["pick_type"].set_text(event_type)
+                    # TODO: hook this up to save chosen type. remember this needs to be separate from self.chosen_type
+                    # so that players can still search through event database
 
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -204,9 +204,9 @@ class EventEdit(Screens):
             self.season_info.append(season)
 
         if self.season_info:
-            self.season_element["season_entry"].set_text(f"{self.season_info}")
+            self.season_element["season_display"].set_text(f"{self.season_info}")
         else:
-            self.season_element["season_entry"].set_text("['any']")
+            self.season_element["season_display"].set_text("['any']")
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -437,6 +437,8 @@ class EventEdit(Screens):
     def display_events(self):
         self.kill_event_buttons()
         self.event_list = None
+        if self.editor_element.get("intro_text"):
+            self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
 
         path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome.casefold()}.json"
 
