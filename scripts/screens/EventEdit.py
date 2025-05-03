@@ -25,9 +25,10 @@ class EventEdit(Screens):
     all_camps = {
         "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
         "Mountainous": ["Cliff", "Cavern", "Crystal River", "Ruins"],
-        "Plains": ["Ruins", "Grasslands", "Tunnels", "Wastelands"],
+        "Plains": ["Grasslands", "Tunnels", "Wastelands"],
         "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
     }
+    all_seasons = ["newleaf", "greenleaf", "leaf-fall", "leaf-bare"]
 
     def __init__(self, name=None):
         super().__init__(name)
@@ -48,6 +49,8 @@ class EventEdit(Screens):
         self.event_id_element = {}
         self.location_element = {}
         self.location_info = []
+        self.season_element = {}
+        self.season_info = []
 
         self.chosen_type = None
         self.chosen_biome = None
@@ -107,6 +110,12 @@ class EventEdit(Screens):
                     if event.ui_element == self.location_element.get(camp):
                         self.update_location_info(camp=camp)
 
+            # CHANGE SEASON LIST
+            if event.ui_element in self.season_element.values():
+                for season in self.all_seasons:
+                    if event.ui_element == self.season_element[season]:
+                        self.update_season_info(season)
+
         if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
             if event.ui_element == self.event_id_element["event_id_entry"]:
@@ -154,6 +163,7 @@ class EventEdit(Screens):
                         new_string = f"{location}_camp{camp_index}"
                         present = False
                         old_location_tag = location
+                        break
             if not present:
                 self.location_info.remove(old_location_tag)
                 self.location_info.append(new_string.casefold())
@@ -162,10 +172,25 @@ class EventEdit(Screens):
                     if parent_biome.casefold() in location:
                         old_location_tag = location
                         new_string = location.replace(f"_camp{camp_index}", "")
+                        break
                 self.location_info.remove(old_location_tag)
                 self.location_info.append(new_string)
 
-        self.location_element["location_entry"].set_text(str(self.location_info) if self.location_info else "['any']")
+        self.location_element["location_display"].set_text(str(self.location_info) if self.location_info else "['any']")
+        self.editor_container.on_contained_elements_changed(self.location_element["location_display"])
+
+    def update_season_info(self, season):
+
+        if season in self.season_info:
+            self.season_info.remove(season)
+        else:
+            self.season_info.append(season)
+
+        if self.season_info:
+            self.season_element["season_entry"].set_text(f"{self.season_info}")
+        else:
+            self.season_element["season_entry"].set_text("['any']")
+
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -223,7 +248,7 @@ class EventEdit(Screens):
         )
 
         self.editor_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((314, 104), (470, 540))),
+            ui_scale(pygame.Rect((314, 100), (470, 520))),
             starting_height=3,
             manager=MANAGER,
             allow_scroll_y=True,
@@ -500,28 +525,58 @@ class EventEdit(Screens):
                 }
             )
 
-        self.location_element["location_entry"] = pygame_gui.elements.UITextEntryLine(
-            ui_scale(pygame.Rect((10, 10), (300, 29))),
+        self.location_element["location_display"] = UITextBoxTweaked(
+            "['any']",
+            ui_scale(pygame.Rect((10, 10), (470, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "left_target": self.event_id_element["event_id_text"],
-                "top_target": (self.location_element[biome_list[-1]])
+                "top_target": (self.location_element[biome_list[-1]]),
             },
-            placeholder_text="['any']"
+            allow_split_dashes=False
         )
 
         # SEASON
-        self.editor_element["season_text"] = UITextBoxTweaked(
-            "season:",
-            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+        self.season_element["season_text"] = UITextBoxTweaked(
+            "screens.event_edit.season_info",
+            ui_scale(pygame.Rect((0, 10), (450, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.location_element["location_entry"]
+                "top_target": self.location_element["location_display"]
             }
+        )
+
+        for season in self.all_seasons:
+            y_pos = 10 if season == self.all_seasons[0] else 0
+            self.season_element[season] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), (150, 30))),
+                season,
+                get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
+                manager=MANAGER,
+                object_id="@buttonstyles_dropdown",
+                container=self.editor_container,
+                anchors={
+                    "left_target": self.event_id_element["event_id_text"],
+                    "top_target": (self.season_element["season_text"]
+                                   if season == self.all_seasons[0]
+                                   else self.season_element[self.all_seasons[self.all_seasons.index(season) - 1]])
+                }
+            )
+
+        self.season_element["season_entry"] = UITextBoxTweaked(
+            "['any']",
+            ui_scale(pygame.Rect((10, 10), (470, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": (self.season_element[self.all_seasons[-1]]),
+            },
+            allow_split_dashes=False
         )
 
     def update_camp_list(self, chosen_biome):
