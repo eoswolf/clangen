@@ -5,8 +5,10 @@ import platform
 import subprocess
 
 from scripts.events_module.generate_events import GenerateEvents
+from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
-from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked
+from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
+    UIDropDownContainer
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -346,7 +348,7 @@ class EventEdit(Screens):
 
         self.editor_element["intro_text"].kill()
 
-
+        # EVENT ID
         self.editor_element["event_id_text"] = UITextBoxTweaked(
             "event_id:",
             ui_scale(pygame.Rect((0, 0), (-1, -1))),
@@ -364,3 +366,90 @@ class EventEdit(Screens):
                 "left_target": self.editor_element["event_id_text"]
             }
         )
+
+        # LOCATION
+        self.editor_element["location_text"] = UITextBoxTweaked(
+            "location:",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["event_id_text"]
+            }
+        )
+
+        biome_list = game.clan.BIOME_TYPES
+
+        for biome in biome_list:
+            y_pos = 20 if biome == biome_list[0] else 0
+            self.editor_element[biome] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), (150, 30))),
+                biome,
+                get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
+                manager=MANAGER,
+                object_id="@buttonstyles_dropdown",
+                container=self.editor_container,
+                anchors={
+                    "left_target": self.editor_element["location_text"],
+                    "top_target": (self.editor_element["event_id_text"]
+                                   if biome == biome_list[0]
+                                   else self.editor_element[biome_list[biome_list.index(biome) - 1]])
+                }
+            )
+        self.update_camp_list(biome_list[0])
+
+        self.editor_element["add_location"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((110, 10), (100, 30))),
+            "Add",
+            get_button_dict(ButtonStyles.SQUOVAL, (100, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_squoval",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.editor_element["location_text"],
+                "top_target": (self.editor_element[biome_list[-1]])
+            }
+        )
+        self.editor_element["location_entry"] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((10, 10), (300, 29))),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "left_target": self.editor_element["location_text"],
+                "top_target": (self.editor_element["add_location"])
+            }
+        )
+
+
+    def update_camp_list(self, chosen_biome):
+        all_camps = {
+            "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
+            "Mountainous": ["Cliff", "Cavern", "Crystal River", "Ruins"],
+            "Plains": ["Ruins", "Grasslands", "Tunnels", "Wastelands"],
+            "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
+        }
+        for biome in all_camps:
+            for camp in all_camps[biome]:
+                if self.editor_element.get(camp):
+                    self.editor_element[camp].kill()
+
+        camp_list = all_camps[chosen_biome]
+
+        for camp in camp_list:
+            y_pos = 20 if camp == camp_list[0] else 0
+            self.editor_element[camp] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((20, y_pos), (150, 30))),
+                camp,
+                get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
+                manager=MANAGER,
+                object_id="@buttonstyles_dropdown",
+                container=self.editor_container,
+                anchors={
+                    "left_target": self.editor_element[chosen_biome],
+                    "top_target": (self.editor_element["event_id_text"]
+                                   if camp == camp_list[0]
+                                   else self.editor_element[camp_list[camp_list.index(camp) - 1]])
+                }
+            )

@@ -990,6 +990,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
         child_button_container: UIContainer,
         manager: IUIManagerInterface,
         visible: bool = False,
+        anchors: dict = None
     ):
         super().__init__(
             relative_rect=relative_rect,
@@ -998,6 +999,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
             starting_height=starting_height,
             visible=visible,
             manager=manager,
+            anchors=anchors
         )
 
         self.parent_button = parent_button
