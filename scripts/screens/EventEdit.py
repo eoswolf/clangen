@@ -42,31 +42,73 @@ class EventEdit(Screens):
             "tag": "classic",
             "setting": False,
             "required_type": None,
+            "conflict": None
         },
         {
             "tag": "cruel_season",
             "setting": False,
-            "required_type": None
+            "required_type": None,
+            "conflict": None
         },
         {
             "tag": "no_body",
             "setting": False,
-            "required_type": "death"
+            "required_type": "death",
+            "conflict": None
         },
         {
             "tag": "clan_wide",
             "setting": False,
-            "required_type": None
+            "required_type": None,
+            "conflict": None
         },
         {
             "tag": "romance",
             "setting": False,
-            "required_type": None
+            "required_type": None,
+            "conflict": None
         },
         {
             "tag": "adoption",
             "setting": False,
-            "required_type": None
+            "required_type": None,
+            "conflict": None
+        },
+        {
+            "tag": "all_lives",
+            "setting": False,
+            "required_type": "death",
+            "conflict": ["some_lives", "lives_remain"]
+        },
+        {
+            "tag": "some_lives",
+            "setting": False,
+            "required_type": "death",
+            "conflict": ["all_lives"]
+        },
+        {
+            "tag": "lives_remain",
+            "setting": False,
+            "required_type": "death",
+            "conflict": ["all_lives"]
+        },
+        {
+            "tag": "high_lives",
+            "setting": False,
+            "required_type": None,
+            "conflict": ["mid_lives", "low_lives"]
+        },
+        {
+            "tag": "mid_lives",
+            "setting": False,
+            "required_type": None,
+            "conflict": ["high_lives", "low_lives"]
+        },
+        {
+            "tag": "low_lives",
+            "setting": False,
+            "required_type": None,
+            "conflict": ["mid_lives", "high_lives"]
         }
     ]
 
@@ -203,9 +245,26 @@ class EventEdit(Screens):
                         self.basic_tag_list[index] = {
                             "tag": info["tag"],
                             "setting": False if info["setting"] else True,
-                            "required_type": info["required_type"]
+                            "required_type": info["required_type"],
+                            "conflict": info["conflict"]
                         }
+
+                        # flip the setting of any conflicting tags
+                        if info["conflict"]:
+                            for tag in info["conflict"]:
+                                conflict_info = [block for block in self.basic_tag_list if tag == block["tag"]][0]
+                                conflict_index = self.basic_tag_list.index(conflict_info)
+                                if not info["setting"]:  # unchecks if conflicted setting is checked
+                                    self.basic_tag_checkbox[tag].uncheck()
+                                self.basic_tag_list[conflict_index] = {
+                                    "tag": conflict_info["tag"],
+                                    "setting": True if info["setting"] else False,
+                                    "required_type": conflict_info["required_type"],
+                                    "conflict": conflict_info["conflict"]
+                                }
+
                         self.update_tag_info()
+                        break
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -222,7 +281,8 @@ class EventEdit(Screens):
             elif info["tag"] in self.tag_info and not info["setting"]:
                 self.tag_info.remove(info["tag"])
 
-        self.tag_element["tag_display"].set_text(str(self.tag_info))
+        if self.tag_element.get("tag_display"):
+            self.tag_element["tag_display"].set_text(str(self.tag_info))
 
     def update_location_info(self, biome=None, camp=None):
 
@@ -662,7 +722,8 @@ class EventEdit(Screens):
                 self.basic_tag_list[index] = {
                     "tag": info["tag"],
                     "setting": False,
-                    "required_type": info["required_type"]
+                    "required_type": info["required_type"],
+                    "conflict": info["conflict"]
                 }
                 continue
 
@@ -692,6 +753,7 @@ class EventEdit(Screens):
 
             prev_element = self.tag_element[f"{info['tag']}_text"]
 
+        self.update_tag_info()
     def create_subtype_editor(self):
         self.sub_element["sub_text"] = UITextBoxTweaked(
             "screens.event_edit.subtype_info",
