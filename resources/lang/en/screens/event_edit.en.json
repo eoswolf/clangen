@@ -5,6 +5,12 @@
         "empty_event_id": "be sure to add an id!",
         "location_info": "<b>location:</b> Click to add or remove a place as a location for the event. Only include the biome name if any camp is applicable.",
         "season_info": "<b>season:</b> Click to add or remove a required season for this event.",
-        "subtype_info": "<b>subtypes:</b> Click to add or remove a subtype for this event."
+        "subtype_info": "<b>subtypes:</b> Click to add or remove a subtype for this event.",
+        "classic": "Is this limited to classic mode?",
+        "cruel_season": "Is this limited to cruel season?",
+        "no_body": "Is the dead cat's body irretrievable?",
+        "clan_wide": "Should all involved cat buttons be hidden?",
+        "romance": "Can m_c and r_c be romantic?",
+        "adoption": "Is an adoption occurring?"
     }
 }

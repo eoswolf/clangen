@@ -9,7 +9,7 @@ from itertools import chain
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
-    UIDropDownContainer
+    UIDropDownContainer, UICheckbox
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -31,11 +31,44 @@ class EventEdit(Screens):
     all_seasons = ("newleaf", "greenleaf", "leaf-fall", "leaf-bare")
 
     event_types = {
-        "death": ["war", "murder", "old_age", "mass_death"],
+        "death": ["murder", "old_age", "mass_death", "war"],
         "injury": ["war"],
-        "misc": ["war", "murder_reveal", "accessory", "ceremony"],
+        "misc": ["murder_reveal", "accessory", "ceremony", "war"],
         "new_cat": ["war"]
     }
+
+    basic_tag_list = [
+        {
+            "tag": "classic",
+            "setting": False,
+            "required_type": None,
+        },
+        {
+            "tag": "cruel_season",
+            "setting": False,
+            "required_type": None
+        },
+        {
+            "tag": "no_body",
+            "setting": False,
+            "required_type": "death"
+        },
+        {
+            "tag": "clan_wide",
+            "setting": False,
+            "required_type": None
+        },
+        {
+            "tag": "romance",
+            "setting": False,
+            "required_type": None
+        },
+        {
+            "tag": "adoption",
+            "setting": False,
+            "required_type": None
+        }
+    ]
 
     def __init__(self, name=None):
         super().__init__(name)
@@ -59,9 +92,12 @@ class EventEdit(Screens):
         self.season_element = {}
         self.season_info = []
         self.type_element = {}
-        self.type_info = None
+        self.type_info = 'death'
         self.sub_element = {}
         self.sub_info = []
+        self.tag_element = {}
+        self.basic_tag_checkbox = {}
+        self.tag_info = []
 
         self.chosen_type = None
         self.chosen_biome = None
@@ -82,6 +118,7 @@ class EventEdit(Screens):
             self.mute_button_pressed(event)
 
             if event.ui_element == self.main_menu_button:
+
                 self.change_screen("start screen")
                 return
 
@@ -89,6 +126,7 @@ class EventEdit(Screens):
                 for tab in self.type_tab_buttons:
                     if event.ui_element == self.type_tab_buttons[tab]:
                         self.chosen_type = tab
+                        break
 
                 self.select_biome_tab_creation()
 
@@ -101,6 +139,7 @@ class EventEdit(Screens):
                     for tab in self.biome_tab_buttons:
                         if event.ui_element == self.biome_tab_buttons[tab]:
                             self.chosen_biome = tab.capitalize() if tab != "general" else tab
+                            break
 
                     self.display_events()
 
@@ -117,15 +156,18 @@ class EventEdit(Screens):
                 for biome in biome_list:
                     if event.ui_element == self.location_element[biome]:
                         self.update_location_info(biome=biome)
+                        break
                 for camp in [camp for biome in self.all_camps.values() for camp in biome]:
                     if event.ui_element == self.location_element.get(camp):
                         self.update_location_info(camp=camp)
+                        break
 
             # CHANGE SEASON LIST
             elif event.ui_element in self.season_element.values():
                 for season in self.all_seasons:
                     if event.ui_element == self.season_element[season]:
                         self.update_season_info(season)
+                        break
 
             # CHANGE TYPE
             elif event.ui_element in self.type_element.values():
@@ -142,6 +184,7 @@ class EventEdit(Screens):
                             self.type_info = event_type
                             self.sub_info = []
                             self.update_sub_buttons(self.event_types.get(self.type_info))
+                            self.update_basic_checkboxes()
                             break
 
             # CHANGE SUBTYPE
@@ -151,12 +194,35 @@ class EventEdit(Screens):
                         self.update_sub_info(sub)
                         break
 
+            # CHANGE BASIC TAGS
+            elif event.ui_element in self.basic_tag_checkbox.values():
+                event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+                for info in self.basic_tag_list:
+                    if event.ui_element == self.basic_tag_checkbox.get(info["tag"]):
+                        index = self.basic_tag_list.index(info)
+                        self.basic_tag_list[index] = {
+                            "tag": info["tag"],
+                            "setting": False if info["setting"] else True,
+                            "required_type": info["required_type"]
+                        }
+                        self.update_tag_info()
+
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
             if event.ui_element == self.event_id_element["event_id_entry"]:
                 self.new_event.update({"event_id": self.event_id_element["event_id_entry"].text})
 
         pass
+
+    def update_tag_info(self):
+
+        for info in self.basic_tag_list:
+            if info["tag"] not in self.tag_info and info["setting"]:
+                self.tag_info.append(info["tag"])
+            elif info["tag"] in self.tag_info and not info["setting"]:
+                self.tag_info.remove(info["tag"])
+
+        self.tag_element["tag_display"].set_text(str(self.tag_info))
 
     def update_location_info(self, biome=None, camp=None):
 
@@ -166,6 +232,7 @@ class EventEdit(Screens):
             for location in self.location_info:
                 if biome in location:
                     present = True
+                    break
             if not present:
                 self.location_info.append(biome)
                 self.update_camp_list(biome.capitalize())
@@ -241,6 +308,12 @@ class EventEdit(Screens):
     def exit_screen(self):
         self.chosen_biome = None
         self.chosen_type = None
+        self.chosen_event = None
+        self.location_info = []
+        self.season_info = []
+        self.type_info = []
+        self.sub_info = []
+        self.tag_info = []
 
         self.main_menu_button.kill()
         self.list_frame.kill()
@@ -536,6 +609,89 @@ class EventEdit(Screens):
         # SUBTYPE
         self.create_subtype_editor()
 
+        # TAGS
+        self.tag_element["tag_text"] = UITextBoxTweaked(
+            "<b>tags:</b>",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.sub_element["sub_display"]
+            }
+        )
+        self.tag_element["basic_checkbox_container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "top_target": self.tag_element["tag_text"],
+                "left_target": self.tag_element["tag_text"],
+            }
+        )
+        self.update_basic_checkboxes()
+
+        self.tag_element["tag_display"] = UITextBoxTweaked(
+            "",
+            ui_scale(pygame.Rect((10, 10), (470, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.tag_element["basic_checkbox_container"],
+            },
+            allow_split_dashes=False
+        )
+
+    def update_basic_checkboxes(self):
+        prev_element = None
+
+        # clear old elements
+        for info in self.basic_tag_list:
+            if self.tag_element.get(f"{info['tag']}_text"):
+                self.tag_element[f"{info['tag']}_text"].kill()
+            if self.basic_tag_checkbox.get(info["tag"]):
+                self.basic_tag_checkbox[info["tag"]].kill()
+
+        # make new ones!
+        for info in self.basic_tag_list:
+            # first reset the values
+            if info.get("required_type") and info["required_type"] != self.type_info:
+                index = self.basic_tag_list.index(info)
+                self.basic_tag_list[index] = {
+                    "tag": info["tag"],
+                    "setting": False,
+                    "required_type": info["required_type"]
+                }
+                continue
+
+            self.tag_element[f"{info['tag']}_text"] = UITextBoxTweaked(
+                f"screens.event_edit.{info['tag']}",
+                ui_scale(pygame.Rect((0, 10), (350, -1))),
+                object_id="#text_box_30_horizleft_pad_10_10",
+                line_spacing=1,
+                manager=MANAGER,
+                container=self.tag_element["basic_checkbox_container"],
+                anchors={
+                    "top_target": prev_element,
+                } if prev_element else None
+            )
+
+            self.basic_tag_checkbox[info["tag"]] = UICheckbox(
+                position=(350, 10),
+                container=self.tag_element["basic_checkbox_container"],
+                manager=MANAGER,
+                check=info["setting"],
+                anchors={
+                    "top_target": (self.tag_element["tag_text"]
+                                   if not prev_element
+                                   else prev_element)
+                }
+            )
+
+            prev_element = self.tag_element[f"{info['tag']}_text"]
+
     def create_subtype_editor(self):
         self.sub_element["sub_text"] = UITextBoxTweaked(
             "screens.event_edit.subtype_info",
@@ -548,6 +704,18 @@ class EventEdit(Screens):
                 "top_target": self.type_element["pick_type"]
             }
         )
+        self.sub_element["container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "top_target": self.sub_element["sub_text"],
+                "left_target": self.event_id_element["event_id_text"],
+            }
+        )
+
+        self.update_sub_buttons(self.event_types[self.type_info])
+
         self.sub_element["sub_display"] = UITextBoxTweaked(
             "['any']",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
@@ -555,9 +723,7 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": (self.sub_element[self.event_types[self.type_info][-1]]
-                               if self.type_info
-                               else self.sub_element["sub_text"]),
+                "top_target": self.sub_element["container"],
             },
             allow_split_dashes=False
         )
@@ -568,39 +734,30 @@ class EventEdit(Screens):
             for sub in self.event_types[parent]:
                 if self.sub_element.get(sub):
                     self.sub_element[sub].kill()
-        self.sub_element["sub_display"].kill()
 
         # make new buttons
+        prev_element = None
         for sub in type_list:
-            y_pos = 10 if sub == type_list[0] else 0
+            y_pos = 10 if not prev_element else 0
             self.sub_element[sub] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((0, y_pos), (150, 30))),
                 sub,
                 get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
                 manager=MANAGER,
                 object_id="@buttonstyles_dropdown",
-                container=self.editor_container,
+                container=self.sub_element["container"],
                 anchors={
                     "left_target": self.event_id_element["event_id_text"],
                     "top_target": (self.sub_element["sub_text"]
-                                   if sub == type_list[0]
-                                   else self.sub_element[type_list[type_list.index(sub) - 1]])
+                                   if not prev_element
+                                   else prev_element)
                 }
             )
+            prev_element = self.sub_element[sub]
 
-        self.sub_element["sub_display"] = UITextBoxTweaked(
-            "['any']" if not self.sub_info else str(self.sub_info),
-            ui_scale(pygame.Rect((10, 10), (470, -1))),
-            object_id="#text_box_30_horizleft_pad_10_10",
-            manager=MANAGER,
-            container=self.editor_container,
-            anchors={
-                "top_target": self.sub_element[self.event_types[self.type_info][-1]]
-            },
-            allow_split_dashes=False
-        )
+        self.editor_container.on_contained_elements_changed(self.sub_element["container"])
 
-        self.editor_container.on_contained_elements_changed(self.sub_element["sub_display"])
+        return prev_element
 
     def create_type_editor(self):
         self.type_element["type_text"] = UITextBoxTweaked(
@@ -630,6 +787,7 @@ class EventEdit(Screens):
             ui_scale(pygame.Rect((0, 0), (0, 0))),
             manager=MANAGER,
             container=self.editor_container,
+            starting_height=4,
             anchors={
                 "left_target": self.event_id_element["event_id_text"],
                 "top_target": self.type_element["pick_type"]
