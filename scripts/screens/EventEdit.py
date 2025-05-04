@@ -156,7 +156,7 @@ class EventEdit(Screens):
             elif platform.system() == "Linux":
                 subprocess.Popen(["xdg-open", event.link_target])
 
-        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+        elif event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
 
             if event.ui_element == self.main_menu_button:
@@ -363,7 +363,7 @@ class EventEdit(Screens):
         if self.sub_info:
             self.sub_element["sub_display"].set_text(f"{self.sub_info}")
         else:
-            self.sub_element["sub_display"].set_text("['any']")
+            self.sub_element["sub_display"].set_text("[]")
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -754,6 +754,7 @@ class EventEdit(Screens):
             prev_element = self.tag_element[f"{info['tag']}_text"]
 
         self.update_tag_info()
+
     def create_subtype_editor(self):
         self.sub_element["sub_text"] = UITextBoxTweaked(
             "screens.event_edit.subtype_info",
@@ -779,7 +780,7 @@ class EventEdit(Screens):
         self.update_sub_buttons(self.event_types[self.type_info])
 
         self.sub_element["sub_display"] = UITextBoxTweaked(
-            "['any']",
+            "[]",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
