@@ -1,3 +1,5 @@
+from random import choice
+
 import pygame
 import pygame_gui
 import os
@@ -10,18 +12,54 @@ from scripts.cat.cats import Cat
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
-    UIDropDownContainer, UICheckbox
+    UIDropDownContainer, UICheckbox, UIModifiedImage
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
 from scripts.ui.icon import Icon
-from scripts.utility import ui_scale
+from scripts.utility import ui_scale, process_text
 
 
 class EventEdit(Screens):
     """
     This screen provides an interface to allow devs to edit and create events.
     """
+    preview_states = ("off", 1, 2)
+    test_cat_names = {
+        "m_c": "MainCat",
+        "r_c": "RandomCat",
+        "n_c:1": "NewCat",
+        "mur_c": "MurderedCat",
+        "lead_name": "TestStar",
+        "dep_name": "DepCat",
+        "med_name": "MedCat"
+    }
+    test_pronouns = [
+        {
+            "subject": "they",
+            "object": "them",
+            "poss": "their",
+            "inposs": "theirs",
+            "self": "themself",
+            "conju": 1
+        },
+        {
+            "subject": "she",
+            "object": "her",
+            "poss": "her",
+            "inposs": "hers",
+            "self": "herself",
+            "conju": 2
+        },
+        {
+            "subject": "he",
+            "object": "him",
+            "poss": "his",
+            "inposs": "his",
+            "self": "himself",
+            "conju": 2
+        }
+    ]
 
     all_camps = {
         "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
@@ -116,6 +154,7 @@ class EventEdit(Screens):
     def __init__(self, name=None):
         super().__init__(name)
 
+        self.event_text_container = None
         self.editor_container = None
         self.add_button = None
         self.event_list_container = None
@@ -129,6 +168,7 @@ class EventEdit(Screens):
         self.event_buttons = {}
 
         self.editor_element = {}
+        self.event_text_element = {}
         self.event_id_element = {}
         self.location_element = {}
         self.location_info = []
@@ -149,6 +189,8 @@ class EventEdit(Screens):
         self.chosen_biome = None
         self.chosen_event = None
 
+        self.current_preview_state = self.preview_states[0]
+
         self.new_event = {}
 
     def handle_event(self, event):
@@ -167,6 +209,33 @@ class EventEdit(Screens):
 
                 self.change_screen("start screen")
                 return
+
+            elif event.ui_element == self.event_text_element["preview_button"]:
+                # finds what the new preview state should be
+                index = self.preview_states.index(self.current_preview_state)
+                new_index = index + 1 if index + 1 <= 2 else 0
+                self.current_preview_state = self.preview_states[new_index]
+
+                # switches states
+                if new_index == 0:
+                    self.event_text_element["event_text"].show()
+                    self.event_text_element["preview_text"].hide()
+                else:
+                    self.event_text_element["event_text"].hide()
+                    text = self.event_text_element["event_text"].html_text
+
+                    test_dict = {}
+                    for abbr in self.test_cat_names:
+                        pronoun = choice(
+                            [pro for pro in self.test_pronouns if pro["conju"] == self.current_preview_state]
+                        )
+                        test_dict[abbr] = (
+                            self.test_cat_names[abbr], pronoun
+                        )
+
+                    text = process_text(text, test_dict)
+                    self.event_text_element["preview_text"].set_text(text)
+                    self.event_text_element["preview_text"].show()
 
             elif event.ui_element in self.type_tab_buttons.values():
                 for tab in self.type_tab_buttons:
@@ -193,6 +262,7 @@ class EventEdit(Screens):
                 self.chosen_event = event.ui_element.text
 
             elif event.ui_element == self.add_button:
+                # TODO: need prevention for clicking after editor is already open
                 self.chosen_event = None
                 self.display_editor()
 
@@ -356,8 +426,8 @@ class EventEdit(Screens):
                 self.location_info.append(new_string)
 
         self.location_element["location_display"].set_text((f"chosen location: {str(self.location_info)}"
-                                                           if self.location_info
-                                                           else "chosen location: ['any']"))
+                                                            if self.location_info
+                                                            else "chosen location: ['any']"))
         self.editor_container.on_contained_elements_changed(self.location_element["location_display"])
 
     def update_season_info(self, season):
@@ -397,6 +467,7 @@ class EventEdit(Screens):
         self.main_menu_button.kill()
         self.list_frame.kill()
         self.editor_frame.kill()
+        self.event_text_container.kill()
         if self.event_list_container:
             self.event_list_container.kill()
         if self.editor_container:
@@ -423,16 +494,41 @@ class EventEdit(Screens):
         self.list_frame = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((60, 80), (250, 560))),
             get_box(BoxStyles.ROUNDED_BOX, (250, 560)),
-            starting_height=2,
+            starting_height=3,
             manager=MANAGER,
         )
 
         self.select_type_tab_creation()
 
-        self.editor_frame = pygame_gui.elements.UIImage(
-            ui_scale(pygame.Rect((300, 90), (470, 540))),
-            get_box(BoxStyles.FRAME, (470, 540)),
+        self.event_text_container = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((290, 30), (0, 0))),
             starting_height=1,
+            manager=MANAGER,
+        )
+        self.event_text_element["preview_button"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((-30, 10), (36, 36))),
+            Icon.MAGNIFY,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            container=self.event_text_container,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.preview_text"
+        )
+
+        self.event_text_element["box"] = UIModifiedImage(
+            ui_scale(pygame.Rect((0, 0), (460, 120))),
+            get_box(BoxStyles.ROUNDED_BOX, (460, 120)),
+            starting_height=1,
+            manager=MANAGER,
+            container=self.event_text_container
+        )
+        self.event_text_element["box"].disable()
+
+        self.editor_frame = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((300, 140), (470, 490))),
+            get_box(BoxStyles.FRAME, (470, 490)),
+            starting_height=2,
             manager=MANAGER,
         )
         self.add_button = UISurfaceImageButton(
@@ -446,8 +542,8 @@ class EventEdit(Screens):
         )
 
         self.editor_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((314, 100), (470, 520))),
-            starting_height=3,
+            ui_scale(pygame.Rect((314, 150), (470, 470))),
+            starting_height=4,
             manager=MANAGER,
             allow_scroll_y=True,
         )
@@ -672,6 +768,25 @@ class EventEdit(Screens):
     def display_editor(self):
 
         self.editor_element["intro_text"].kill()
+
+        # EVENT TEXT
+        # this one is special in that it has a separate container
+        self.event_text_element["preview_text"] = UITextBoxTweaked(
+            "",
+            ui_scale(pygame.Rect((48, 10), (435, 100))),
+            object_id="#text_box_26_horizleft_pad_10_14",
+            manager=MANAGER,
+            container=self.event_text_container,
+            visible=False,
+        )
+        self.event_text_element["preview_text"].disable()
+        self.event_text_element["event_text"] = pygame_gui.elements.UITextEntryBox(
+            ui_scale(pygame.Rect((48, 10), (435, 100))),
+            placeholder_text="screens.event_edit.event_text_initial",
+            object_id="#text_box_26_horizleft_pad_10_14",
+            manager=MANAGER,
+            container=self.event_text_container,
+        )
 
         # EVENT ID
         self.create_event_id_editor()

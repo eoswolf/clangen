@@ -19,6 +19,7 @@
         "edit_wetlands": "edit wetlands",
         "add_event": "write new event",
         "pick_type": "pick type",
+        "preview_text": "preview text with pronouns",
         "open_data_directory": "Open Data Directory",
         "open_data_directory_tooltip": "Opens the data directory. This is where save files and logs are stored.",
         "toggle_fullscreen": "Toggle Fullscreen",
