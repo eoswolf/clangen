@@ -804,8 +804,7 @@ class EventEdit(Screens):
         self.create_subtype_editor()
 
         # TAGS
-        self.create_basic_tag_editor()
-        self.create_rank_tag_editor()
+        self.create_tag_editor()
 
         # WEIGHT
         self.create_weight_editor()
@@ -833,7 +832,21 @@ class EventEdit(Screens):
             initial_text=f"{self.weight_info}"
         )
 
-    def create_rank_tag_editor(self):
+    def create_tag_editor(self):
+        self.tag_element["tag_text"] = UITextBoxTweaked(
+            "<b>tags:</b>",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.sub_element["sub_display"]
+            }
+        )
+
+        self.create_misc_tag_checkboxes()
+
         self.tag_element["rank_tag_text"] = UITextBoxTweaked(
             "screens.event_edit.rank_tags",
             ui_scale(pygame.Rect((0, 10), (250, -1))),
@@ -897,8 +910,7 @@ class EventEdit(Screens):
             allow_split_dashes=False
         )
 
-    # TODO: maybe merge tag editors together?
-    def create_basic_tag_editor(self):
+    def create_misc_tag_checkboxes(self):
         self.tag_element["tag_text"] = UITextBoxTweaked(
             "<b>tags:</b>",
             ui_scale(pygame.Rect((0, 10), (-1, -1))),
