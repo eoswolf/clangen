@@ -467,8 +467,6 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
         """
         self.scrollable_container.on_contained_elements_changed(target)
 
-
-
     def _sort_out_element_container_scroll_bars(self):
         """
         This creates, re-sizes or removes the scrollbars after resizing, but not after the scroll

@@ -6,6 +6,7 @@ import subprocess
 import ujson
 from itertools import chain
 
+from scripts.cat.cats import Cat
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
@@ -139,6 +140,7 @@ class EventEdit(Screens):
         self.sub_info = []
         self.tag_element = {}
         self.basic_tag_checkbox = {}
+        self.rank_tag_checkbox = {}
         self.tag_info = []
 
         self.chosen_type = None
@@ -266,6 +268,11 @@ class EventEdit(Screens):
                         self.update_tag_info()
                         break
 
+            # CHANGE RANK TAGS
+            elif event.ui_element in self.rank_tag_checkbox.values():
+                event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+                self.update_tag_info()
+
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
             if event.ui_element == self.event_id_element["event_id_entry"]:
@@ -280,6 +287,13 @@ class EventEdit(Screens):
                 self.tag_info.append(info["tag"])
             elif info["tag"] in self.tag_info and not info["setting"]:
                 self.tag_info.remove(info["tag"])
+
+        for rank, box in self.rank_tag_checkbox.items():
+            tag = f"clan:{rank}".replace(" ", "_")
+            if box.checked and tag not in self.tag_info:
+                self.tag_info.append(tag)
+            elif not box.checked and tag in self.tag_info:
+                self.tag_info.remove(tag)
 
         if self.tag_element.get("tag_display"):
             self.tag_element["tag_display"].set_text(str(self.tag_info))
@@ -670,6 +684,75 @@ class EventEdit(Screens):
         self.create_subtype_editor()
 
         # TAGS
+        self.create_basic_tag_editor()
+        self.create_rank_tag_editor()
+        
+
+    def create_rank_tag_editor(self):
+        self.tag_element["rank_tag_text"] = UITextBoxTweaked(
+            "screens.event_edit.rank_tags",
+            ui_scale(pygame.Rect((0, 10), (250, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.tag_element["basic_checkbox_container"],
+                "left_target": self.tag_element["tag_text"],
+
+            }
+        )
+        prev_element = None
+        rank_list = Cat.rank_sort_order
+        rank_list.append("apps")
+        for rank in rank_list:
+            self.rank_tag_checkbox[rank] = UICheckbox(
+                position=(400, 10),
+                container=self.editor_container,
+                manager=MANAGER,
+                check=False,
+                anchors={
+                    "top_target": (prev_element if
+                                   prev_element else
+                                   self.tag_element["rank_tag_text"]),
+                }
+            )
+
+            check_box_rect = pygame.Rect((0, 10), (350, -1))
+            check_box_rect.right = -70
+            if rank == "apps":
+                rank_string = f"two of any apprentice type"
+            else:
+                rank_string = f"two {rank}s" if rank not in ("deputy", "leader") else rank
+            self.tag_element[f"{rank}_text"] = UITextBoxTweaked(
+                rank_string,
+                ui_scale(check_box_rect),
+                object_id="#text_box_30_horizright_pad_10_10",
+                line_spacing=1,
+                manager=MANAGER,
+                container=self.editor_container,
+                anchors={
+                    "top_target": (prev_element if
+                                   prev_element else
+                                   self.tag_element["rank_tag_text"]),
+                    "right": "right"
+                }
+            )
+
+            prev_element = self.tag_element[f"{rank}_text"]
+        self.tag_element["tag_display"] = UITextBoxTweaked(
+            "[]",
+            ui_scale(pygame.Rect((10, 10), (470, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": prev_element,
+            },
+            allow_split_dashes=False
+        )
+
+    def create_basic_tag_editor(self):
         self.tag_element["tag_text"] = UITextBoxTweaked(
             "<b>tags:</b>",
             ui_scale(pygame.Rect((0, 10), (-1, -1))),
@@ -691,17 +774,6 @@ class EventEdit(Screens):
             }
         )
         self.update_basic_checkboxes()
-        self.tag_element["tag_display"] = UITextBoxTweaked(
-            "[]",
-            ui_scale(pygame.Rect((10, 10), (470, -1))),
-            object_id="#text_box_30_horizleft_pad_10_10",
-            manager=MANAGER,
-            container=self.editor_container,
-            anchors={
-                "top_target": self.tag_element["basic_checkbox_container"],
-            },
-            allow_split_dashes=False
-        )
 
     def update_basic_checkboxes(self):
         prev_element = None
