@@ -142,6 +142,8 @@ class EventEdit(Screens):
         self.basic_tag_checkbox = {}
         self.rank_tag_checkbox = {}
         self.tag_info = []
+        self.weight_element = {}
+        self.weight_info = 20
 
         self.chosen_type = None
         self.chosen_biome = None
@@ -296,7 +298,8 @@ class EventEdit(Screens):
                 self.tag_info.remove(tag)
 
         if self.tag_element.get("tag_display"):
-            self.tag_element["tag_display"].set_text(str(self.tag_info))
+            self.tag_element["tag_display"].set_text(f"chosen tags: {self.tag_info}")
+            self.editor_container.on_contained_elements_changed(self.tag_element["tag_display"])
 
     def update_location_info(self, biome=None, camp=None):
 
@@ -352,7 +355,9 @@ class EventEdit(Screens):
                 self.location_info.remove(old_location_tag)
                 self.location_info.append(new_string)
 
-        self.location_element["location_display"].set_text(str(self.location_info) if self.location_info else "['any']")
+        self.location_element["location_display"].set_text((f"chosen location: {str(self.location_info)}"
+                                                           if self.location_info
+                                                           else "chosen location: ['any']"))
         self.editor_container.on_contained_elements_changed(self.location_element["location_display"])
 
     def update_season_info(self, season):
@@ -363,9 +368,9 @@ class EventEdit(Screens):
             self.season_info.append(season)
 
         if self.season_info:
-            self.season_element["season_display"].set_text(f"{self.season_info}")
+            self.season_element["season_display"].set_text(f"chosen season: {self.season_info}")
         else:
-            self.season_element["season_display"].set_text("['any']")
+            self.season_element["season_display"].set_text("chosen season: ['any']")
 
     def update_sub_info(self, sub):
 
@@ -375,9 +380,9 @@ class EventEdit(Screens):
             self.sub_info.append(sub)
 
         if self.sub_info:
-            self.sub_element["sub_display"].set_text(f"{self.sub_info}")
+            self.sub_element["sub_display"].set_text(f"chosen subtypes: {self.sub_info}")
         else:
-            self.sub_element["sub_display"].set_text("[]")
+            self.sub_element["sub_display"].set_text("chosen subtypes: []")
 
     def exit_screen(self):
         self.chosen_biome = None
@@ -686,7 +691,29 @@ class EventEdit(Screens):
         # TAGS
         self.create_basic_tag_editor()
         self.create_rank_tag_editor()
-        
+
+        # WEIGHT
+        self.weight_element["weight_text"] = UITextBoxTweaked(
+            "<b>weight:</b>",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.tag_element["tag_display"]
+            }
+        )
+        self.weight_element["weight_entry"] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((0, 13), (50, 29))),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.tag_element["tag_display"],
+                "left_target": self.weight_element["weight_text"]
+            },
+            initial_text=f"{self.weight_info}"
+        )
 
     def create_rank_tag_editor(self):
         self.tag_element["rank_tag_text"] = UITextBoxTweaked(
@@ -741,7 +768,7 @@ class EventEdit(Screens):
 
             prev_element = self.tag_element[f"{rank}_text"]
         self.tag_element["tag_display"] = UITextBoxTweaked(
-            "[]",
+            "chosen tags: []",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
@@ -851,7 +878,7 @@ class EventEdit(Screens):
         self.update_sub_buttons(self.event_types[self.type_info])
 
         self.sub_element["sub_display"] = UITextBoxTweaked(
-            "[]",
+            "chosen subtypes: []",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
@@ -980,7 +1007,7 @@ class EventEdit(Screens):
                 }
             )
         self.season_element["season_display"] = UITextBoxTweaked(
-            "['any']",
+            "chosen season: ['any']",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
@@ -1021,7 +1048,7 @@ class EventEdit(Screens):
                 }
             )
         self.location_element["location_display"] = UITextBoxTweaked(
-            "['any']",
+            "chosen location: ['any']",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
