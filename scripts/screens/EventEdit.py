@@ -693,6 +693,9 @@ class EventEdit(Screens):
         self.create_rank_tag_editor()
 
         # WEIGHT
+        self.create_weight_editor()
+
+    def create_weight_editor(self):
         self.weight_element["weight_text"] = UITextBoxTweaked(
             "<b>weight:</b>",
             ui_scale(pygame.Rect((0, 10), (-1, -1))),
@@ -779,6 +782,7 @@ class EventEdit(Screens):
             allow_split_dashes=False
         )
 
+    # TODO: maybe merge tag editors together?
     def create_basic_tag_editor(self):
         self.tag_element["tag_text"] = UITextBoxTweaked(
             "<b>tags:</b>",
