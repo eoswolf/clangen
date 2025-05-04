@@ -20,6 +20,15 @@ from scripts.ui.icon import Icon
 from scripts.utility import ui_scale, process_text
 
 
+def update_collapse_button(button):
+    if button.text == Icon.ARROW_UP:
+        button.set_text(Icon.ARROW_DOWN)
+        button.set_tooltip("buttons.collapse_down")
+    elif button.text == Icon.ARROW_DOWN:
+        button.set_text(Icon.ARROW_UP)
+        button.set_tooltip("buttons.collapse_up")
+
+
 class EventEdit(Screens):
     """
     This screen provides an interface to allow devs to edit and create events.
@@ -313,20 +322,17 @@ class EventEdit(Screens):
                         self.update_sub_info(sub)
                         break
 
+            # TAG COLLAPSE BUTTON
             elif event.ui_element == self.tag_element["collapse_arrow"]:
-                if self.tag_element["collapse_arrow"].text == Icon.ARROW_UP:
-                    self.tag_element["collapse_arrow"].set_text(Icon.ARROW_DOWN)
-                    self.tag_element["collapse_arrow"].set_tooltip("buttons.collapse_down")
+                update_collapse_button(event.ui_element)
+                if self.tag_element["collapse_arrow"].text == Icon.ARROW_DOWN:
                     for ele in self.basic_tag_checkbox.values():
                         ele.kill()
                     for ele in self.rank_tag_checkbox.values():
                         ele.kill()
                     self.editor_container.on_contained_elements_changed(self.tag_element["tag_collapse_container"])
-                elif self.tag_element["collapse_arrow"].text == Icon.ARROW_DOWN:
-                    self.tag_element["collapse_arrow"].set_text(Icon.ARROW_UP)
-                    self.tag_element["collapse_arrow"].set_tooltip("buttons.collapse_up")
+                elif self.tag_element["collapse_arrow"].text == Icon.ARROW_UP:
                     self.create_tag_editor()
-
 
             # CHANGE BASIC TAGS
             elif event.ui_element in self.basic_tag_checkbox.values():
