@@ -901,7 +901,7 @@ class EventEdit(Screens):
         for sub in type_list:
             y_pos = 10 if not prev_element else 0
             self.sub_element[sub] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, y_pos), (150, 30))),
+                ui_scale(pygame.Rect((50, y_pos), (150, 30))),
                 sub,
                 get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
                 manager=MANAGER,
