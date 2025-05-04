@@ -258,7 +258,7 @@ class EventEdit(Screens):
                                     self.basic_tag_checkbox[tag].uncheck()
                                 self.basic_tag_list[conflict_index] = {
                                     "tag": conflict_info["tag"],
-                                    "setting": True if info["setting"] else False,
+                                    "setting": False,
                                     "required_type": conflict_info["required_type"],
                                     "conflict": conflict_info["conflict"]
                                 }
@@ -691,9 +691,8 @@ class EventEdit(Screens):
             }
         )
         self.update_basic_checkboxes()
-
         self.tag_element["tag_display"] = UITextBoxTweaked(
-            "",
+            "[]",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
