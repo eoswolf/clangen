@@ -589,6 +589,26 @@ class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
         )
         del bottom_button_rect
 
+        self.sliding_button.kill()
+        scroll_bar_height = max(5, int(self.scrollable_height * self.visible_percentage))
+        self.sliding_button = pygame_gui.elements.UIButton(
+            pygame.Rect((int(self.sliding_rect_position[0]),
+                         int(self.sliding_rect_position[1])),
+                        (self.background_rect.width,
+                         scroll_bar_height)),
+            '', self.ui_manager,
+            container=self.button_container,
+            starting_height=starting_height,
+            parent_element=self,
+            object_id="#sliding_button",
+            anchors={'left': 'left',
+                     'right': 'right',
+                     'top': 'top',
+                     'bottom': 'top'})
+
+        self.join_focus_sets(self.sliding_button)
+        self.sliding_button.set_hold_range((100, self.background_rect.height))
+
     def set_visible_percentage(self, percentage: float):
         super().set_visible_percentage(percentage)
         self.scroll_wheel_speed = (1 / self.visible_percentage) * ui_scale_value(15)
@@ -785,6 +805,7 @@ class UIModifiedImage(pygame_gui.elements.UIImage):
     """
     UIImage class modified to prevent it from blocking hover actions in other elements
     """
+
     def __init__(self,
                  relative_rect: RectLike,
                  image_surface: pygame.surface.Surface,
