@@ -1,6 +1,7 @@
 import random
 from random import choice
 from re import sub
+from itertools import chain
 
 import i18n
 
@@ -1680,11 +1681,11 @@ def _describe_torties(cat, color_name, short=False) -> [str, str]:
     ):
         return "cat.pelts.mottled_long", color_name
     else:
-        if base in (tabby.lower() for tabby in Pelt.tabbies) + [
+        if base in tuple(tabby.lower() for tabby in Pelt.tabbies) + (
             "bengal",
             "rosette",
             "speckled",
-        ]:
+        ):
             base = f"cat.pelts.{cat.pelt.tortiebase.capitalize()}_long"  # the extra space is intentional
         else:
             base = ""
