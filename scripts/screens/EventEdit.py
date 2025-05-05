@@ -904,6 +904,7 @@ class EventEdit(Screens):
         self.create_weight_editor()
 
         # ACC
+        self.create_acc_editor()
         self.acc_element["acc_text"] = UITextBoxTweaked(
             "screens.event_edit.acc_info",
             ui_scale(pygame.Rect((0, 10), (450, -1))),
@@ -931,7 +932,6 @@ class EventEdit(Screens):
                 }
             )
             prev_element = self.acc_element[group]
-
         self.acc_element["frame"] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((-8, 0), (200, 250))),
             get_box(BoxStyles.FRAME, (200, 250)),
