@@ -346,7 +346,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "The air grows crisp and brittle as r_c, a cat known for {PRONOUN/r_c/poss} cold demeanor, draws near. Gaze as piercing as the leaf-bare moon, {PRONOUN/r_c/subject} {VERB/r_c/examine/examines} m_c with caution, gifting a life for [virtue].",
+          "text": "The air grows crisp and brittle as r_c, a cat known for {PRONOUN/r_c/poss} cold demeanor, draws near. With a gaze as piercing as the leaf-bare moon, {PRONOUN/r_c/subject} {VERB/r_c/examine/examines} m_c with caution, gifting a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
