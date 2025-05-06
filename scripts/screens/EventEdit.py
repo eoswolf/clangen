@@ -1265,54 +1265,20 @@ class EventEdit(Screens):
                 "top_target": self.season_element["season_display"]
             }
         )
-        self.type_element["pick_type"] = UISurfaceImageButton(
+
+        self.type_element["pick_type"] = UIScrollingDropDown(
             ui_scale(pygame.Rect((0, 13), (150, 30))),
-            "buttons.pick_type",
-            get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
-            manager=MANAGER,
-            object_id="@buttonstyles_dropdown",
+            parent_text="buttons.pick_type",
+            item_list=list(self.event_types.keys()),
+            dropdown_dimensions=(150, 150),
             container=self.editor_container,
             anchors={
                 "left_target": self.event_id_element["event_id_text"],
                 "top_target": (self.season_element["season_display"])
-            }
-        )
-        self.type_element["dropdown_container"] = pygame_gui.elements.UIAutoResizingContainer(
-            ui_scale(pygame.Rect((0, 0), (0, 0))),
-            manager=MANAGER,
-            container=self.editor_container,
-            starting_height=4,
-            anchors={
-                "left_target": self.event_id_element["event_id_text"],
-                "top_target": self.type_element["pick_type"]
-            }
-        )
-        big_types = list(self.event_types.keys())
-        prev_element = None
-        for event_type in big_types:
-            self.type_element[event_type] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, -2), (150, 30))),
-                event_type,
-                get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
-                manager=MANAGER,
-                object_id="@buttonstyles_dropdown",
-                container=self.type_element["dropdown_container"],
-                anchors={
-                    "top_target": (self.type_element["pick_type"]
-                                   if not prev_element
-                                   else prev_element)
-                }
-            )
-            prev_element = self.type_element[event_type]
-
-        self.type_element["dropdown_container"].hide()
-        self.type_element["type_dropdown"] = UIDropDownContainer(
-            ui_scale(pygame.Rect((0, 0), (0, 0))),
-            container=self.editor_container,
-            parent_button=self.type_element["pick_type"],
-            child_button_container=self.type_element["dropdown_container"],
+            },
             manager=MANAGER
         )
+
 
     def create_season_editor(self):
         self.season_element["season_text"] = UITextBoxTweaked(

@@ -1066,6 +1066,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
         """
 
         button.disable()
+        # TODO: might remove selected_element attr
         self.selected_element = button
 
         for child in self.child_button_container.elements:
@@ -1876,8 +1877,8 @@ class UIScrollingDropDown(UIDropDownContainer):
         else:
             dimensions = relative_rect.size
 
-        dropdown_rect = ((relative_rect.x, relative_rect.y), dropdown_dimensions)
-        self.child_container = UIScrollingButtonList(
+        dropdown_rect = ((0, 0), dropdown_dimensions)
+        self.child_button_container = UIScrollingButtonList(
             ui_scale(pygame.Rect(dropdown_rect)),
             button_dimensions=dimensions,
             item_list=item_list,
@@ -1898,13 +1899,12 @@ class UIScrollingDropDown(UIDropDownContainer):
             multiple_choice=multiple_choice,
             disable_selection=disable_selection
         )
-        self.child_buttons = self.child_container.buttons
 
         super().__init__(
             relative_rect=relative_rect,
             container=container,
             parent_button=self.parent_button,
-            child_button_container=self.child_container,
+            child_button_container=self.child_button_container,
             manager=manager,
             starting_height=starting_height,
             object_id=object_id,
@@ -1915,4 +1915,4 @@ class UIScrollingDropDown(UIDropDownContainer):
     def update(self, time_delta: float):
 
         super().update(time_delta)
-        self.selected_list = self.child_container.selected_list
+        self.selected_list = self.child_button_container.selected_list
