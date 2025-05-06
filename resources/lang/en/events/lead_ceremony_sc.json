@@ -729,7 +729,7 @@
           "virtue": ["restraint", "mercy", "empathy", "clear judgment", "patience", "wisdom", "justice", "sympathy", "humility", "peace", "forgiveness", "compassion", "acceptance", "grace", "gentleness"]
         },
         {
-          "text": "With a firm stance and even expression, r_c takes {PRONOUN/r_c/poss} place in front of m_c, gifting {PRONOUN/m_c/object} a life for [virtue]. m_c trembles as the life courses through {PRONOUN/m_c/object}, and r_c mumbles that {PRONOUN/r_c/subject} should let this life guide {PRONOUN/m_c/poss} claws to remain sheathed when revenge clouds {PRONOUN/m_c/poss} senses.",
+          "text": "With a firm stance and an even expression, r_c gifts a life for [virtue]. m_c trembles as the life courses through {PRONOUN/m_c/object}. r_c mumbles that {PRONOUN/r_c/subject} should let this life guide {PRONOUN/m_c/poss} claws to remain sheathed when revenge clouds {PRONOUN/m_c/poss} senses.",
           "virtue": ["restraint", "mercy", "empathy", "clear judgment", "patience", "wisdom", "justice", "sympathy", "humility", "peace", "forgiveness", "clarity", "compassion", "acceptance", "grace"]
         }
       ]
