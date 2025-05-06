@@ -725,7 +725,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "r_c approaches, {PRONOUN/r_c/poss} starry gaze unreadable. r_c grants m_c a life for [virtue], urging {PRONOUN/m_c/object} to remember that a leader's greatest power is found not in fury, but in the courage to forgive. The life blazes through m_c's chest, burning hot, but a soothing calm soon follows, easing {PRONOUN/m_c/poss} shaky breath.",
+          "text": "r_c approaches, {PRONOUN/r_c/poss} starry gaze unreadable. {PRONOUN/r_c/subject/CAP} {VERB/r_c/grant/grants} m_c a life for [virtue], urging {PRONOUN/m_c/object} to remember that a leader's greatest power is found not in fury, but in the courage to forgive. The life blazes through m_c's chest, but soothing calm soon follows, easing {PRONOUN/m_c/poss} shaky breath.",
           "virtue": ["restraint", "mercy", "empathy", "clear judgment", "patience", "wisdom", "justice", "sympathy", "humility", "peace", "forgiveness", "compassion", "acceptance", "grace", "gentleness"]
         },
         {
