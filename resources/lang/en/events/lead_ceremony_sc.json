@@ -393,7 +393,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "With a warning of overconfidence being a slow and insidious killer, r_c gives m_c a life for [virtue].",
+          "text": "Warning that overconfidence can be a slow and insidious killer, r_c gives m_c a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
