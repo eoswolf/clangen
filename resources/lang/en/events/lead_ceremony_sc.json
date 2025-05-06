@@ -376,7 +376,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "Stars flicker in r_c's fur, and pride lights {PRONOUN/r_c/poss} friendly gaze. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} m_c a life for [virtue], the sensation like a warm nest surrounded by loved ones.",
+          "text": "Stars flicker in r_c's fur and pride lights {PRONOUN/r_c/poss} friendly gaze. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} m_c a life for [virtue], the sensation like a warm nest surrounded by loved ones.",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
