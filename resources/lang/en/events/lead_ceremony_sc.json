@@ -552,6 +552,19 @@
       ]
     },
   
+  	"responsible_starclanwarrior": {
+      "tags": [],
+      "lead_trait": [],
+      "star_trait": ["responsible"],
+      "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
+      "life_giving": [
+        {
+          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/continue/continues} that {PRONOUN/m_c/poss} Clanmates may push {PRONOUN/m_c/object} to the very edge sometimes, but a leader must remain firm yet fair.",
+          "virtue": ["patience", "grace", "judgment", "justice"]
+        }
+      ]
+    },
+  
   	"responsible_warrior": {
       "tags": [],
       "lead_trait": ["responsible"],
@@ -561,10 +574,6 @@
         {
           "text": "A cool breeze buffets m_c's fur as {PRONOUN/m_c/subject} {VERB/m_c/watch/watches} r_c approach. r_c gives a life for [virtue]. {PRONOUN/r_c/subject/CAP} add that it may seem easy to follow the Warrior Code, but the Code doesn't always have the answers.",
           "virtue": ["trusting {PRONOUN/m_c/poss} instincts"]
-        },
-        {
-          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/continue/continues} that {PRONOUN/m_c/poss} Clanmates may push {PRONOUN/m_c/object} to the very edge sometimes, but a leader must remain firm yet fair.",
-          "virtue": ["patience", "grace", "judgment", "justice"]
         }
       ]
     },
@@ -648,7 +657,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "r_c has to get m_c's attention once or twice during the ceremony, but eventually gives the new c_n leader a life for [virtue].",
+          "text": "When r_c approaches, m_c's gaze is fixed on something in the misty distance. r_c has to clear {PRONOUN/r_c/poss} throat multiple times before the new leader's gaze snaps back to {PRONOUN/r_c/object}. Sighing, r_c gives {PRONOUN/m_c/object} a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
