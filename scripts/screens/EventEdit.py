@@ -12,7 +12,7 @@ from scripts.cat.pelts import Pelt
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
-    UIDropDownContainer, UICheckbox, UIModifiedImage, UIScrollingButtonList
+    UIDropDownContainer, UICheckbox, UIModifiedImage, UIScrollingButtonList, UIScrollingDropDown
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -901,43 +901,20 @@ class EventEdit(Screens):
         # ACC
         self.create_acc_editor()
 
-        self.editor_element["test_parent"] = UISurfaceImageButton(
+        self.editor_element["scroll_text"] = UIScrollingDropDown(
             ui_scale(pygame.Rect((0, 0), (150, 30))),
-            "Ranks",
-            get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
-            manager=MANAGER,
-            object_id="@buttonstyles_dropdown",
+            parent_text="Ranks",
+            item_list=Cat.rank_sort_order,
+            dropdown_dimensions=(150, 150),
             container=self.editor_container,
             anchors={
                 "top_target": self.acc_element["acc_info"],
-                "left_target": self.event_id_element["event_id_text"]
-            }
-        )
-
-        self.editor_element["test_selection"] = UIScrollingButtonList(
-            ui_scale(pygame.Rect((0, 0), (150, 150))),
-            button_dimensions=(150, 30),
-            item_list=Cat.rank_sort_order,
-            manager=MANAGER,
-            container=self.editor_container,
-            anchors={
-                "top_target": self.editor_element["test_parent"],
                 "left_target": self.event_id_element["event_id_text"]
             },
-            visible=False
+            manager=MANAGER
         )
 
-        self.editor_element["test_dropdown"] = UIDropDownContainer(
-            ui_scale(pygame.Rect((0, 0), (0, 0))),
-            container=self.editor_container,
-            parent_button=self.editor_element["test_parent"],
-            child_button_container=self.editor_element["test_selection"],
-            manager=MANAGER,
-            anchors={
-                "top_target": self.acc_element["acc_info"],
-                "left_target": self.event_id_element["event_id_text"]
-            }
-        )
+
 
     def create_acc_editor(self):
         self.acc_element["acc_text"] = UITextBoxTweaked(
