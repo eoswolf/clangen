@@ -210,7 +210,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c steps in front of m_c, a worried look crossing {PRONOUN/r_c/poss} face for a moment before {PRONOUN/r_c/subject} {VERB/r_c/shake/shakes} {PRONOUN/r_c/poss} head. {PRONOUN/r_c/subject/CAP} {VERB/r_c/press/presses} {PRONOUN/r_c/poss} muzzle against m_c's and give a life for [virtue].",
+          "text": "r_c steps in front of m_c, a worried look crossing {PRONOUN/r_c/poss} face for a moment before {PRONOUN/r_c/subject} {VERB/r_c/shake/shakes} {PRONOUN/r_c/poss} head. {PRONOUN/r_c/subject/CAP} {VERB/r_c/press/presses} {PRONOUN/r_c/poss} muzzle against m_c's and {VERB/r_c/give/gives} a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
