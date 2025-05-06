@@ -491,7 +491,7 @@
           "virtue": ["compassion", "empathy", "devotion", "friendship", "forgiveness", "happiness", "hope", "kindness", "sympathy", "love", "offering second chances", "selflessness", "mercy", "strength", "unity"]
         },
         {
-          "text": "r_c approaches m_c with {PRONOUN/r_c/poss} tail held high, nuzzling m_c as a warm greeting. With a soothing purr, r_c offers words of solace and support, granting m_c a life for [virtue].",
+          "text": "r_c approaches with {PRONOUN/r_c/poss} tail held high, nuzzling m_c as a warm greeting. With a soothing purr, r_c offers words of solace and support, granting {PRONOUN/m_c/object} a life for [virtue].",
           "virtue": ["compassion", "empathy", "devotion", "friendship", "forgiveness", "happiness", "hope", "kindness", "sympathy", "love", "offering second chances", "selflessness", "mercy", "strength", "unity"]
         }
       ]
