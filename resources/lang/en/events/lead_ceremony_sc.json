@@ -559,7 +559,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/continue/continues} that {PRONOUN/m_c/poss} Clanmates may push {PRONOUN/m_c/object} to the very edge sometimes, but a leader must remain firm yet fair.",
+          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/remark/remarks} that, although {PRONOUN/m_c/poss} Clanmates may push {PRONOUN/m_c/object} to the very edge sometimes, a leader must remain firm yet fair.",
           "virtue": ["patience", "grace", "judgment", "justice"]
         }
       ]
