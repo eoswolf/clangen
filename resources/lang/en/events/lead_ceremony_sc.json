@@ -235,7 +235,7 @@
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
-          "text": "r_c gave m_c a searching look, hesitation crossing {PRONOUN/r_c/poss} face before placing {PRONOUN/r_c/poss} muzzle against m_c's head. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a life for [virtue] and stepped away as quietly as {PRONOUN/r_c/subject} came.",
+          "text": "r_c {VERB/r_c/give/gives} m_c a searching look, hesitation crossing {PRONOUN/r_c/poss} face before {PRONOUN/r_c/subject} {VERB/r_c/place/places} {PRONOUN/r_c/poss} muzzle against m_c's head. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a life for [virtue] and {VERB/r_c/step/steps} away as quietly as {PRONOUN/r_c/subject} came.",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         }
       ]
