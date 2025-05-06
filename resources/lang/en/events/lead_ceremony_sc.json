@@ -576,7 +576,7 @@
       "rank": ["warrior", "deputy"],
       "life_giving": [
         {
-          "text": "r_c approaches, dipping {PRONOUN/r_c/poss} head in greeting to m_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/meow/meows} something about not being afraid to look beyond traditions before touching {PRONOUN/r_c/poss} muzzle to m_c's head. A cool energy fizzes through {PRONOUN/m_c/poss} body. This life is for [virtue], the starry cat tells {PRONOUN/m_c/object}.",
+          "text": "r_c approaches, dipping {PRONOUN/r_c/poss} head in greeting to m_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/meow/meows} something about not being afraid to look beyond traditions. Then, {PRONOUN/r_c/subject} {VERB/r_c/touch/touches} {PRONOUN/r_c/poss} muzzle to m_c's head, making a cool energy fizz through {PRONOUN/m_c/poss} body. This life is for [virtue], the starry cat tells m_c.",
           "virtue": ["curiosity", "flexibility", "adaptability", "mercy"]
         },
         {
