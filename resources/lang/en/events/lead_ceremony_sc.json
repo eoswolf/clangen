@@ -363,7 +363,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "The cats of StarClan were well aware of m_c's compassionate nature. r_c steps forward and gives the new leader a life for [virtue], whispering to keep {PRONOUN/m_c/poss} heart pure and open to others.",
+          "text": "The cats of StarClan are well aware of m_c's compassionate nature. r_c steps forward and gives the new leader a life for [virtue], whispering to keep {PRONOUN/m_c/poss} heart pure and open to others.",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         }
       ]
