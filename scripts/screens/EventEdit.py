@@ -6,16 +6,13 @@ import os
 import platform
 import subprocess
 import ujson
-from itertools import chain
 
-from scripts.cat import pelts
 from scripts.cat.cats import Cat
 from scripts.cat.pelts import Pelt
-from scripts.events_module.short.handle_short_events import handle_short_events
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
-    UIDropDownContainer, UICheckbox, UIModifiedImage
+    UIDropDownContainer, UICheckbox, UIModifiedImage, UIScrollingButtonList
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -315,10 +312,6 @@ class EventEdit(Screens):
 
             # CHANGE TYPE
             elif event.ui_element in self.type_element.values():
-                if event.ui_element == self.type_element["pick_type"]:
-                    (self.type_element["type_dropdown"].open()
-                     if not self.type_element["type_dropdown"].is_open
-                     else self.type_element["type_dropdown"].close())
                 if event.ui_element in self.type_element["dropdown_container"].elements:
                     self.type_element["type_dropdown"].disable_child(event.ui_element)
                     self.type_element["type_dropdown"].close()
@@ -387,6 +380,19 @@ class EventEdit(Screens):
                 self.update_tag_info()
 
             # CHANGE ACC CATEGORY
+            # individual accs
+            elif (self.acc_element.get("acc_display")
+                  and event.ui_element in self.acc_element["acc_display"].buttons.values()):
+                for acc, button in self.acc_element["acc_display"].buttons.items():
+                    if event.ui_element != button:
+                        continue
+                    if acc in self.acc_info:
+                        self.acc_info.remove(acc)
+                    else:
+                        self.acc_info.append(acc)
+                    break
+                self.update_acc_info()
+            # greater categories
             elif event.ui_element in self.acc_element.values():
                 for group, button in self.acc_element.items():
                     if event.ui_element != button:
@@ -406,16 +412,6 @@ class EventEdit(Screens):
                             self.replace_accs_with_group(group)
                     break
                 self.update_acc_info()
-            elif event.ui_element in self.acc_button.values():
-                for acc, button in self.acc_button.items():
-                    if event.ui_element != button:
-                        continue
-                    if acc in self.acc_info:
-                        self.acc_info.remove(acc)
-                    else:
-                        self.acc_info.append(acc)
-                    break
-                self.update_acc_info()
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -423,7 +419,6 @@ class EventEdit(Screens):
                 self.new_event.update({"event_id": self.event_id_element["event_id_entry"].text})
 
     def replace_accs_with_group(self, group):
-
         for category_name, accs in self.acc_categories.items():
             if group == category_name:
                 for acc in set(self.acc_info).intersection(set(accs)):
@@ -905,6 +900,47 @@ class EventEdit(Screens):
 
         # ACC
         self.create_acc_editor()
+
+        self.editor_element["test_parent"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 0), (150, 30))),
+            "Ranks",
+            get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_dropdown",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.acc_element["acc_info"],
+                "left_target": self.event_id_element["event_id_text"]
+            }
+        )
+
+        self.editor_element["test_selection"] = UIScrollingButtonList(
+            ui_scale(pygame.Rect((0, 0), (150, 150))),
+            button_dimensions=(150, 30),
+            item_list=Cat.rank_sort_order,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["test_parent"],
+                "left_target": self.event_id_element["event_id_text"]
+            },
+            visible=False
+        )
+
+        self.editor_element["test_dropdown"] = UIDropDownContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            parent_button=self.editor_element["test_parent"],
+            child_button_container=self.editor_element["test_selection"],
+            manager=MANAGER,
+            parent_trigger_close=True,
+            anchors={
+                "top_target": self.acc_element["acc_info"],
+                "left_target": self.event_id_element["event_id_text"]
+            }
+        )
+
+    def create_acc_editor(self):
         self.acc_element["acc_text"] = UITextBoxTweaked(
             "screens.event_edit.acc_info",
             ui_scale(pygame.Rect((0, 10), (450, -1))),
@@ -933,8 +969,8 @@ class EventEdit(Screens):
             )
             prev_element = self.acc_element[group]
         self.acc_element["frame"] = pygame_gui.elements.UIImage(
-            ui_scale(pygame.Rect((-8, 0), (200, 250))),
-            get_box(BoxStyles.FRAME, (200, 250)),
+            ui_scale(pygame.Rect((-8, 0), (210, 250))),
+            get_box(BoxStyles.FRAME, (210, 250)),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
@@ -942,16 +978,7 @@ class EventEdit(Screens):
                 "left_target": prev_element
             }
         )
-        self.acc_element["acc_display_container"] = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((2, 10), (208, 230))),
-            manager=MANAGER,
-            container=self.editor_container,
-            allow_scroll_y=True,
-            anchors={
-                "top_target": self.acc_element["acc_text"],
-                "left_target": prev_element
-            },
-        )
+
         self.acc_element["acc_info"] = UITextBoxTweaked(
             "chosen accessories: []",
             ui_scale(pygame.Rect((10, 10), (470, -1))),
@@ -959,16 +986,15 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.acc_element["acc_display_container"],
+                "top_target": self.acc_element["frame"],
             },
             allow_split_dashes=False
         )
 
     def update_acc_list(self):
         # kill old buttons
-        if self.acc_button:
-            for ele in self.acc_button.values():
-                ele.kill()
+        if self.acc_element.get("acc_display"):
+            self.acc_element["acc_display"].kill()
 
         if not self.open_category:
             # if no category, we kill buttons and return
@@ -980,22 +1006,17 @@ class EventEdit(Screens):
                 category = accs
                 break
 
-        # make new buttons
-        prev_element = None
-        for acc in category:
-            y_pos = 0 if not prev_element else -2
-            self.acc_button[acc] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, y_pos), (180, 30))),
-                acc,
-                get_button_dict(ButtonStyles.DROPDOWN, (180, 30)),
-                manager=MANAGER,
-                object_id="@buttonstyles_dropdown",
-                container=self.acc_element["acc_display_container"],
-                anchors={
-                    "top_target": prev_element
-                } if prev_element else None
-            )
-            prev_element = self.acc_button[acc]
+        self.acc_element["acc_display"] = UIScrollingButtonList(
+            ui_scale(pygame.Rect((2, 10), (196, 230))),
+            item_list=category,
+            button_dimensions=(190, 30),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.acc_element["acc_text"],
+                "left_target": self.acc_element["WILD"]
+            },
+        )
 
     def create_weight_editor(self):
         self.weight_element["weight_text"] = UITextBoxTweaked(
@@ -1329,6 +1350,7 @@ class EventEdit(Screens):
                 "top_target": self.location_element["location_display"]
             }
         )
+
         prev_element = None
         for season in self.all_seasons:
             y_pos = 10 if not prev_element else -2

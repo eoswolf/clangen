@@ -11,10 +11,11 @@ from pygame_gui.core.interfaces import IUIManagerInterface, IUIElementInterface
 from pygame_gui.core.text.html_parser import HTMLParser
 from pygame_gui.core.text.text_box_layout import TextBoxLayout
 from pygame_gui.core.utility import translate
-from pygame_gui.elements import UIAutoResizingContainer
+from pygame_gui.elements import UIAutoResizingContainer, UISelectionList
 
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
+from scripts.ui.generate_button import get_button_dict, ButtonStyles
 from scripts.utility import (
     ui_scale,
     shorten_text_to_fit,
@@ -801,88 +802,6 @@ class CatButton(UIImageButton):
         self.cat_id = id
 
 
-class UIModifiedImage(pygame_gui.elements.UIImage):
-    """
-    UIImage class modified to prevent it from blocking hover actions in other elements
-    """
-
-    def __init__(self,
-                 relative_rect: RectLike,
-                 image_surface: pygame.surface.Surface,
-                 manager: Optional[IUIManagerInterface] = None,
-                 image_is_alpha_premultiplied: bool = False,
-                 container: Optional[IContainerLikeInterface] = None,
-                 parent_element: Optional[UIElement] = None,
-                 object_id: Optional[Union[ObjectID, str]] = None,
-                 anchors: Optional[Dict[str, Union[str, UIElement]]] = None,
-                 visible: int = 1,
-                 *,
-                 starting_height: int = 1, ):
-
-        super().__init__(
-            relative_rect=relative_rect,
-            image_surface=image_surface,
-            manager=manager,
-            image_is_alpha_premultiplied=image_is_alpha_premultiplied,
-            container=container,
-            parent_element=parent_element,
-            object_id=object_id,
-            anchors=anchors,
-            visible=visible,
-            starting_height=starting_height
-        )
-
-    def check_hover(self, time_delta: float, hovered_higher_element: bool) -> bool:
-        """
-        A method that helps us to determine which, if any, UI Element is currently being hovered
-        by the mouse.
-
-        :param time_delta: A float, the time in seconds between the last call to this function
-                           and now (roughly).
-        :param hovered_higher_element: A boolean, representing whether we have already hovered a
-                                       'higher' element.
-
-        :return bool: A boolean that is true if we have hovered a UI element, either just now or
-                      before this method.
-        """
-        should_block_hover = False
-        if self.alive():
-            mouse_x, mouse_y = self.ui_manager.get_mouse_position()
-            mouse_pos = pygame.math.Vector2(mouse_x, mouse_y)
-
-            if (self.hover_point(mouse_x, mouse_y) and
-                    not hovered_higher_element):
-                should_block_hover = True
-
-                if self.can_hover():
-                    if not self.hovered:
-                        self.hovered = True
-                        self.on_hovered()
-
-                    self.while_hovering(time_delta, mouse_pos)
-                else:
-                    should_block_hover = False
-                    if self.hovered:
-                        self.hovered = False
-                        self.on_unhovered()
-            else:
-                if self.hovered:
-                    self.hovered = False
-                    self.on_unhovered()
-        elif self.hovered:
-            self.hovered = False
-        return should_block_hover
-
-    def can_hover(self) -> bool:
-        """
-        A stub method to override. Called to test if this method can be hovered.
-        """
-        if self.alive() and self.is_enabled:
-            return True
-        else:
-            return False
-
-
 class UITextBoxTweaked(pygame_gui.elements.UITextBox):
     """The default class has 1.25 line spacing. It would be fairly easy to allow the user to change that,
     but it doesn't allow it... for some reason This class only exists as a way to specify the line spacing. Please
@@ -1096,8 +1015,9 @@ class UIDropDownContainer(UIAutoResizingContainer):
             relative_rect: RectLike,
             container: UIContainer,
             parent_button: UIImageButton,
-            child_button_container: UIContainer,
+            child_button_container: UIContainer or UISelectionList,
             manager: IUIManagerInterface,
+            parent_trigger_close: bool = True,
             starting_height: int = 1,
             object_id: str = None,
             visible: bool = False,
@@ -1115,6 +1035,13 @@ class UIDropDownContainer(UIAutoResizingContainer):
 
         self.parent_button = parent_button
         self.child_button_container = child_button_container
+        self.parent_trigger_close = parent_trigger_close
+
+        try:
+            self.child_elements = self.child_button_container.buttons.values()
+
+        except AttributeError:
+            self.child_elements = self.child_button_container.elements
 
         self.is_open: bool = False
         self.selected_element = None
@@ -1146,6 +1073,14 @@ class UIDropDownContainer(UIAutoResizingContainer):
                 continue
             child.enable()
 
+    def update(self, time_delta: float):
+        if self.parent_button.pressed:
+            if self.parent_trigger_close and self.is_open:
+                self.close()
+            elif not self.is_open:
+                self.open()
+
+        super().update(time_delta)
 
 class UICheckbox(UIImageButton):
     """
@@ -1579,3 +1514,180 @@ class UIImageHorizontalSlider(pygame_gui.elements.UIHorizontalSlider):
             },
             visible=self.visible,
         )
+
+
+class UIModifiedImage(pygame_gui.elements.UIImage):
+    """
+    UIImage class modified to prevent it from blocking hover actions in other elements
+    """
+
+    def __init__(self,
+                 relative_rect: RectLike,
+                 image_surface: pygame.surface.Surface,
+                 manager: Optional[IUIManagerInterface] = None,
+                 image_is_alpha_premultiplied: bool = False,
+                 container: Optional[IContainerLikeInterface] = None,
+                 parent_element: Optional[UIElement] = None,
+                 object_id: Optional[Union[ObjectID, str]] = None,
+                 anchors: Optional[Dict[str, Union[str, UIElement]]] = None,
+                 visible: int = 1,
+                 *,
+                 starting_height: int = 1, ):
+
+        super().__init__(
+            relative_rect=relative_rect,
+            image_surface=image_surface,
+            manager=manager,
+            image_is_alpha_premultiplied=image_is_alpha_premultiplied,
+            container=container,
+            parent_element=parent_element,
+            object_id=object_id,
+            anchors=anchors,
+            visible=visible,
+            starting_height=starting_height
+        )
+
+    def check_hover(self, time_delta: float, hovered_higher_element: bool) -> bool:
+        """
+        A method that helps us to determine which, if any, UI Element is currently being hovered
+        by the mouse.
+
+        :param time_delta: A float, the time in seconds between the last call to this function
+                           and now (roughly).
+        :param hovered_higher_element: A boolean, representing whether we have already hovered a
+                                       'higher' element.
+
+        :return bool: A boolean that is true if we have hovered a UI element, either just now or
+                      before this method.
+        """
+        should_block_hover = False
+        if self.alive():
+            mouse_x, mouse_y = self.ui_manager.get_mouse_position()
+            mouse_pos = pygame.math.Vector2(mouse_x, mouse_y)
+
+            if (self.hover_point(mouse_x, mouse_y) and
+                    not hovered_higher_element):
+                should_block_hover = True
+
+                if self.can_hover():
+                    if not self.hovered:
+                        self.hovered = True
+                        self.on_hovered()
+
+                    self.while_hovering(time_delta, mouse_pos)
+                else:
+                    should_block_hover = False
+                    if self.hovered:
+                        self.hovered = False
+                        self.on_unhovered()
+            else:
+                if self.hovered:
+                    self.hovered = False
+                    self.on_unhovered()
+        elif self.hovered:
+            self.hovered = False
+        return should_block_hover
+
+    def can_hover(self) -> bool:
+        """
+        A stub method to override. Called to test if this method can be hovered.
+        """
+        if self.alive() and self.is_enabled:
+            return True
+        else:
+            return False
+
+
+class UIScrollingButtonList(UIModifiedScrollingContainer):
+
+    def __init__(self,
+                 relative_rect,
+                 item_list,
+                 button_dimensions: tuple,
+                 multiple_choice: bool = True,
+                 disable_selection: bool = False,
+                 off_set_scroll: bool = True,
+                 manager=None,
+                 container=None,
+                 starting_height=1,
+                 object_id=None,
+                 anchors=None,
+                 visible=1,
+                 ):
+
+        child_rect_height = button_dimensions[1] if button_dimensions else relative_rect.height
+        child_rect_width = button_dimensions[0] if button_dimensions else relative_rect.width
+        child_rect = (child_rect_width, child_rect_height)
+
+        if off_set_scroll:
+            relative_rect.width += 20
+
+        super().__init__(
+            relative_rect=relative_rect,
+            manager=manager,
+            container=container,
+            starting_height=starting_height,
+            object_id=object_id,
+            anchors=anchors,
+            visible=visible,
+            allow_scroll_y=True,
+        )
+        self.buttons = {}
+        self.selected_list = []
+        self.multiple_choice = multiple_choice
+        self.disable_selection = disable_selection
+        self.total_button_height = (child_rect_height - 2) * len(item_list)
+        prev_element = None
+        for child in item_list:
+            y_pos = -2 if prev_element else 0
+
+            self.buttons[child] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), child_rect)),
+                child,
+                get_button_dict(ButtonStyles.DROPDOWN, child_rect),
+                manager=manager,
+                object_id="@buttonstyles_dropdown",
+                container=self,
+                anchors={
+                    "top_target": prev_element
+                } if prev_element else None
+            )
+            prev_element = self.buttons[child]
+
+    def hide(self):
+        super().hide()
+        if self.vert_scroll_bar:
+            self.vert_scroll_bar.hide()
+
+    def update(self, time_delta: float):
+
+        # updates our selection list
+        for name, button in self.buttons.items():
+            # multiple choice
+            if button.pressed and self.multiple_choice:
+                if self.disable_selection:
+                    button.disable()
+
+                (self.selected_list.remove(name)
+                 if name in self.selected_list
+                 else self.selected_list.append(name))
+                break
+
+            # single choice
+            elif button.pressed and not self.multiple_choice:
+                self.selected_list.clear()
+                self.selected_list.append(name)
+                if self.disable_selection:
+                    for other_button in self.buttons.values():
+                        other_button.enable()
+                    button.disable()
+                break
+
+        super().update(time_delta)
+
+
+        # don't ask me why the scroll bar doesn't obey the container's visibility, updating it after the super().update
+        # fixes it and that's all I want to know
+        if not self.visible:
+            self.vert_scroll_bar.hide()
+
