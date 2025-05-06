@@ -742,7 +742,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "There is no doubt in r_c's mind that m_c will be a wise leader of legend one day. It is {PRONOUN/r_c/poss} pleasure to give the new leader a life for [virtue].",
+          "text": "There is no doubt in r_c's mind that m_c will become a leader of legend. It is {PRONOUN/r_c/poss} pleasure to give the new leader a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
