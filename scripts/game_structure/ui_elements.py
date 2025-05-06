@@ -996,7 +996,7 @@ class IDImageButton(UISurfaceImageButton):
 
 class UIDropDownContainer(UIAutoResizingContainer):
     """
-    holds and controls the elements within a dropdown
+    Holds all the elements of a dropdown and coordinates its basic responses.
     :param relative_rect: The starting size and relative position of the container.
     :param container: The container this container is within. Defaults to None (which is the root
                       container for the UI)
@@ -1014,10 +1014,9 @@ class UIDropDownContainer(UIAutoResizingContainer):
             self,
             relative_rect: RectLike,
             container: UIContainer,
-            parent_button: UIImageButton,
+            parent_button: UIImageButton or UISurfaceImageButton,
             child_button_container: UIContainer or UISelectionList,
             manager: IUIManagerInterface,
-            parent_trigger_close: bool = True,
             starting_height: int = 1,
             object_id: str = None,
             visible: bool = False,
@@ -1035,16 +1034,17 @@ class UIDropDownContainer(UIAutoResizingContainer):
 
         self.parent_button = parent_button
         self.child_button_container = child_button_container
-        self.parent_trigger_close = parent_trigger_close
 
         try:
-            self.child_elements = self.child_button_container.buttons.values()
+            self.child_buttons = self.child_button_container.buttons.values()
 
         except AttributeError:
-            self.child_elements = self.child_button_container.elements
+            self.child_buttons = self.child_button_container.elements
 
         self.is_open: bool = False
         self.selected_element = None
+
+        self.close()
 
     def close(self):
         """
@@ -1075,12 +1075,13 @@ class UIDropDownContainer(UIAutoResizingContainer):
 
     def update(self, time_delta: float):
         if self.parent_button.pressed:
-            if self.parent_trigger_close and self.is_open:
+            if self.is_open:
                 self.close()
             elif not self.is_open:
                 self.open()
 
         super().update(time_delta)
+
 
 class UICheckbox(UIImageButton):
     """
@@ -1604,9 +1605,10 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  relative_rect,
                  item_list,
                  button_dimensions: tuple,
+                 button_style=ButtonStyles.DROPDOWN,
                  multiple_choice: bool = True,
                  disable_selection: bool = False,
-                 off_set_scroll: bool = True,
+                 offset_scroll: bool = True,
                  manager=None,
                  container=None,
                  starting_height=1,
@@ -1619,7 +1621,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         child_rect_width = button_dimensions[0] if button_dimensions else relative_rect.width
         child_rect = (child_rect_width, child_rect_height)
 
-        if off_set_scroll:
+        if offset_scroll:
             relative_rect.width += 20
 
         super().__init__(
@@ -1644,9 +1646,9 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             self.buttons[child] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((0, y_pos), child_rect)),
                 child,
-                get_button_dict(ButtonStyles.DROPDOWN, child_rect),
+                get_button_dict(button_style, child_rect),
                 manager=manager,
-                object_id="@buttonstyles_dropdown",
+                object_id=f"@buttonstyles_{button_style.value}",
                 container=self,
                 anchors={
                     "top_target": prev_element
@@ -1685,9 +1687,232 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
 
         super().update(time_delta)
 
-
         # don't ask me why the scroll bar doesn't obey the container's visibility, updating it after the super().update
         # fixes it and that's all I want to know
         if not self.visible:
             self.vert_scroll_bar.hide()
 
+
+class UIDropDown(UIDropDownContainer):
+
+    def __init__(
+            self,
+            relative_rect: RectLike,
+            manager: IUIManagerInterface,
+            parent_text: str,
+            item_list: list,
+            container: UIContainer = None,
+            child_dimensions: tuple = None,
+            parent_style: ButtonStyles = ButtonStyles.DROPDOWN,
+            child_style: ButtonStyles = ButtonStyles.DROPDOWN,
+            multiple_choice: bool = False,
+            disable_selection: bool = True,
+            starting_height: int = 1,
+            object_id: str = None,
+            visible: bool = False,
+            anchors: dict = None
+    ):
+        """
+        Class to handle the creation and management of non-scrolling dropdowns.
+        :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
+        buttons. All positioning is based off this rect's position.
+        :param parent_text: The text to display on the parent button.
+        :param item_list: The list of options that will become child buttons.
+        :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
+        parent and child buttons with differing dimensions
+        :param parent_style: The button style to use for the parent button, defaults to DROPDOWN
+        :param child_style: The button style to use for the child buttons, defaults to DROPDOWN
+        """
+        self.multiple_choice = multiple_choice
+        self.disable_selection = disable_selection
+
+        self.selected_list = []
+
+        # create parent button
+        self.parent_button = UISurfaceImageButton(
+            relative_rect,
+            parent_text,
+            get_button_dict(parent_style, relative_rect.size),
+            manager=manager,
+            object_id=f"@buttonstyles_{parent_style.value}",
+            container=container,
+            anchors=anchors
+        )
+
+        dropdown_rect = ((relative_rect.x, relative_rect.y), (0, 0))
+
+        self.child_container = UIAutoResizingContainer(
+            ui_scale(pygame.Rect(dropdown_rect)),
+            manager=manager,
+            container=container,
+            anchors=(
+                {
+                    "top_target": self.parent_button,
+                    "left_target": self.parent_button.anchors.get("left_target")
+                }
+                if self.parent_button.anchors.get("left_target")
+                else
+                {
+                    "top_target": self.parent_button
+                })
+        )
+
+        # create child buttons
+        if child_dimensions:
+            dimensions = child_dimensions
+        else:
+            dimensions = relative_rect.size
+
+        prev_element = None
+        self.buttons = {}
+
+        for child in item_list:
+            y_pos = -2 if prev_element else 0
+
+            self.buttons[child] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), dimensions)),
+                child,
+                get_button_dict(child_style, dimensions),
+                manager=manager,
+                object_id=f"@buttonstyles_{child_style.value}",
+                container=self,
+                anchors={
+                    "top_target": prev_element
+                } if prev_element else None
+            )
+            prev_element = self.buttons[child]
+
+        self.child_buttons = self.buttons.values()
+
+        super().__init__(
+            relative_rect=relative_rect,
+            container=container,
+            parent_button=self.parent_button,
+            child_button_container=self.child_container,
+            manager=manager,
+            starting_height=starting_height,
+            object_id=object_id,
+            visible=visible,
+            anchors=anchors
+        )
+
+    def update(self, time_delta: float):
+
+        # updates our selection list
+        for name, button in self.buttons.items():
+            # multiple choice
+            if button.pressed and self.multiple_choice:
+                if self.disable_selection:
+                    button.disable()
+
+                (self.selected_list.remove(name)
+                 if name in self.selected_list
+                 else self.selected_list.append(name))
+                break
+
+            # single choice
+            elif button.pressed and not self.multiple_choice:
+                self.selected_list.clear()
+                self.selected_list.append(name)
+                if self.disable_selection:
+                    self.disable_child(button)
+                break
+
+        super().update(time_delta)
+
+
+class UIScrollingDropDown(UIDropDownContainer):
+
+    def __init__(
+            self,
+            relative_rect: RectLike,
+            manager: IUIManagerInterface,
+            parent_text: str,
+            item_list: list,
+            container: UIContainer = None,
+            child_dimensions: tuple = None,
+            dropdown_dimensions: tuple = None,
+            parent_style: ButtonStyles = ButtonStyles.DROPDOWN,
+            child_style: ButtonStyles = ButtonStyles.DROPDOWN,
+            offset_scroll: bool = True,
+            multiple_choice: bool = True,
+            disable_selection: bool = False,
+            starting_height: int = 1,
+            object_id: str = None,
+            visible: bool = False,
+            anchors: dict = None
+    ):
+        """
+        Class to handle the creation and management of scrolling dropdowns.
+        :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
+        buttons. All positioning is based off this rect's position.
+        :param parent_text: The text to display on the parent button.
+        :param item_list: The list of options that will become child buttons.
+        :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
+        parent and child buttons with differing dimensions
+        :param dropdown_dimensions: The dimensions for the dropdown. If there are enough item_list items to exceed these
+         dimensions, then a scrollbar is created.
+        :param parent_style: The button style to use for the parent button, defaults to DROPDOWN
+        :param child_style: The button style to use for the child buttons, defaults to DROPDOWN
+        :param offset_scroll: If the scrollbar will sit to the side of the dropdown, rather than overlapping, defaults
+        to True
+        """
+        self.selected_list = []
+
+        # create parent button
+        self.parent_button = UISurfaceImageButton(
+            relative_rect,
+            parent_text,
+            get_button_dict(parent_style, relative_rect.size),
+            manager=manager,
+            object_id=f"@buttonstyles_{parent_style.value}",
+            container=container,
+            anchors=anchors
+        )
+
+        # create child buttons
+        if child_dimensions:
+            dimensions = child_dimensions
+        else:
+            dimensions = relative_rect.size
+
+        dropdown_rect = ((relative_rect.x, relative_rect.y), dropdown_dimensions)
+        self.child_container = UIScrollingButtonList(
+            ui_scale(pygame.Rect(dropdown_rect)),
+            button_dimensions=dimensions,
+            item_list=item_list,
+            manager=manager,
+            container=container,
+            anchors=(
+                {
+                    "top_target": self.parent_button,
+                    "left_target": self.parent_button.anchors.get("left_target")
+                }
+                if self.parent_button.anchors.get("left_target")
+                else
+                {
+                    "top_target": self.parent_button
+                }),
+            offset_scroll=offset_scroll,
+            button_style=child_style,
+            multiple_choice=multiple_choice,
+            disable_selection=disable_selection
+        )
+        self.child_buttons = self.child_container.buttons
+
+        super().__init__(
+            relative_rect=relative_rect,
+            container=container,
+            parent_button=self.parent_button,
+            child_button_container=self.child_container,
+            manager=manager,
+            starting_height=starting_height,
+            object_id=object_id,
+            visible=visible,
+            anchors=anchors
+        )
+
+    def update(self, time_delta: float):
+
+        super().update(time_delta)
+        self.selected_list = self.child_container.selected_list
