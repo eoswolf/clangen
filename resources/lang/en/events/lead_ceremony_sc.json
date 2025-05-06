@@ -857,7 +857,7 @@
       "rank": ["kitten"],
       "life_giving": [
         {
-          "text": "A tiny kit, r_c, runs up to m_c, stars twinkling in {PRONOUN/r_c/poss} eyes. {PRONOUN/r_c/subject/CAP} loudly and theatrically {VERB/r_c/proclaim/proclaims} that {PRONOUN/r_c/subject}'ll be giving m_c a life for [virtue] before dashing back into line, looking very proud of {PRONOUN/r_c/self}.",
+          "text": "A tiny kit runs up to m_c, stars twinkling in {PRONOUN/r_c/poss} eyes. r_c loudly and theatrically proclaims that {PRONOUN/r_c/subject}'ll be giving m_c a life for [virtue] before dashing back in line, looking very proud of {PRONOUN/r_c/self}.",
           "virtue": ["excitement", "cheerfulness", "optimism", "friendship", "hope", "confidence", "pride", "courage", "bravery"]
         }
       ]
