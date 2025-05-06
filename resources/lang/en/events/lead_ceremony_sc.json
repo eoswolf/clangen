@@ -197,7 +197,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy", "medicine cat apprentice", "mediator apprentice"],
       "life_giving": [
         {
-          "text": "r_c rushes up to m_c's side like a whirlwind, {PRONOUN/r_c/poss} fur sticking up in all angles. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} the new leader a life for [virtue] before dashing off into the crowd of starlight.",
+          "text": "r_c rushes up to m_c's side like a whirlwind, {PRONOUN/r_c/poss} fur sticking up at all angles. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} the new leader a life for [virtue] before dashing off into the crowd of starlight.",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         }
       ]
