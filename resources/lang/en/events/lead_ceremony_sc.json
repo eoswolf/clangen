@@ -508,7 +508,7 @@
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
-          "text": "m_c notices r_c's pleased expression as {PRONOUN/r_c/subject} {VERB/r_c/trot/trots} up. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a life for [virtue], and {PRONOUN/r_c/subject} {VERB/r_c/whisper/whispers} that c_n is surely in good paws.",
+          "text": "m_c notices r_c's pleased expression as {PRONOUN/r_c/subject} {VERB/r_c/trot/trots} up. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a life for [virtue] and {VERB/r_c/whisper/whispers} that c_n is surely in good paws.",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         }
       ]
@@ -580,11 +580,11 @@
           "virtue": ["curiosity", "flexibility", "adaptability", "mercy"]
         },
         {
-          "text": "m_c suppresses {PRONOUN/m_c/poss} shivers of excitement as r_c pads up, a small smile on {PRONOUN/r_c/poss} face. The StarClan cat delicately touches {PRONOUN/r_c/poss} nose to m_c's head, murmuring that this life is for [virtue], and {PRONOUN/r_c/subject} {VERB/r_c/expect/expects} m_c to use it well.",
+          "text": "m_c suppresses {PRONOUN/m_c/poss} shivers of excitement as r_c pads up, a small smile on {PRONOUN/r_c/poss} face. The StarClan cat delicately touches {PRONOUN/r_c/poss} nose to m_c's head, murmuring that this life is for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/expect/expects} m_c to use it well.",
           "virtue": ["devotion", "determination", "honesty", "justice"]
         },
         {
-          "text": "Tail lashing excitedly, m_c dips {PRONOUN/m_c/poss} head to r_c as {PRONOUN/r_c/subject} {VERB/r_c/walk/walks} up. r_c returns the gesture and offers a life for [virtue], adding that {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} not sure {PRONOUN/m_c/subject} {VERB/m_c/need/needs} it, but it can't hurt.",
+          "text": "Tail lashing excitedly, m_c dips {PRONOUN/m_c/poss} head to r_c as {PRONOUN/r_c/subject} {VERB/r_c/walk/walks} up. r_c returns the gesture and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/add/adds} that {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} not sure {PRONOUN/m_c/subject} {VERB/m_c/need/needs} it, but it can't hurt.",
           "virtue": ["devotion", "courage in the face of hardship", "honor", "certainty", "decisiveness"]
         }
       ]
@@ -601,7 +601,7 @@
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
-          "text": "m_c ignores the dubious glance r_c gives {PRONOUN/m_c/object} as {PRONOUN/m_c/subject} {VERB/m_c/push/pushes} through the glittering crowd to stand next to {PRONOUN/r_c/object}. With hesitation, r_c rasps {PRONOUN/r_c/poss} tongue across m_c's cheek in the name of [virtue].",
+          "text": "m_c ignores the dubious glance r_c gives {PRONOUN/m_c/object} as {PRONOUN/m_c/subject} {VERB/m_c/push/pushes} through the glittering crowd. With hesitation, r_c rasps {PRONOUN/r_c/poss} tongue across m_c's cheek in the name of [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
@@ -665,7 +665,7 @@
       "rank": ["warrior"],
       "life_giving": [
         {
-          "text": "Well aware of m_c's unwavering nature, r_c speaks with a calm, yet purposeful tone as {PRONOUN/r_c/subject} {VERB/r_c/grant/grants} a life for [virtue], hoping it will soften the edges of m_c's judgement and help {PRONOUN/m_c/object} see beyond the boundaries of strict discipline.",
+          "text": "Well aware of m_c's unwavering nature, r_c speaks with a calm yet purposeful tone as {PRONOUN/r_c/subject} {VERB/r_c/grant/grants} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/hope/hopes] it will soften the edges of m_c's judgement and help {PRONOUN/m_c/object} see beyond the boundaries of strict discipline.",
           "virtue": ["acceptance", "flexibility", "understanding", "forgiveness", "trust", "fairness", "hope", "humility", "sympathy", "balance", "tolerance", "perspective", "joy", "leniency", "unity", "mercy", "grace", "gentleness"]
         }
       ]
@@ -678,7 +678,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "m_c squares {PRONOUN/m_c/poss} jaw as r_c approaches, preparing for receiving another life. r_c gazes at {PRONOUN/m_c/object}, an intensity in {PRONOUN/r_c/poss} eyes that makes m_c want to shrink back, but {PRONOUN/m_c/subject} {VERB/m_c/stay/stays} frozen to the spot. r_c gives a life for [virtue], implying that m_c could use it.",
+          "text": "m_c squares {PRONOUN/m_c/poss} jaw as r_c approaches, preparing to receive another life. r_c gazes at {PRONOUN/m_c/object}, an intensity in {PRONOUN/r_c/poss} eyes that makes m_c want to shrink back. r_c gives a life for [virtue], implying that m_c could use it.",
           "virtue": ["certainty", "righteousness", "confidence", "power", "commitment", "determination", "bravery", "clear judgment", "decisiveness", "integrity", "justice"]
         }
       ]
