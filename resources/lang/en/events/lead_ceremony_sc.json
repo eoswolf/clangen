@@ -474,7 +474,7 @@
           "virtue": ["compassion", "empathy", "devotion", "friendship", "forgiveness", "happiness", "hope", "kindness", "sympathy", "love", "offering second chances", "selflessness", "mercy", "strength", "unity", "joy"]
         },
         {
-          "text": "What a profound honor it is to grant a life to such a lovely warrior. r_c cannot stop purring as {PRONOUN/r_c/subject} {VERB/m_c/bestow/bestows} upon m_c a life for [virtue].",
+          "text": "What a profound honor it is to grant a life to such a lovely warrior. r_c cannot stop purring as {PRONOUN/r_c/subject} {VERB/m_c/bestow/bestows} a life for [virtue] upon m_c.",
           "virtue": ["compassion", "empathy", "devotion", "friendship", "forgiveness", "happiness", "hope", "kindness", "sympathy", "love", "offering second chances", "selflessness", "mercy", "strength", "unity", "joy"]
         }
       ]
