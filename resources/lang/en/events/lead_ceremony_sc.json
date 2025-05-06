@@ -444,7 +444,7 @@
       "rank": ["warrior", "elder", "medicine cat", "mediator", "apprentice", "deputy"],
       "life_giving": [
         {
-          "text": "r_c advances forward, chuckling and gently nudging m_c as {PRONOUN/r_c/subject} {VERB/r_c/urge/urges} {PRONOUN/m_c/object} to correct {PRONOUN/m_c/poss} meek posture and instead adopt one that emanates confidence and commands respect. Only then does r_c grant a life for [virtue], hoping it will remind m_c of {PRONOUN/m_c/poss} worth and the faith c_n has in {PRONOUN/m_c/object}.",
+          "text": "r_c advances, chuckling and gently nudging m_c as {PRONOUN/r_c/subject} {VERB/r_c/urge/urges} {PRONOUN/m_c/object} to correct {PRONOUN/m_c/poss} meek posture and instead adopt one that emanates confidence and commands respect. Only then does r_c grant a life for [virtue], hoping it will remind m_c of {PRONOUN/m_c/poss} worth and the faith c_n has in {PRONOUN/m_c/object}.",
           "virtue": ["confidence", "bravery", "certainty", "clear judgment", "resilience", "courage", "assertiveness", "clarity", "patience", "adaptability", "mindfulness", "instincts", "sense", "strength", "unity"]
         }
       ]
