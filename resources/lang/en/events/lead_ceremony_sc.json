@@ -265,7 +265,7 @@
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         },
         {
-          "text": "Soft footfalls herald r_c's approach as {PRONOUN/r_c/subject} gracefully {VERB/r_c/navigate/navigates} the hallowed path that leads to m_c. In the depths of {PRONOUN/r_c/poss} tranquil gaze, countless moons of experience shine. {PRONOUN/r_c/subject/CAP} {VERB/r_c/approach/approaches}, offering a life for [virtue].",
+          "text": "Soft footfalls herald r_c's approach as {PRONOUN/r_c/subject} gracefully {VERB/r_c/navigate/navigates} the hallowed path that leads to m_c.  Countless moons of experience shine in the depths of {PRONOUN/r_c/poss} tranquil gaze. {PRONOUN/r_c/subject/CAP} {VERB/r_c/approach/approaches}, offering a life for [virtue].",
           "virtue": ["acceptance", "bravery", "certainty", "clear judgment", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "friendship", "instincts", "mercy", "strength", "unity"]
         }
       ]
