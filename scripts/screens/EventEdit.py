@@ -933,7 +933,6 @@ class EventEdit(Screens):
             parent_button=self.editor_element["test_parent"],
             child_button_container=self.editor_element["test_selection"],
             manager=MANAGER,
-            parent_trigger_close=True,
             anchors={
                 "top_target": self.acc_element["acc_info"],
                 "left_target": self.event_id_element["event_id_text"]
