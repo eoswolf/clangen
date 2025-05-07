@@ -1735,7 +1735,7 @@ class UIDropDown(UIDropDownContainer):
         screen func to check for changes to the selected_list attribute rather than handle_event()
 
         :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
-        buttons. All positioning is based off this rect's position.
+        buttons. All positioning is based off this rect's position. THIS SHOULD NOT BE UI_SCALED
         :param parent_text: The text to display on the parent button.
         :param item_list: The list of options that will become child buttons.
         :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
@@ -1752,8 +1752,9 @@ class UIDropDown(UIDropDownContainer):
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
 
+
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             container=container,
             manager=manager,
             starting_height=starting_height,
@@ -1767,7 +1768,7 @@ class UIDropDown(UIDropDownContainer):
         # create parent button
         if not parent_override:
             self.parent_button = UISurfaceImageButton(
-                relative_rect,
+                ui_scale(relative_rect.copy()),
                 parent_text,
                 get_button_dict(parent_style, relative_rect.size),
                 manager=manager,
@@ -1917,7 +1918,7 @@ class UIScrollingDropDown(UIDropDownContainer):
         screen func to check for changes to the selected_list attribute rather than handle_event()
 
         :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
-        buttons. All positioning is based off this rect's position.
+        buttons. All positioning is based off this rect's position. THIS SHOULD NOT BE UI_SCALED
         :param parent_text: The text to display on the parent button.
         :param item_list: The list of options that will become child buttons.
         :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
@@ -1948,7 +1949,7 @@ class UIScrollingDropDown(UIDropDownContainer):
 
         # create parent button
         self.parent_button = UISurfaceImageButton(
-            relative_rect,
+            ui_scale(relative_rect),
             parent_text,
             get_button_dict(parent_style, relative_rect.size),
             manager=manager,
@@ -2047,7 +2048,7 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
         self.bottom_button_oriented_left = bottom_button_oriented_left
         self.scrolling_container_to_reset = scrolling_container_to_reset
 
-        rect = pygame.Rect((0, 0), (36, 36))
+        rect = ui_scale(pygame.Rect((0, 0), (36, 36)))
         if not self.top_button_oriented_left:
             rect.topright = (-10, 10),
             anchors = {
@@ -2134,12 +2135,6 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
             self.scrolling_container_to_reset.scrollable_container.recalculate_abs_edges_rect()
             self.scrolling_container_to_reset.update(1)
 
-            self.scrolling_container_to_reset.set_dimensions(
-                (
-                    self.scrolling_container_to_reset.get_relative_rect()[2],
-                    self.scrolling_container_to_reset.get_relative_rect()[3],
-                )
-            )
             self.scrolling_container_to_reset.vert_scroll_bar.set_scroll_from_start_percentage(
                 self.saved_scroll_position
             )
@@ -2153,7 +2148,8 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
         Opens the container, revealing its contents
         """
         if self.scrolling_container_to_reset:
-            self.saved_scroll_position = (self.scrolling_container_to_reset.vert_scroll_bar.scroll_position /
+            # saves the scroll positions .481 is the magic number to actually make this accurate, don't ask me why
+            self.saved_scroll_position = ((self.scrolling_container_to_reset.vert_scroll_bar.scroll_position * .481) /
                                           self.scrolling_container_to_reset.vert_scroll_bar.scrollable_height)
         for ele in self.elements:
             if ele == self.top_button:

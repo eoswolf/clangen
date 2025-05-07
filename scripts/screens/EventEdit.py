@@ -9,16 +9,17 @@ import ujson
 
 from scripts.cat.cats import Cat
 from scripts.cat.pelts import Pelt
+from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
-    UIDropDownContainer, UICheckbox, UIModifiedImage, UIScrollingButtonList, UIScrollingDropDown, UIDropDown, \
+    UICheckbox, UIModifiedImage, UIScrollingButtonList, UIDropDown, \
     UICollapsibleContainer
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
 from scripts.ui.icon import Icon
-from scripts.utility import ui_scale, process_text
+from scripts.utility import ui_scale, process_text, ui_scale_dimensions
 
 
 def update_collapse_button(button):
@@ -387,15 +388,13 @@ class EventEdit(Screens):
         # CHANGE TYPE
         if (self.type_element.get("pick_type")
                 and self.type_element["pick_type"].selected_list != self.type_info):
-            if self.type_element["pick_type"].selected_list:
-                new_type = self.type_element["pick_type"].selected_list[0]
-                self.type_element["pick_type"].parent_button.set_text(new_type)
-                self.type_info = [new_type]
-                self.sub_info.clear()
-                self.update_sub_info()
-                self.update_sub_buttons(self.event_types.get(new_type))
-                if self.tag_element["collapse_arrow"].text == Icon.ARROW_UP:
-                    self.update_basic_checkboxes()
+            new_type = self.type_element["pick_type"].selected_list[0]
+            self.type_element["pick_type"].parent_button.set_text(new_type)
+            self.type_info = [new_type]
+            self.sub_info.clear()
+            self.update_sub_info()
+            self.update_sub_buttons(self.event_types.get(new_type))
+            self.update_basic_checkboxes()
 
         # CHANGE SUBTYPES
         if (self.type_element.get("subtype_dropdown")
@@ -430,7 +429,7 @@ class EventEdit(Screens):
                     break
             self.acc_element["acc_info"].set_text(f"chosen accessories: {self.acc_info}")
         else:
-            self.acc_element["acc_info"].set_text(f"chosen accessories:")
+            self.acc_element["acc_info"].set_text(f"chosen accessories: []")
 
         self.editor_container.on_contained_elements_changed(self.acc_element["acc_info"])
 
@@ -525,6 +524,8 @@ class EventEdit(Screens):
         if "accessory" not in self.sub_info:
             for group in self.acc_categories.keys():
                 self.acc_element[group].disable()
+                if self.acc_element.get("acc_display"):
+                    self.acc_element["acc_display"].kill()
                 self.acc_info.clear()
                 self.update_acc_info()
 
@@ -893,10 +894,27 @@ class EventEdit(Screens):
         # ACC
         self.create_acc_editor()
 
+    def create_divider(self, top_anchor, name, off_set: int = -12):
+
+        self.editor_element[name] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((0, off_set), (524, 24))),
+            pygame.transform.scale(
+                image_cache.load_image(
+                    "resources/images/spacer.png"
+                ).convert_alpha(),
+                ui_scale_dimensions((524, 24)),
+            ),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "top_target": top_anchor
+            }
+        )
+
     def create_acc_editor(self):
         self.acc_element["acc_text"] = UITextBoxTweaked(
             "screens.event_edit.acc_info",
-            ui_scale(pygame.Rect((0, 10), (450, -1))),
+            ui_scale(pygame.Rect((0, 15), (450, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
@@ -908,7 +926,7 @@ class EventEdit(Screens):
         prev_element = None
         for group in self.acc_categories.keys():
             self.acc_element[group] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((40, 10), (150, 30))),
+                ui_scale(pygame.Rect((40, 15), (150, 30))),
                 group,
                 get_button_dict(ButtonStyles.DROPDOWN, (150, 30)),
                 manager=MANAGER,
@@ -975,8 +993,8 @@ class EventEdit(Screens):
 
     def create_weight_editor(self):
         self.weight_element["weight_text"] = UITextBoxTweaked(
-            "<b>weight:</b>",
-            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            "<b>* weight:</b>",
+            ui_scale(pygame.Rect((0, 15), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
@@ -986,7 +1004,7 @@ class EventEdit(Screens):
             }
         )
         self.weight_element["weight_entry"] = pygame_gui.elements.UITextEntryLine(
-            ui_scale(pygame.Rect((0, 13), (50, 29))),
+            ui_scale(pygame.Rect((0, 18), (50, 29))),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
@@ -995,6 +1013,7 @@ class EventEdit(Screens):
             },
             initial_text=f"{self.weight_info}"
         )
+        self.create_divider(self.weight_element["weight_entry"], "weight", -10)
 
     def create_tag_editor(self):
         if not self.tag_element.get("tag_container"):
@@ -1086,6 +1105,7 @@ class EventEdit(Screens):
                 },
                 allow_split_dashes=False
             )
+            self.create_divider(self.tag_element["tag_display"], "tag", -14)
 
     def update_basic_checkboxes(self):
         prev_element = None
@@ -1102,6 +1122,10 @@ class EventEdit(Screens):
         for info in self.basic_tag_list:
             # first reset the values
             if info.get("required_type") and info["required_type"] != self.type_info[0]:
+                if self.tag_element["tag_container"].is_open:
+                    self.tag_element["tag_container"].close()
+
+                # this is to change the setting to false
                 index = self.basic_tag_list.index(info)
                 self.basic_tag_list[index] = {
                     "tag": info["tag"],
@@ -1141,7 +1165,7 @@ class EventEdit(Screens):
 
         if not self.type_element.get("subtype_dropdown"):
             self.type_element["subtype_dropdown"] = UIDropDown(
-                ui_scale(pygame.Rect((0, 13), (150, 30))),
+                pygame.Rect((0, 17), (150, 30)),
                 parent_text="pick subtypes",
                 item_list=type_list,
                 manager=MANAGER,
@@ -1161,7 +1185,7 @@ class EventEdit(Screens):
     def create_type_editor(self):
         self.type_element["type_text"] = UITextBoxTweaked(
             "<b>* sub/type:</b>",
-            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            ui_scale(pygame.Rect((0, 14), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
@@ -1172,7 +1196,7 @@ class EventEdit(Screens):
         )
 
         self.type_element["pick_type"] = UIDropDown(
-            ui_scale(pygame.Rect((17, 13), (150, 30))),
+            pygame.Rect((17, 17), (150, 30)),
             parent_text=self.type_info[0],
             item_list=list(self.event_types.keys()),
             container=self.editor_container,
@@ -1199,6 +1223,7 @@ class EventEdit(Screens):
             },
             allow_split_dashes=False
         )
+        self.create_divider(self.type_element["sub_display"], "type", -14)
 
     def create_season_editor(self):
         self.season_element["season_text"] = UITextBoxTweaked(
@@ -1214,7 +1239,7 @@ class EventEdit(Screens):
         )
 
         self.season_element["season_dropdown"] = UIDropDown(
-            ui_scale(pygame.Rect((10, 20), (150, 30))),
+            pygame.Rect((10, 20), (150, 30)),
             parent_text="choices",
             item_list=self.all_seasons,
             container=self.editor_container,
@@ -1240,6 +1265,7 @@ class EventEdit(Screens):
             },
             allow_split_dashes=False
         )
+        self.create_divider(self.season_element["season_display"], "season", -14)
 
     def create_location_editor(self):
         self.location_element["location_text"] = UITextBoxTweaked(
@@ -1284,6 +1310,7 @@ class EventEdit(Screens):
             },
             allow_split_dashes=False
         )
+        self.create_divider(self.location_element["location_display"], "location", -14)
 
     def update_camp_list(self, chosen_biome):
 
@@ -1335,3 +1362,4 @@ class EventEdit(Screens):
             },
             placeholder_text="screens.event_edit.empty_event_id"
         )
+        self.create_divider(self.event_id_element["event_id_text"], "event_id")
