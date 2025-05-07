@@ -7574,7 +7574,7 @@
                 ]
             },
             {
-                "text": "s_c boasts that {PRONOUN/s_c/subject} {VERB/s_c/go/goes} into the tunnels <i>all</i> the time. app2 is unconvinced, so s_c crawls in with a smug look back... just as the tunnel rumbles and collapses. With a terrified screech, app2 runs back to camp, praying {PRONOUN/app2/subject} can find help fast. As they hurry back, {PRONOUN/app2/subject} can only hear s_c wail that {PRONOUN/s_c/subject} can't feel {PRONOUN/s_c/poss} legs.",
+                "text": "s_c boasts that {PRONOUN/s_c/subject} {VERB/s_c/go/goes} into the tunnels <i>all</i> the time. app2 is unconvinced, so s_c crawls in with a smug look back... just as the tunnel rumbles and collapses. With a terrified screech, app2 runs back to camp, praying {PRONOUN/app2/subject} can find help fast. As {PRONOUN/app2/subject} {VERB/app2/hurry/hurries} back, {PRONOUN/app2/subject} can only hear s_c wail that {PRONOUN/s_c/subject} can't feel {PRONOUN/s_c/poss} legs.",
                 "exp": 0,
                 "weight": 10,
                 "stat_trait": [
