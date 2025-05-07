@@ -1637,7 +1637,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         self.vert_scroll_bar = None
 
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             manager=manager,
             container=container,
             starting_height=starting_height,
@@ -1936,7 +1936,7 @@ class UIScrollingDropDown(UIDropDownContainer):
         """
 
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             container=container,
             manager=manager,
             starting_height=starting_height,
@@ -1949,7 +1949,7 @@ class UIScrollingDropDown(UIDropDownContainer):
 
         # create parent button
         self.parent_button = UISurfaceImageButton(
-            ui_scale(relative_rect),
+            ui_scale(relative_rect.copy()),
             parent_text,
             get_button_dict(parent_style, relative_rect.size),
             manager=manager,
