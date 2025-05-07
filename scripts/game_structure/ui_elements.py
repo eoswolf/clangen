@@ -452,6 +452,7 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
             self.horiz_scroll_bar.set_container_this_will_scroll(
                 self.scrollable_container
             )
+            self.join_focus_sets(self.horiz_scroll_bar)
 
     def set_view_container_dimensions(self, dimensions: Coordinate):
         self._view_container.set_dimensions(dimensions)

@@ -7,7 +7,7 @@
         "location_info": "<b>location:</b> Click to add or remove a place as a location for the event. You only need to include the biome name if any camp is applicable.",
         "season_info": "<b>season:</b> Click to add or remove a required season for this event.",
         "subtype_info": "<b>subtypes:</b> Click to add or remove a subtype for this event.",
-        "acc_info": "<b>new_accessory:</b> Click to add or remove. Adding a category name will allow the event to give any accessory in that category.",
+        "acc_info": "<b>new_accessory:</b> <u>Not accessible without 'accessory' subtype.</u> Click to add or remove. Adding a category name will allow the event to give any accessory in that category.",
         "m_c_info": "<b>m_c:</> The following information will dictate who the main cat (m_c) affected by the event can be.",
         "classic": "Is this limited to classic mode?",
         "cruel_season": "Is this limited to cruel season?",

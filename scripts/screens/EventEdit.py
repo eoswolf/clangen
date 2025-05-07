@@ -404,6 +404,7 @@ class EventEdit(Screens):
                 self.type_element["pick_type"].parent_button.set_text(new_type)
                 self.type_info = [new_type]
                 self.sub_info.clear()
+                self.update_sub_info()
                 self.update_sub_buttons(self.event_types.get(new_type))
                 if self.tag_element["collapse_arrow"].text == Icon.ARROW_UP:
                     self.update_basic_checkboxes()
@@ -532,8 +533,17 @@ class EventEdit(Screens):
             self.season_element["season_display"].set_text("chosen season: ['any']")
 
     def update_sub_info(self):
-
+        if "accessory" not in self.sub_info:
+            for group in self.acc_categories.keys():
+                self.acc_element[group].disable()
+                self.acc_info.clear()
+                self.update_acc_info()
+                
         if self.sub_info:
+            if "accessory" in self.sub_info:
+                for group in self.acc_categories.keys():
+                    self.acc_element[group].enable()
+
             self.type_element["sub_display"].set_text(f"chosen subtypes: {self.sub_info}")
         else:
             self.type_element["sub_display"].set_text("chosen subtypes: []")
@@ -893,20 +903,6 @@ class EventEdit(Screens):
         # ACC
         self.create_acc_editor()
 
-        self.editor_element["scroll_text"] = UIScrollingDropDown(
-            ui_scale(pygame.Rect((0, 0), (150, 30))),
-            parent_text="Ranks",
-            item_list=Cat.rank_sort_order,
-            dropdown_dimensions=(150, 150),
-            container=self.editor_container,
-            anchors={
-                "top_target": self.acc_element["acc_info"],
-                "left_target": self.event_id_element["event_id_text"]
-            },
-            manager=MANAGER
-        )
-        self.editor_element["scroll_text"].hide()
-
     def create_acc_editor(self):
         self.acc_element["acc_text"] = UITextBoxTweaked(
             "screens.event_edit.acc_info",
@@ -935,6 +931,8 @@ class EventEdit(Screens):
                 }
             )
             prev_element = self.acc_element[group]
+            self.acc_element[group].disable()
+
         self.acc_element["frame"] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((-8, 0), (210, 250))),
             get_box(BoxStyles.FRAME, (210, 250)),
