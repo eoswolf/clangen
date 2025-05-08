@@ -1,7 +1,6 @@
 import random
 from random import choice
 from re import sub
-from itertools import chain
 
 import i18n
 
