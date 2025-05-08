@@ -67,6 +67,7 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
         tab_data = None
         if ids is not None:
             self._is_tab = any(["tab" in temp for temp in ids if temp is not None])
+            self._is_bottom_tab = any(["tab_bottom" in temp for temp in ids if temp is not None])
         else:
             self._is_tab = False
         if self._is_tab:
@@ -152,7 +153,11 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
 
             if self._is_tab:
                 if self.text_layer.rect.height >= relative_rect[3]:
-                    offset = (self.text_layer.rect.height - relative_rect[3]) // 2
+                    if self._is_bottom_tab:
+                        offset = ui_scale_value(2)
+                    else:
+                        offset = 0
+                    offset = offset + ((self.text_layer.rect.height - relative_rect[3]) // 2)
                     current = self.text_layer.get_relative_rect()
                     self.text_layer.set_relative_position(
                         (current[0], current[1] - offset)
