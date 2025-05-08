@@ -22,15 +22,6 @@ from scripts.ui.icon import Icon
 from scripts.utility import ui_scale, process_text, ui_scale_dimensions
 
 
-def update_collapse_button(button):
-    if button.text == Icon.ARROW_UP:
-        button.set_text(Icon.ARROW_DOWN)
-        button.set_tooltip("buttons.collapse_down")
-    elif button.text == Icon.ARROW_DOWN:
-        button.set_text(Icon.ARROW_UP)
-        button.set_tooltip("buttons.collapse_up")
-
-
 class EventEdit(Screens):
     """
     This screen provides an interface to allow devs to edit and create events.
@@ -162,6 +153,15 @@ class EventEdit(Screens):
         }
     ]
 
+    section_tabs = {
+        "settings": Icon.PAW,
+        "main cat": Icon.CAT_HEAD,
+        "random cat": Icon.CAT_HEAD,
+        "new cats": Icon.CAT_HEAD,
+        "personal consequences": Icon.SCRATCHES,
+        "outside consequences": Icon.CLAN_UNKNOWN
+    }
+
     def __init__(self, name=None):
         super().__init__(name)
 
@@ -170,9 +170,10 @@ class EventEdit(Screens):
         self.add_button = None
         self.event_list_container = None
         self.event_list = None
-        self.editor_frame = None
         self.list_frame = None
         self.main_menu_button = None
+
+        self.current_editor_tab = None
 
         self.type_tab_buttons = {}
         self.biome_tab_buttons = {}
@@ -181,6 +182,8 @@ class EventEdit(Screens):
         self.editor_element = {}
 
         self.event_text_element = {}
+
+        # Settings elements
         self.event_id_element = {}
 
         self.location_element = {}
@@ -218,6 +221,7 @@ class EventEdit(Screens):
         self.new_event = {}
 
     def handle_event(self, event):
+        # HANDLE TEXT LINKS
         if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
             if platform.system() == "Darwin":
                 subprocess.Popen(["open", "-u", event.link_target])
@@ -229,38 +233,10 @@ class EventEdit(Screens):
         elif event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
 
+            # MAIN MENU RETURN
             if event.ui_element == self.main_menu_button:
-
                 self.change_screen("start screen")
                 return
-
-            # TEXT PREVIEW
-            elif event.ui_element == self.event_text_element["preview_button"]:
-                # finds what the new preview state should be
-                index = self.preview_states.index(self.current_preview_state)
-                new_index = index + 1 if index + 1 <= 2 else 0
-                self.current_preview_state = self.preview_states[new_index]
-
-                # switches states
-                if new_index == 0:
-                    self.event_text_element["event_text"].show()
-                    self.event_text_element["preview_text"].hide()
-                else:
-                    self.event_text_element["event_text"].hide()
-                    text = self.event_text_element["event_text"].html_text
-
-                    test_dict = {}
-                    for abbr in self.test_cat_names:
-                        pronoun = choice(
-                            [pro for pro in self.test_pronouns if pro["conju"] == self.current_preview_state]
-                        )
-                        test_dict[abbr] = (
-                            self.test_cat_names[abbr], pronoun
-                        )
-
-                    text = process_text(text, test_dict)
-                    self.event_text_element["preview_text"].set_text(text)
-                    self.event_text_element["preview_text"].show()
 
             # SELECT TYPE
             elif event.ui_element in self.type_tab_buttons.values():
@@ -285,99 +261,136 @@ class EventEdit(Screens):
 
                     self.display_events()
 
+            # SELECT EVENT
             elif event.ui_element in self.event_buttons.values():
                 self.chosen_event = event.ui_element.text
 
+            # OPEN EDITOR
             elif event.ui_element == self.add_button:
-                # TODO: need prevention for clicking after editor is already open
-                self.chosen_event = None
-                self.display_editor()
+                # TODO: need confirmation window for clicking after editor is already open
+                # TODO: as well as a proper func to clear info
+                if not self.event_id_element.get("event_id_text"):
+                    self.chosen_event = None
+                    self.display_editor()
 
-            # CHANGE LOCATION LIST
-            elif event.ui_element in self.location_element.values():
-                biome_list = game.clan.BIOME_TYPES
-                for biome in biome_list:
-                    if event.ui_element == self.location_element[biome]:
-                        self.update_location_info(biome=biome)
-                        break
-                for camp in [camp for biome in self.all_camps.values() for camp in biome]:
-                    if event.ui_element == self.location_element.get(camp):
-                        self.update_location_info(camp=camp)
-                        break
-
-            # CHANGE BASIC TAGS
-            elif event.ui_element in self.basic_tag_checkbox.values():
-                event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
-                for info in self.basic_tag_list:
-                    if event.ui_element == self.basic_tag_checkbox.get(info["tag"]):
-                        index = self.basic_tag_list.index(info)
-                        self.basic_tag_list[index] = {
-                            "tag": info["tag"],
-                            "setting": False if info["setting"] else True,
-                            "required_type": info["required_type"],
-                            "conflict": info["conflict"]
-                        }
-
-                        # flip the setting of any conflicting tags
-                        if info["conflict"]:
-                            for tag in info["conflict"]:
-                                conflict_info = [block for block in self.basic_tag_list if tag == block["tag"]][0]
-                                conflict_index = self.basic_tag_list.index(conflict_info)
-                                if not info["setting"]:  # unchecks if conflicted setting is checked
-                                    self.basic_tag_checkbox[tag].uncheck()
-                                self.basic_tag_list[conflict_index] = {
-                                    "tag": conflict_info["tag"],
-                                    "setting": False,
-                                    "required_type": conflict_info["required_type"],
-                                    "conflict": conflict_info["conflict"]
-                                }
-
-                        self.update_tag_info()
-                        break
-
-            # CHANGE RANK TAGS
-            elif event.ui_element in self.rank_tag_checkbox.values():
-                event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
-                self.update_tag_info()
-
-            # CHANGE ACC CATEGORY
-            # individual accs
-            elif (self.acc_element.get("acc_display")
-                  and event.ui_element in self.acc_element["acc_display"].buttons.values()):
-                for acc, button in self.acc_element["acc_display"].buttons.items():
-                    if event.ui_element != button:
-                        continue
-                    if acc in self.acc_info:
-                        self.acc_info.remove(acc)
-                    else:
-                        self.acc_info.append(acc)
-                    break
-                self.update_acc_info()
-            # greater categories
-            elif event.ui_element in self.acc_element.values():
-                for group, button in self.acc_element.items():
-                    if event.ui_element != button:
-                        continue
-                    if group != self.open_category:
-                        self.open_category = group
-                        self.update_acc_list()
-                        if group not in self.acc_info:
-                            self.acc_info.append(group)
-                            self.replace_accs_with_group(group)
-                    else:
-                        if group in self.acc_info:
-                            self.acc_info.remove(group)
-                            self.open_category = None
-                            self.update_acc_list()
-                        else:
-                            self.replace_accs_with_group(group)
-                    break
-                self.update_acc_info()
+            # SETTINGS TAB EVENTS
+            elif self.current_editor_tab == "settings":
+                self.handle_settings_events(event)
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
             if event.ui_element == self.event_id_element["event_id_entry"]:
                 self.new_event.update({"event_id": self.event_id_element["event_id_entry"].text})
+
+    def handle_settings_events(self, event):
+        # TEXT PREVIEW
+        if event.ui_element == self.event_text_element["preview_button"]:
+            # finds what the new preview state should be
+            index = self.preview_states.index(self.current_preview_state)
+            new_index = index + 1 if index + 1 <= 2 else 0
+            self.current_preview_state = self.preview_states[new_index]
+
+            # switches states
+            if new_index == 0:
+                self.event_text_element["event_text"].show()
+                self.event_text_element["preview_text"].hide()
+            else:
+                self.event_text_element["event_text"].hide()
+                text = self.event_text_element["event_text"].html_text
+
+                test_dict = {}
+                for abbr in self.test_cat_names:
+                    pronoun = choice(
+                        [pro for pro in self.test_pronouns if pro["conju"] == self.current_preview_state]
+                    )
+                    test_dict[abbr] = (
+                        self.test_cat_names[abbr], pronoun
+                    )
+
+                text = process_text(text, test_dict)
+                self.event_text_element["preview_text"].set_text(text)
+                self.event_text_element["preview_text"].show()
+
+        # CHANGE LOCATION LIST
+        if event.ui_element in self.location_element.values():
+            biome_list = game.clan.BIOME_TYPES
+            for biome in biome_list:
+                if event.ui_element == self.location_element[biome]:
+                    self.update_location_info(biome=biome)
+                    break
+            for camp in [camp for biome in self.all_camps.values() for camp in biome]:
+                if event.ui_element == self.location_element.get(camp):
+                    self.update_location_info(camp=camp)
+                    break
+
+        # CHANGE BASIC TAGS
+        elif event.ui_element in self.basic_tag_checkbox.values():
+            event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+            for info in self.basic_tag_list:
+                if event.ui_element == self.basic_tag_checkbox.get(info["tag"]):
+                    index = self.basic_tag_list.index(info)
+                    self.basic_tag_list[index] = {
+                        "tag": info["tag"],
+                        "setting": False if info["setting"] else True,
+                        "required_type": info["required_type"],
+                        "conflict": info["conflict"]
+                    }
+
+                    # flip the setting of any conflicting tags
+                    if info["conflict"]:
+                        for tag in info["conflict"]:
+                            conflict_info = [block for block in self.basic_tag_list if tag == block["tag"]][0]
+                            conflict_index = self.basic_tag_list.index(conflict_info)
+                            if not info["setting"]:  # unchecks if conflicted setting is checked
+                                self.basic_tag_checkbox[tag].uncheck()
+                            self.basic_tag_list[conflict_index] = {
+                                "tag": conflict_info["tag"],
+                                "setting": False,
+                                "required_type": conflict_info["required_type"],
+                                "conflict": conflict_info["conflict"]
+                            }
+
+                    self.update_tag_info()
+                    break
+
+        # CHANGE RANK TAGS
+        elif event.ui_element in self.rank_tag_checkbox.values():
+            event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+            self.update_tag_info()
+
+        # CHANGE ACC CATEGORY
+        # individual accs
+        elif (self.acc_element.get("acc_display")
+              and event.ui_element in self.acc_element["acc_display"].buttons.values()):
+            for acc, button in self.acc_element["acc_display"].buttons.items():
+                if event.ui_element != button:
+                    continue
+                if acc in self.acc_info:
+                    self.acc_info.remove(acc)
+                else:
+                    self.acc_info.append(acc)
+                break
+            self.update_acc_info()
+        # greater categories
+        elif event.ui_element in self.acc_element.values():
+            for group, button in self.acc_element.items():
+                if event.ui_element != button:
+                    continue
+                if group != self.open_category:
+                    self.open_category = group
+                    self.update_acc_list()
+                    if group not in self.acc_info:
+                        self.acc_info.append(group)
+                        self.replace_accs_with_group(group)
+                else:
+                    if group in self.acc_info:
+                        self.acc_info.remove(group)
+                        self.open_category = None
+                        self.update_acc_list()
+                    else:
+                        self.replace_accs_with_group(group)
+                break
+            self.update_acc_info()
 
     def on_use(self):
         """
@@ -385,6 +398,12 @@ class EventEdit(Screens):
         attribute, as well as handling a lot of state changes within their own update funcs. handle_event() runs before
         update() funcs, causing issues for dropdowns if we try to use it
         """
+        if self.current_editor_tab == "settings":
+            self.handle_settings_on_use()
+
+        super().on_use()
+
+    def handle_settings_on_use(self):
         # CHANGE TYPE
         if (self.type_element.get("pick_type")
                 and self.type_element["pick_type"].selected_list != self.type_info):
@@ -395,20 +414,16 @@ class EventEdit(Screens):
             self.update_sub_info()
             self.update_sub_buttons(self.event_types.get(new_type))
             self.update_basic_checkboxes()
-
         # CHANGE SUBTYPES
         if (self.type_element.get("subtype_dropdown")
                 and self.type_element["subtype_dropdown"].selected_list != self.sub_info):
             self.sub_info = self.type_element["subtype_dropdown"].selected_list.copy()
             self.update_sub_info()
-
         # CHANGE SEASONS
         if (self.season_element.get("season_dropdown")
                 and self.season_element["season_dropdown"].selected_list != self.season_info):
             self.season_info = self.season_element["season_dropdown"].selected_list.copy()
             self.update_season_info()
-
-        super().on_use()
 
     def replace_accs_with_group(self, group):
         for category_name, accs in self.acc_categories.items():
@@ -550,12 +565,14 @@ class EventEdit(Screens):
 
         self.main_menu_button.kill()
         self.list_frame.kill()
-        self.editor_frame.kill()
         self.event_text_container.kill()
         if self.event_list_container:
             self.event_list_container.kill()
         if self.editor_container:
             self.editor_container.kill()
+        if self.editor_element:
+            for ele in self.editor_element.values():
+                ele.kill()
 
         self.add_button.kill()
         self.kill_tabs()
@@ -609,7 +626,7 @@ class EventEdit(Screens):
         )
         self.event_text_element["box"].disable()
 
-        self.editor_frame = pygame_gui.elements.UIImage(
+        self.editor_element["frame"] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((300, 140), (470, 490))),
             get_box(BoxStyles.FRAME, (470, 490)),
             starting_height=2,
@@ -873,24 +890,48 @@ class EventEdit(Screens):
             container=self.event_text_container,
         )
 
+        # SECTION TABS
+        prev_element = None
+        for name, icon in self.section_tabs.items():
+            self.editor_element[name] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((10, -6), (36, 36))),
+                icon,
+                get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
+                manager=MANAGER,
+                object_id="@buttonstyles_icon_tab_bottom",
+                starting_height=1,
+                tool_tip_text=name,
+                anchors=(
+                    {
+                        "top_target": self.editor_element["frame"],
+                        "left_target": self.list_frame
+                    }
+                    if not prev_element
+                    else
+                    {
+                        "top_target": self.editor_element["frame"],
+                        "left_target": prev_element
+                    }
+                )
+            )
+            prev_element = self.editor_element[name]
+
+        self.generate_settings_tab()
+
+    def generate_settings_tab(self):
+        self.current_editor_tab = "settings"
         # EVENT ID
         self.create_event_id_editor()
-
         # LOCATION
         self.create_location_editor()
-
         # SEASON
         self.create_season_editor()
-
         # TYPE AND SUBTYPES
         self.create_type_editor()
-
         # TAGS
         self.create_tag_editor()
-
         # WEIGHT
         self.create_weight_editor()
-
         # ACC
         self.create_acc_editor()
 
@@ -1194,6 +1235,8 @@ class EventEdit(Screens):
                 "top_target": self.season_element["season_display"]
             }
         )
+        if not self.type_info:
+            self.type_info = ["death"]
 
         self.type_element["pick_type"] = UIDropDown(
             pygame.Rect((17, 17), (150, 30)),
