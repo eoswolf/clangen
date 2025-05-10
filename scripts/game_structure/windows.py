@@ -31,7 +31,7 @@ from scripts.game_structure.ui_elements import (
     UIImageButton,
     UITextBoxTweaked,
     UISurfaceImageButton,
-    UIDropDownContainer, UIDropDown,
+    UIDropDown,
 )
 from scripts.housekeeping.datadir import (
     get_save_dir,
@@ -806,7 +806,7 @@ class PronounCreation(UIWindow):
         )
 
         self.dropdowns["conju"] = UIDropDown(
-            ui_scale(pygame.Rect((0, -3), (100, 32))),
+            pygame.Rect((0, -3), (100, 32)),
             parent_text=f"windows.conju{self.conju}",
             item_list=[f"windows.conju{i}" for i in range(1, config["conju_count"] + 1)],
             manager=MANAGER,
@@ -818,7 +818,7 @@ class PronounCreation(UIWindow):
             starting_selection=[f"windows.conju{self.conju}"]
         )
         self.dropdowns["gender"] = UIDropDown(
-            ui_scale(pygame.Rect((0, 34), (100, 32))),
+            pygame.Rect((0, 34), (100, 32)),
             parent_text=f"windows.gender{self.gender}",
             item_list=[f"windows.gender{i}" for i in range(0, config["gender_count"])],
             manager=MANAGER,

@@ -16,6 +16,7 @@ from pygame_gui.elements import UIAutoResizingContainer, UISelectionList
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
+from scripts.ui.icon import Icon
 from scripts.utility import (
     ui_scale,
     shorten_text_to_fit,
@@ -66,6 +67,7 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
         tab_data = None
         if ids is not None:
             self._is_tab = any(["tab" in temp for temp in ids if temp is not None])
+            self._is_bottom_tab = any(["tab_bottom" in temp for temp in ids if temp is not None])
         else:
             self._is_tab = False
         if self._is_tab:
@@ -151,7 +153,11 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
 
             if self._is_tab:
                 if self.text_layer.rect.height >= relative_rect[3]:
-                    offset = (self.text_layer.rect.height - relative_rect[3]) // 2
+                    if self._is_bottom_tab:
+                        offset = ui_scale_value(2)
+                    else:
+                        offset = 0
+                    offset = offset + ((self.text_layer.rect.height - relative_rect[3]) // 2)
                     current = self.text_layer.get_relative_rect()
                     self.text_layer.set_relative_position(
                         (current[0], current[1] - offset)
@@ -452,6 +458,7 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
             self.horiz_scroll_bar.set_container_this_will_scroll(
                 self.scrollable_container
             )
+            self.join_focus_sets(self.horiz_scroll_bar)
 
     def set_view_container_dimensions(self, dimensions: Coordinate):
         self._view_container.set_dimensions(dimensions)
@@ -1083,7 +1090,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
         if self.parent_button.pressed:
             if self.is_open:
                 self.close()
-            elif not self.is_open:
+            else:
                 self.open()
 
         super().update(time_delta)
@@ -1113,7 +1120,7 @@ class UICheckbox(UIImageButton):
             tool_tip_text: str = None,
             starting_height: int = 1,
             check: bool = False,
-            anchors=None
+            anchors=None,
     ):
         self.checked = check
 
@@ -1624,10 +1631,10 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  starting_selection: list = None
                  ):
         self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
-
+        self.button_style = button_style
         child_rect_height = button_dimensions[1] if button_dimensions else relative_rect.height
         child_rect_width = button_dimensions[0] if button_dimensions else relative_rect.width
-        child_rect = (child_rect_width, child_rect_height)
+        self.child_rect = (child_rect_width, child_rect_height)
 
         if offset_scroll:
             relative_rect.width += 20
@@ -1635,7 +1642,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         self.vert_scroll_bar = None
 
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             manager=manager,
             container=container,
             starting_height=starting_height,
@@ -1653,11 +1660,11 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             y_pos = -2 if prev_element else 0
 
             self.buttons[child] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, y_pos), child_rect)),
+                ui_scale(pygame.Rect((0, y_pos), self.child_rect)),
                 child,
-                get_button_dict(button_style, child_rect),
+                get_button_dict(self.button_style, self.child_rect),
                 manager=manager,
-                object_id=f"@buttonstyles_{button_style.value}",
+                object_id=f"@buttonstyles_{self.button_style.value}",
                 container=self,
                 anchors={
                     "top_target": prev_element
@@ -1690,8 +1697,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
 
             # single choice
             elif button.pressed and not self.multiple_choice:
-                self.selected_list.clear()
-                self.selected_list.append(name)
+                self.selected_list.append(name) if not self.selected_list else self.selected_list.clear()
                 if self.disable_selection:
                     for other_button in self.buttons.values():
                         other_button.enable()
@@ -1704,6 +1710,30 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         # fixes it and that's all I want to know
         if not self.visible:
             self.vert_scroll_bar.hide()
+
+    def new_item_list(self, item_list):
+        # destroy old buttons and clear selected list
+        for button in self.buttons.values():
+            button.kill()
+        self.buttons.clear()
+        self.selected_list.clear()
+
+        prev_element = None
+        for child in item_list:
+            y_pos = -2 if prev_element else 0
+
+            self.buttons[child] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), self.child_rect)),
+                child,
+                get_button_dict(self.button_style, self.child_rect),
+                manager=self.ui_manager,
+                object_id=f"@buttonstyles_{self.button_style.value}",
+                container=self,
+                anchors={
+                    "top_target": prev_element
+                } if prev_element else None
+            )
+            prev_element = self.buttons[child]
 
 
 class UIDropDown(UIDropDownContainer):
@@ -1733,7 +1763,7 @@ class UIDropDown(UIDropDownContainer):
         screen func to check for changes to the selected_list attribute rather than handle_event()
 
         :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
-        buttons. All positioning is based off this rect's position.
+        buttons. All positioning is based off this rect's position. THIS SHOULD NOT BE UI_SCALED
         :param parent_text: The text to display on the parent button.
         :param item_list: The list of options that will become child buttons.
         :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
@@ -1750,8 +1780,9 @@ class UIDropDown(UIDropDownContainer):
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
 
+
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             container=container,
             manager=manager,
             starting_height=starting_height,
@@ -1765,7 +1796,7 @@ class UIDropDown(UIDropDownContainer):
         # create parent button
         if not parent_override:
             self.parent_button = UISurfaceImageButton(
-                relative_rect,
+                ui_scale(relative_rect.copy()),
                 parent_text,
                 get_button_dict(parent_style, relative_rect.size),
                 manager=manager,
@@ -1876,12 +1907,16 @@ class UIDropDown(UIDropDownContainer):
 
             # single choice
             elif not self.multiple_choice:
-                self.selected_list.clear()
-                self.selected_list.append(name)
+                if self.selected_list and self.selected_list[0] == name:
+                    self.selected_list.clear()
+                else:
+                    self.selected_list.clear()
+                    self.selected_list.append(name)
+                print(self.selected_list)
                 if self.disable_selection:
-                    self.disable_child(name, button)
-                if self.child_trigger_close:
-                    self.close()
+                    for other_button in self.child_buttons:
+                        other_button.enable()
+                    button.disable()
                 break
 
         super().update(time_delta)
@@ -1908,14 +1943,14 @@ class UIScrollingDropDown(UIDropDownContainer):
             visible: bool = True,
             anchors: dict = None,
             child_trigger_close=False,
-            starting_selection: bool = None
+            starting_selection: list = None
     ):
         """
         Class to handle the creation and management of scrolling dropdowns. It's recommended to use the on_use()
         screen func to check for changes to the selected_list attribute rather than handle_event()
 
         :param relative_rect: The rect for the parent button, by default these dimensions are also used for the child
-        buttons. All positioning is based off this rect's position.
+        buttons. All positioning is based off this rect's position. THIS SHOULD NOT BE UI_SCALED
         :param parent_text: The text to display on the parent button.
         :param item_list: The list of options that will become child buttons.
         :param child_dimensions: This overrides the relative_rect dimensions for the child buttons, allowing you to create
@@ -1933,7 +1968,7 @@ class UIScrollingDropDown(UIDropDownContainer):
         """
 
         super().__init__(
-            relative_rect=relative_rect,
+            relative_rect=ui_scale(relative_rect.copy()),
             container=container,
             manager=manager,
             starting_height=starting_height,
@@ -1946,7 +1981,7 @@ class UIScrollingDropDown(UIDropDownContainer):
 
         # create parent button
         self.parent_button = UISurfaceImageButton(
-            relative_rect,
+            ui_scale(relative_rect.copy()),
             parent_text,
             get_button_dict(parent_style, relative_rect.size),
             manager=manager,
@@ -1963,7 +1998,7 @@ class UIScrollingDropDown(UIDropDownContainer):
 
         dropdown_rect = ((relative_rect.x, 0), dropdown_dimensions)
         self.child_button_container = UIScrollingButtonList(
-            ui_scale(pygame.Rect(dropdown_rect)),
+            pygame.Rect(dropdown_rect),
             button_dimensions=dimensions,
             item_list=item_list,
             manager=manager,
@@ -1999,3 +2034,185 @@ class UIScrollingDropDown(UIDropDownContainer):
         super().update(time_delta)
 
         self.selected_list = self.child_button_container.selected_list
+
+    def new_item_list(self, item_list):
+        self.child_button_container.new_item_list(item_list)
+
+        self.child_buttons = self.child_button_container.buttons.values()
+        self.child_button_dicts = self.child_button_container.buttons
+
+class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
+    def __init__(
+            self,
+            relative_rect: RectLike,
+            title_text: str = None,
+            top_button_oriented_left: bool = True,
+            bottom_button: bool = True,
+            bottom_button_oriented_left: bool = True,
+            scrolling_container_to_reset = None,
+            min_edges_rect: pygame.Rect = None,
+            max_edges_rect: pygame.Rect = None,
+            resize_left: bool = True,
+            resize_right: bool = True,
+            resize_top: bool = True,
+            resize_bottom: bool = True,
+            manager: Optional[IUIManagerInterface] = None,
+            starting_height: int = 1,
+            container: Optional[IContainerLikeInterface] = None,
+            parent_element: Optional[UIElement] = None,
+            object_id: Optional[Union[ObjectID, str]] = None,
+            anchors: Optional[Dict[str, Union[str, UIElement]]] = None,
+            visible: int = 1
+    ):
+        super().__init__(
+            relative_rect=relative_rect,
+            min_edges_rect=min_edges_rect,
+            max_edges_rect=max_edges_rect,
+            resize_left=resize_left,
+            resize_right=resize_right,
+            resize_top=resize_top,
+            resize_bottom=resize_bottom,
+            manager=manager,
+            starting_height=starting_height,
+            container=container,
+            parent_element=parent_element,
+            object_id=object_id,
+            anchors=anchors,
+            visible=visible
+        )
+        self.title_text = None
+        self.top_button_oriented_left = top_button_oriented_left
+        self.bottom_button_oriented_left = bottom_button_oriented_left
+        self.scrolling_container_to_reset = scrolling_container_to_reset
+
+        rect = ui_scale(pygame.Rect((0, 0), (36, 36)))
+        if not self.top_button_oriented_left:
+            rect.topright = (-10, 10),
+            anchors = {
+                "right": "right"
+            }
+        else:
+            rect.topleft = (10, 10),
+            anchors = None
+
+        self.top_button = UISurfaceImageButton(
+            rect,
+            Icon.ARROW_UP,
+            get_button_dict(ButtonStyles.ICON, (36, 36)),
+            manager=manager,
+            object_id="@buttonstyles_icon",
+            starting_height=1,
+            container=self,
+            tool_tip_text="buttons.collapse_down",
+            anchors=anchors if anchors else None
+        )
+
+        if title_text:
+            self.title_text = UITextBoxTweaked(
+                title_text,
+                ui_scale(pygame.Rect((0, 10), (-1, -1))),
+                object_id="#text_box_30_horizleft_pad_10_10",
+                line_spacing=1,
+                manager=manager,
+                container=self,
+                anchors={
+                    "left_target": self.top_button
+                }if self.top_button_oriented_left else None
+            )
+
+        self.bottom_button = None
+        if bottom_button:
+            if not self.bottom_button_oriented_left:
+                rect.bottomright = (-10, 10),
+                anchors = {
+                    "right": "right",
+                    "bottom": "bottom"
+                }
+            else:
+                rect.bottomleft = (10, -10),
+                anchors = {
+                    "bottom": "bottom"
+                }
+
+            self.bottom_button = UISurfaceImageButton(
+                rect,
+                Icon.ARROW_UP,
+                get_button_dict(ButtonStyles.ICON, (36, 36)),
+                manager=manager,
+                object_id="@buttonstyles_icon",
+                starting_height=1,
+                container=self,
+                tool_tip_text="buttons.collapse_up",
+                anchors=anchors
+            )
+
+        self.is_open = True
+        self.saved_scroll_position = None
+
+    def close(self):
+        """
+        Closes the container, leaving only the top button visible
+        """
+
+        for ele in self.elements:
+            if ele == self.title_text:
+                continue
+            if ele == self.top_button:
+                self.top_button.set_text(Icon.ARROW_DOWN)
+                self.top_button.set_tooltip("buttons.collapse_down")
+                continue
+            ele.hide()
+
+        self.resize_bottom = False
+        self.set_dimensions((self.get_relative_rect().w,
+                             self.top_button.get_relative_rect().h + self.top_button.get_relative_rect().y
+                             ))
+
+        # this resets the scrolling container containing this container back to its prior position (or close to it)
+        if self.scrolling_container_to_reset and self.saved_scroll_position:
+            self.scrolling_container_to_reset.scrollable_container.recalculate_abs_edges_rect()
+            self.scrolling_container_to_reset.update(1)
+
+            self.scrolling_container_to_reset.vert_scroll_bar.set_scroll_from_start_percentage(
+                self.saved_scroll_position
+            )
+            self.scrolling_container_to_reset.vert_scroll_bar.has_moved_recently = True
+            self.scrolling_container_to_reset.update(1)
+
+        self.is_open = False
+
+    def open(self):
+        """
+        Opens the container, revealing its contents
+        """
+        if self.scrolling_container_to_reset:
+            # saves the scroll positions .481 is the magic number to actually make this accurate, don't ask me why
+            self.saved_scroll_position = ((self.scrolling_container_to_reset.vert_scroll_bar.scroll_position * .481) /
+                                          self.scrolling_container_to_reset.vert_scroll_bar.scrollable_height)
+        for ele in self.elements:
+            if ele == self.top_button:
+                self.top_button.set_text(Icon.ARROW_UP)
+                self.top_button.set_tooltip("buttons.collapse_up")
+                continue
+            ele.show()
+
+        self.resize_bottom = True
+        self.should_update_dimensions = True
+
+        self.is_open = True
+
+    def update(self, time_delta: float):
+        if self.top_button.pressed:
+            if self.is_open:
+                self.close()
+            else:
+                self.open()
+        elif self.bottom_button and self.bottom_button.pressed:
+            if self.is_open:
+                self.close()
+            else:
+                self.open()
+
+        super().update(time_delta)
+
+

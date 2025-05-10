@@ -305,7 +305,7 @@ class ListScreen(Screens):
 
         # CHOOSE GROUP DROPDOWN
         self.choose_group_dropdown = UIDropDown(
-            ui_scale(pygame.Rect((-2, 0), (190, 34))),
+            pygame.Rect((-2, 0), (190, 34)),
             parent_text="screens.list.choose_group",
             item_list=self.living_group_names,
             manager=MANAGER,
@@ -347,7 +347,7 @@ class ListScreen(Screens):
         )
 
         self.sort_by_dropdown = UIDropDown(
-            ui_scale(pygame.Rect((-2, 0), (63, 34))),
+            pygame.Rect((-2, 0), (63, 34)),
             f"screens.list.filter_{game.sort_type}",
             item_list=self.living_filter_names,
             manager=MANAGER,
