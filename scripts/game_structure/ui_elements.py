@@ -1712,6 +1712,9 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             self.vert_scroll_bar.hide()
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         # destroy old buttons and clear selected list
         for button in self.buttons.values():
             button.kill()
@@ -1779,7 +1782,6 @@ class UIDropDown(UIDropDownContainer):
         self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
-
 
         super().__init__(
             relative_rect=ui_scale(relative_rect.copy()),
@@ -1861,6 +1863,9 @@ class UIDropDown(UIDropDownContainer):
         self.close()
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         # destroy old buttons and clear selected list
         for button in self.child_button_dicts.values():
             button.kill()
@@ -2036,10 +2041,14 @@ class UIScrollingDropDown(UIDropDownContainer):
         self.selected_list = self.child_button_container.selected_list
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         self.child_button_container.new_item_list(item_list)
 
         self.child_buttons = self.child_button_container.buttons.values()
         self.child_button_dicts = self.child_button_container.buttons
+
 
 class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
     def __init__(
@@ -2049,7 +2058,7 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
             top_button_oriented_left: bool = True,
             bottom_button: bool = True,
             bottom_button_oriented_left: bool = True,
-            scrolling_container_to_reset = None,
+            scrolling_container_to_reset=None,
             min_edges_rect: pygame.Rect = None,
             max_edges_rect: pygame.Rect = None,
             resize_left: bool = True,
@@ -2064,6 +2073,15 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
             anchors: Optional[Dict[str, Union[str, UIElement]]] = None,
             visible: int = 1
     ):
+        """
+        A collapsible container that can be created with a title (text visible while closed) as well as top and bottom
+        buttons on the right or left side.
+        :param title_text: Text visible while container is closed, this will align with the top button
+        :param top_button_oriented_left: The top button will appear on the far left of the container if this is True,
+        else it will appear on the right. Default is True.
+        :param bottom_button: Should this container have a bottom button. Default is True
+        :param bottom_button_oriented_left: If it has a bottom button, will it be oriented to the left side. Default is True
+        """
         super().__init__(
             relative_rect=relative_rect,
             min_edges_rect=min_edges_rect,
@@ -2117,7 +2135,7 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
                 container=self,
                 anchors={
                     "left_target": self.top_button
-                }if self.top_button_oriented_left else None
+                } if self.top_button_oriented_left else None
             )
 
         self.bottom_button = None
@@ -2214,5 +2232,3 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
                 self.open()
 
         super().update(time_delta)
-
-
