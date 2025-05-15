@@ -37,8 +37,25 @@
 		"trait_constraint": {
 			"m_c": ["troublesome"]
 		},
-		"general_reaction": {
-			"comfortable": "decrease"
+		"specific_reaction": {
+			"r_c1_to_r_c2": {
+				"platonic": "decrease",
+				"comfortable": "decrease",
+				"dislike": "increase"
+			},
+			"r_c2_to_r_c1": {
+				"platonic": "decrease",
+				"comfortable": "decrease",
+				"dislike": "increase"
+			},
+			"r_c2_to_m_c": {
+				"trust": "decrease",
+				"dislike": "increase"
+			},
+			"r_c1_to_m_c": {
+				"trust": "decrease",
+				"dislike": "increase"
+			}
 		}
 	},
 	{

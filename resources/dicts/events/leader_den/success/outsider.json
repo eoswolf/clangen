@@ -523,7 +523,7 @@
   },
   {
     "interaction_type": "hunt",
-    "event_text": "c_n knows that there is no territory far enough to drive m_c out to - {PRONOUN/m_c/subject} must be driven out of this life. {PRONOUN/m_c/subject/CAP} {VERB/m_c/see/sees} {PRONOUN/m_c/poss} old Clanmates coming, but {PRONOUN/m_c/subject} {VERB/m_c/do/does}'nt have time to run.",
+    "event_text": "c_n knows that there is no territory far enough to drive m_c out to - {PRONOUN/m_c/subject} must be driven out of this life. {PRONOUN/m_c/subject/CAP} {VERB/m_c/see/sees} {PRONOUN/m_c/poss} old Clanmates coming, but {PRONOUN/m_c/subject} {VERB/m_c/don/doesn}'t have time to run.",
     "reputation": ["any"],
     "rep_change": -3,
     "m_c": {
