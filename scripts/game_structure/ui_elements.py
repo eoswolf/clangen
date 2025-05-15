@@ -1093,6 +1093,12 @@ class UIDropDownContainer(UIAutoResizingContainer):
             else:
                 self.open()
 
+        if self.is_open and self.child_trigger_close:
+            for button in self.child_buttons:
+                if button.pressed:
+                    self.close()
+
+
         super().update(time_delta)
 
 
@@ -1120,7 +1126,7 @@ class UICheckbox(UIImageButton):
             tool_tip_text: str = None,
             starting_height: int = 1,
             check: bool = False,
-            anchors=None
+            anchors=None,
     ):
         self.checked = check
 
@@ -1621,6 +1627,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  button_style=ButtonStyles.DROPDOWN,
                  multiple_choice: bool = True,
                  disable_selection: bool = False,
+                 two_click_remove: bool = False,
                  offset_scroll: bool = True,
                  manager=None,
                  container=None,
@@ -1630,11 +1637,17 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  visible=1,
                  starting_selection: list = None
                  ):
-        self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
+        """
+        :param two_click_remove: To remove an item from the selected_items list, it's button must be clicked twice
 
+        """
+        self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
+        self.last_selected = None  # this is used for two_click_remove
+        self.two_click_remove = two_click_remove
+        self.button_style = button_style
         child_rect_height = button_dimensions[1] if button_dimensions else relative_rect.height
         child_rect_width = button_dimensions[0] if button_dimensions else relative_rect.width
-        child_rect = (child_rect_width, child_rect_height)
+        self.child_rect = (child_rect_width, child_rect_height)
 
         if offset_scroll:
             relative_rect.width += 20
@@ -1660,11 +1673,11 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             y_pos = -2 if prev_element else 0
 
             self.buttons[child] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, y_pos), child_rect)),
+                ui_scale(pygame.Rect((0, y_pos), self.child_rect)),
                 child,
-                get_button_dict(button_style, child_rect),
+                get_button_dict(self.button_style, self.child_rect),
                 manager=manager,
-                object_id=f"@buttonstyles_{button_style.value}",
+                object_id=f"@buttonstyles_{self.button_style.value}",
                 container=self,
                 anchors={
                     "top_target": prev_element
@@ -1685,8 +1698,17 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
 
         # updates our selection list
         for name, button in self.buttons.items():
+            if not button.pressed:
+                continue
+            if (self.two_click_remove
+                    and name != self.last_selected
+                    and name in self.selected_list):
+                self.last_selected = name
+                continue
+            else:
+                self.last_selected = name
             # multiple choice
-            if button.pressed and self.multiple_choice:
+            if self.multiple_choice:
                 if self.disable_selection:
                     button.disable()
 
@@ -1696,9 +1718,8 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                 break
 
             # single choice
-            elif button.pressed and not self.multiple_choice:
-                self.selected_list.clear()
-                self.selected_list.append(name)
+            elif not self.multiple_choice:
+                self.selected_list.append(name) if not self.selected_list else self.selected_list.clear()
                 if self.disable_selection:
                     for other_button in self.buttons.values():
                         other_button.enable()
@@ -1711,6 +1732,30 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         # fixes it and that's all I want to know
         if not self.visible:
             self.vert_scroll_bar.hide()
+
+    def new_item_list(self, item_list):
+        # destroy old buttons and clear selected list
+        for button in self.buttons.values():
+            button.kill()
+        self.buttons.clear()
+        self.selected_list.clear()
+
+        prev_element = None
+        for child in item_list:
+            y_pos = -2 if prev_element else 0
+
+            self.buttons[child] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, y_pos), self.child_rect)),
+                child,
+                get_button_dict(self.button_style, self.child_rect),
+                manager=self.ui_manager,
+                object_id=f"@buttonstyles_{self.button_style.value}",
+                container=self,
+                anchors={
+                    "top_target": prev_element
+                } if prev_element else None
+            )
+            prev_element = self.buttons[child]
 
 
 class UIDropDown(UIDropDownContainer):
@@ -1756,7 +1801,6 @@ class UIDropDown(UIDropDownContainer):
         self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
-
 
         super().__init__(
             relative_rect=ui_scale(relative_rect.copy()),
@@ -1878,18 +1922,21 @@ class UIDropDown(UIDropDownContainer):
 
                 if self.disable_selection:
                     button.disable()
-                if self.child_trigger_close:
-                    self.close()
+
                 break
 
             # single choice
             elif not self.multiple_choice:
-                self.selected_list.clear()
-                self.selected_list.append(name)
+                if self.selected_list and self.selected_list[0] == name:
+                    self.selected_list.clear()
+                else:
+                    self.selected_list.clear()
+                    self.selected_list.append(name)
+                print(self.selected_list)
                 if self.disable_selection:
-                    self.disable_child(name, button)
-                if self.child_trigger_close:
-                    self.close()
+                    for other_button in self.child_buttons:
+                        other_button.enable()
+                    button.disable()
                 break
 
         super().update(time_delta)
@@ -1911,12 +1958,14 @@ class UIScrollingDropDown(UIDropDownContainer):
             offset_scroll: bool = True,
             multiple_choice: bool = True,
             disable_selection: bool = False,
+            child_trigger_close: bool = False,
+            two_click_remove: bool = False,
+            parent_text_equals_last_selected: bool = False,
             starting_height: int = 1,
             object_id: str = None,
             visible: bool = True,
             anchors: dict = None,
-            child_trigger_close=False,
-            starting_selection: bool = None
+            starting_selection: list = None,
     ):
         """
         Class to handle the creation and management of scrolling dropdowns. It's recommended to use the on_use()
@@ -1937,6 +1986,7 @@ class UIScrollingDropDown(UIDropDownContainer):
         :param multiple_choice: If the selected_list should hold multiple selections, defaults to True
         :param disable_selection: If the clicked child_button should be disabled, defaults to False
         :param child_trigger_close: If clicking a child_button should close the dropdown, defaults to False
+        :param two_click_remove: To remove an item from the selected_items list, it's button must be clicked twice
         :param starting_selection: Items from item_list that should begin selected.
         """
 
@@ -1952,10 +2002,11 @@ class UIScrollingDropDown(UIDropDownContainer):
             starting_selection=starting_selection
         )
 
+        self.parent_text = parent_text
         # create parent button
         self.parent_button = UISurfaceImageButton(
             ui_scale(relative_rect.copy()),
-            parent_text,
+            self.parent_text,
             get_button_dict(parent_style, relative_rect.size),
             manager=manager,
             object_id=f"@buttonstyles_{parent_style.value}",
@@ -1971,7 +2022,7 @@ class UIScrollingDropDown(UIDropDownContainer):
 
         dropdown_rect = ((relative_rect.x, 0), dropdown_dimensions)
         self.child_button_container = UIScrollingButtonList(
-            ui_scale(pygame.Rect(dropdown_rect)),
+            pygame.Rect(dropdown_rect),
             button_dimensions=dimensions,
             item_list=item_list,
             manager=manager,
@@ -1990,23 +2041,36 @@ class UIScrollingDropDown(UIDropDownContainer):
             button_style=child_style,
             multiple_choice=multiple_choice,
             disable_selection=disable_selection,
-            starting_selection=starting_selection
+            starting_selection=starting_selection,
+            two_click_remove=two_click_remove
         )
         self.child_buttons = self.child_button_container.buttons.values()
         self.child_button_dicts = self.child_button_container.buttons
+
+        self.parent_text_equals_last_selected = parent_text_equals_last_selected
+        self.last_selected = None
 
         self.close()
 
     def update(self, time_delta: float):
 
-        if self.is_open and self.child_trigger_close:
-            for button in self.child_buttons:
-                if button.pressed:
-                    self.close()
+        if self.parent_text_equals_last_selected:
+            if self.parent_button.text != self.last_selected:
+                if not self.last_selected:
+                    self.parent_button.set_text(self.parent_text)
+                else:
+                    self.parent_button.set_text(self.last_selected)
 
         super().update(time_delta)
 
-        self.selected_list = self.child_button_container.selected_list
+        self.last_selected = self.child_button_container.last_selected
+        self.selected_list = self.child_button_container.selected_list.copy()
+
+    def new_item_list(self, item_list):
+        self.child_button_container.new_item_list(item_list)
+
+        self.child_buttons = self.child_button_container.buttons.values()
+        self.child_button_dicts = self.child_button_container.buttons
 
 
 class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
@@ -2017,7 +2081,7 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
             top_button_oriented_left: bool = True,
             bottom_button: bool = True,
             bottom_button_oriented_left: bool = True,
-            scrolling_container_to_reset = None,
+            scrolling_container_to_reset=None,
             min_edges_rect: pygame.Rect = None,
             max_edges_rect: pygame.Rect = None,
             resize_left: bool = True,
@@ -2077,7 +2141,7 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
 
         if title_text:
             self.title_text = UITextBoxTweaked(
-                "<b>tags:</b>",
+                title_text,
                 ui_scale(pygame.Rect((0, 10), (-1, -1))),
                 object_id="#text_box_30_horizleft_pad_10_10",
                 line_spacing=1,
@@ -2085,9 +2149,10 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
                 container=self,
                 anchors={
                     "left_target": self.top_button
-                }if self.top_button_oriented_left else None
+                } if self.top_button_oriented_left else None
             )
 
+        self.bottom_button = None
         if bottom_button:
             if not self.bottom_button_oriented_left:
                 rect.bottomright = (-10, 10),
@@ -2169,12 +2234,15 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
         self.is_open = True
 
     def update(self, time_delta: float):
-        if self.top_button.pressed or self.bottom_button.pressed:
+        if self.top_button.pressed:
+            if self.is_open:
+                self.close()
+            else:
+                self.open()
+        elif self.bottom_button and self.bottom_button.pressed:
             if self.is_open:
                 self.close()
             else:
                 self.open()
 
         super().update(time_delta)
-
-
