@@ -4324,7 +4324,7 @@
         "weight": 20,
         "chance_of_success": 50,
         "intro_text": "app1 and app2 head out to collect herbs together.",
-        "decline_text": "A Clanmate calls them back to camp",
+        "decline_text": "A Clanmate calls them back to camp.",
         "success_outcomes":
         [
             {
@@ -4518,7 +4518,7 @@
                 "art": "gen_app_crouching_perplexed"
             },
             {
-                "text": "app2 scents juniper off to {PRONOUN/app2/poss} left. s_c scents clair_list_smell to the right. No matter how carefully {PRONOUN/app2/subject} {VERB/app2/scent/scents} the air, app2 can't catch that scent and suggests it might be a sign. They discuss it while herb-gathering",
+                "text": "app2 scents juniper off to {PRONOUN/app2/poss} left. s_c scents clair_list_smell to the right. No matter how carefully {PRONOUN/app2/subject} {VERB/app2/scent/scents} the air, app2 can't catch that scent and suggests it might be a sign. They discuss it while herb-gathering.",
                 "exp": 30,
                 "weight": 30,
                 "stat_skill": [ "CLAIRVOYANT,1"],
@@ -4911,7 +4911,7 @@
         "weight": 20,
         "chance_of_success": 50,
         "intro_text": "A patrol of medicine cat apprentices heads out to collect herbs together.",
-        "decline_text": "A Clanmate calls them back to camp",
+        "decline_text": "A Clanmate calls them back to camp.",
         "success_outcomes":
         [
             {
