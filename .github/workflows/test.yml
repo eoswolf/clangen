@@ -33,6 +33,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
+      - name: Switch Poetry Python environment
+        if: matrix.python-version == '3.8'
+        run: poetry env use 3.8
       - name: install dependencies
         run: poetry install
       - name: Run unit tests
