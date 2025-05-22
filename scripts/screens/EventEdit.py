@@ -172,7 +172,8 @@ class EventEdit(Screens):
                          "parent/child",
                          "child/parent",
                          "app/mentor",
-                         "mentor/app"]
+                         "mentor/app",
+                         "not_mates"]
         },
         {
             "tag": "not_mates",
