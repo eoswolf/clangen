@@ -900,7 +900,7 @@ class Events:
                 if len(value) == 1:
                     game.cur_events_list.append(
                         Single_Event(
-                            f"One cat got {condition_type} during {text_snippet}",
+                            f"One cat got {condition_type} {text_snippet}",
                             "health",
                             value,
                         )
