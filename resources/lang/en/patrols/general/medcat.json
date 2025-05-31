@@ -4570,8 +4570,9 @@
                 "weight": 30,
                 "art": "running_warrior_med"
             }
-          },
-          {
+        ]
+    },
+{
         "patrol_id": "gen_two_med_apps",
         "biome": ["any"],
         "season": ["any"],
