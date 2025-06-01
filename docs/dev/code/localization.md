@@ -9,7 +9,7 @@ Ensure you have read and are familiarised with the writing equivalent of this pa
 
 What is `i18n`, really? Short answer: a slightly intelligent dictionary. At its most basic, `i18n.t()` finds the relevant string in the requested file for the given locale and returns it. That's it. Here's an example of that in use.
 
-```pycon
+```python
 print(i18n.t("docs.demo.hello_world"))
 >>> hello world
 ```
@@ -50,13 +50,13 @@ Here's an example from `general.en.json`:
 
 If we look at where `cats_mate` is called, we see the following:
 
-```pycon
+```python
 i18n.t("general.cats_mate", name=other_cat.name)
 ```
 
 This means that at runtime, `%{name}` is replaced with the value of `other_cat.name`. Multiple variables can be used in a string, just ensure their names are unique. Define them after the first in the same manner.
 
-```pycon
+```python
 i18n.t("docs.demo.multivar", foo="foo", bar="bar", baz="baz")
 ```
 
@@ -118,7 +118,7 @@ Also notice how, even though the number of apples is always provided, it is only
 
 As it is built in, `i18n` is accessible immediately through any of our UI components without needing to call it explicitly. An example is shown below.
 
-```pycon
+```python
 continue_button = UISurfaceImageButton(
     ui_scale(pygame.Rect((70, 310), (200, 30))),
     "buttons.continue",
@@ -131,7 +131,7 @@ _Truncated for relevance, taken from `scripts/screens/StartScreen.py`, v0.12.x_
 
 To use variables, add the `text_kwargs` argument to any element that supports it. This takes a dictionary and automatically unpacks it to supply to the `i18n` function.
 
-```pycon
+```python
 self.clan_info["age"] = pygame_gui.elements.UITextBox(
     "screens.events.age",
     [...],
@@ -142,7 +142,7 @@ _Truncated for relevance, taken from `scripts/screens/EventsScreen.py`, v0.12.x`
 
 The `text_kwargs` argument can also be used with the `set_text` function.
 
-```pycon
+```python
 self.clan_info["age"].set_text(
     "screens.events.age", 
     text_kwargs={"count": game.clan.age}
@@ -162,7 +162,7 @@ Because of how complicated some of the things we do are, it is sometimes necessa
 !!! warning "Bad practice"
     Note that this is generally considered bad practice, as it removes flexibility from translations (which is the whole point of `i18n`!). Wherever possible, it is best to have multiple translated strings rather than chaining or nesting `i18n` calls. In this case, repetition is not your enemy!
 
-```pycon
+```python
 self.clan_info["season"] = pygame_gui.elements.UITextBox(
     "screens.events.season",
     [...],
