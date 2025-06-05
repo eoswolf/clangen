@@ -300,11 +300,8 @@ class EventEdit(Screens):
         self.rel_value_element = {}
 
         self.skill_element = {}
-        self.chosen_paths = []
-        self.level_picked = None
-        self.skill_info = []
-        self.unwanted_path_open = None
-        self.unwanted_level_picked = None
+        self.level_element = {}
+        self.open_path = None
 
         self.main_cat_info = {
             "rank": [],
@@ -612,7 +609,6 @@ class EventEdit(Screens):
             else:
                 self.age_element["info"].set_text(f"chosen age: ['any']")
             self.editor_container.on_contained_elements_changed(self.age_element["info"])
-
 
         super().on_use()
 
@@ -1208,18 +1204,110 @@ class EventEdit(Screens):
             }
         )
 
-        self.skill_element["info"] = UITextBoxTweaked(
-            "chosen skills: []",
-            ui_scale(pygame.Rect((10, 57), (440, -1))),
+        self.skill_element["paths"] = UIScrollingButtonList(
+            pygame.Rect((30, 20), (140, 198)),
+            item_list=[path for path in self.all_skills.keys()],
+            button_dimensions=(140, 30),
+            multiple_choice=False,
+            disable_selection=True,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.skill_element["text"]
+            },
+            manager=MANAGER
+        )
+
+        self.skill_element["allow"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((30, 20), (80, 30))),
+            "allow",
+            get_button_dict(ButtonStyles.MENU_LEFT, (80, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_left",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.skill_element["text"],
+                "left_target": self.skill_element["paths"]
+            }
+        )
+        # allow is picked by default, so this is initially disabled
+        self.skill_element["allow"].disable()
+
+        self.skill_element["exclude"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 20), (80, 30))),
+            "exclude",
+            get_button_dict(ButtonStyles.MENU_RIGHT, (80, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_right",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.skill_element["allow"],
+                "top_target": self.skill_element["text"]
+            }
+        )
+
+        self.skill_element["frame"] = UIModifiedImage(
+            ui_scale(pygame.Rect((-20, 20), (254, 130))),
+            get_box(BoxStyles.ROUNDED_BOX, (254, 130)),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.skill_element["allow"],
+                "left_target": self.skill_element["paths"]
+            }
+        )
+        self.skill_element["frame"].disable()
+        self.open_path = "DARK"
+        self.update_level_list()
+
+        self.skill_element["include_info"] = UITextBoxTweaked(
+            "chosen allowed skills: []",
+            ui_scale(pygame.Rect((10, 20), (440, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.skill_element["text"],
+                "top_target": self.skill_element["paths"],
             },
             allow_split_dashes=False
         )
-        self.create_divider(self.skill_element["info"], "skills")
+        self.skill_element["exclude_info"] = UITextBoxTweaked(
+            "chosen excluded skills: []",
+            ui_scale(pygame.Rect((10, 0), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.skill_element["include_info"],
+            },
+            allow_split_dashes=False
+        )
+        self.create_divider(self.skill_element["exclude_info"], "skills")
+
+    def update_level_list(self):
+        # kill existing buttons
+        if self.level_element:
+            for ele in self.level_element:
+                ele.kill()
+
+        # make new buttons
+        level_list = (self.all_skills[self.open_path])
+        prev_element = None
+        for level in range(len(level_list)):
+            self.level_element[f"{level + 1}"] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((-4, (28 if not prev_element else -2)), (230, 30))),
+                level_list[level],
+                get_button_dict(ButtonStyles.DROPDOWN, (230, 30)),
+                manager=MANAGER,
+                object_id="@buttonstyles_dropdown",
+                container=self.editor_container,
+                anchors={
+                    "top_target": (self.skill_element["allow"]
+                                   if not prev_element
+                                   else prev_element),
+                    "left_target": self.skill_element["paths"],
+                }
+            )
+            prev_element = self.level_element[f"{level + 1}"]
 
     def create_dies_editor(self):
         self.death_element["checkbox"] = UICheckbox(
