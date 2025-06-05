@@ -613,31 +613,6 @@ class EventEdit(Screens):
                 self.age_element["info"].set_text(f"chosen age: ['any']")
             self.editor_container.on_contained_elements_changed(self.age_element["info"])
 
-        # SKILLS
-        if self.skill_element.get("path_dropdown"):
-            path_dropdown = self.skill_element["path_dropdown"]
-            level_dropdowns = self.skill_element["levels_dropdown"]
-            level_index = None
-
-            # paths have changed
-            if path_dropdown.selected_list != self.chosen_paths:
-                self.chosen_paths = path_dropdown.selected_list.copy()
-                self.level_picked = None
-                self.skill_element["levels_dropdown"].new_item_list(self.all_skills[path_dropdown.last_selected])
-                # reflect the changes in self.skill_info
-                self.update_skill_info()
-
-            # level has changed
-            elif level_dropdowns.selected_list and path_dropdown.last_selected:
-                level_index = self.all_skills[path_dropdown.last_selected].index(level_dropdowns.selected_list[0]) + 1
-                if not level_dropdowns.selected_list and self.level_picked:
-                    self.level_picked = None
-                    # reflect the changes in self.skill_info
-                    self.update_skill_info()
-                elif level_dropdowns.selected_list and level_index != self.level_picked:
-                    self.level_picked = level_index
-                    # reflect the changes in self.skill_info
-                    self.update_skill_info()
 
         super().on_use()
 
@@ -662,38 +637,6 @@ class EventEdit(Screens):
                 and self.season_element["season_dropdown"].selected_list != self.season_info):
             self.season_info = self.season_element["season_dropdown"].selected_list.copy()
             self.update_season_info()
-
-    def update_skill_info(self):
-        # check if we need to add a tag to the list
-        saved_skills = [tag.split("_")[0] for tag in self.skill_info if self.skill_info]
-        for path in self.chosen_paths:
-            if path in saved_skills:
-                continue
-            if path not in saved_skills and self.level_picked:
-                self.skill_info.append(f"{path}_{self.level_picked}")
-            if path == self.skill_element["path_dropdown"].last_selected:
-                self.skill_element["levels_dropdown"].new_item_list(self.all_skills[path])
-            break
-
-        # check if we need to change an existing tag in the list
-        for tag in self.skill_info.copy():
-            skill, level = tag.split("_")
-            # remove tag if skill is not in chosen_paths
-            if skill not in self.chosen_paths:
-                self.skill_info.remove(tag)
-                break
-            else:
-                # check if skill was the last selected skill
-                if skill != self.skill_element["path_dropdown"].last_selected:
-                    continue
-                # if it was, check if it has the right level
-                if int(level) != self.level_picked:
-                    self.skill_info.remove(tag)
-                    if self.level_picked:
-                        self.skill_info.append(f"{skill}_{self.level_picked}")
-                    break
-
-        self.skill_element["info"].set_text(f"chosen skills: {self.skill_info}")
 
     def update_rel_status_info(self):
 
@@ -1263,38 +1206,6 @@ class EventEdit(Screens):
             anchors={
                 "top_target": self.editor_element["rel_status"]
             }
-        )
-
-        self.skill_element["path_dropdown"] = UIScrollingDropDown(
-            pygame.Rect((17, 17), (140, 30)),
-            dropdown_dimensions=(140, 200),
-            parent_text="skill paths",
-            item_list=list(self.all_skills.keys()),
-            container=self.editor_container,
-            anchors={
-                "top_target": self.skill_element["text"]
-            },
-            manager=MANAGER,
-            multiple_choice=True,
-            two_click_remove=True,
-            parent_text_equals_last_selected=True,
-            child_trigger_close=True,
-            starting_selection=self.main_cat_info["skill"]
-        )
-
-        self.skill_element["levels_dropdown"] = UIDropDown(
-            pygame.Rect((0, 17), (225, 30)),
-            parent_text="path levels",
-            item_list=[],
-            container=self.editor_container,
-            anchors={
-                "left_target": self.skill_element["path_dropdown"],
-                "top_target": self.skill_element["text"]
-            },
-            manager=MANAGER,
-            multiple_choice=False,
-            child_trigger_close=True,
-            starting_selection=self.main_cat_info["skill"],
         )
 
         self.skill_element["info"] = UITextBoxTweaked(

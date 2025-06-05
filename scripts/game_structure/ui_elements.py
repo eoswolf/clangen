@@ -1097,6 +1097,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
             for button in self.child_buttons:
                 if button.pressed:
                     self.close()
+                    break
 
 
         super().update(time_delta)
@@ -1938,6 +1939,8 @@ class UIDropDown(UIDropDownContainer):
                         other_button.enable()
                     button.disable()
                 break
+
+        self.child_buttons = self.child_button_dicts.values()
 
         super().update(time_delta)
 
