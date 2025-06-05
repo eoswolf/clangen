@@ -1093,13 +1093,6 @@ class UIDropDownContainer(UIAutoResizingContainer):
             else:
                 self.open()
 
-        if self.is_open and self.child_trigger_close:
-            for button in self.child_buttons:
-                if button.pressed:
-                    self.close()
-                    break
-
-
         super().update(time_delta)
 
 
@@ -1628,7 +1621,6 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  button_style=ButtonStyles.DROPDOWN,
                  multiple_choice: bool = True,
                  disable_selection: bool = False,
-                 two_click_remove: bool = False,
                  offset_scroll: bool = True,
                  manager=None,
                  container=None,
@@ -1638,13 +1630,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                  visible=1,
                  starting_selection: list = None
                  ):
-        """
-        :param two_click_remove: To remove an item from the selected_items list, it's button must be clicked twice
-
-        """
         self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
-        self.last_selected = None  # this is used for two_click_remove
-        self.two_click_remove = two_click_remove
         self.button_style = button_style
         child_rect_height = button_dimensions[1] if button_dimensions else relative_rect.height
         child_rect_width = button_dimensions[0] if button_dimensions else relative_rect.width
@@ -1699,17 +1685,8 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
 
         # updates our selection list
         for name, button in self.buttons.items():
-            if not button.pressed:
-                continue
-            if (self.two_click_remove
-                    and name != self.last_selected
-                    and name in self.selected_list):
-                self.last_selected = name
-                continue
-            else:
-                self.last_selected = name
             # multiple choice
-            if self.multiple_choice:
+            if button.pressed and self.multiple_choice:
                 if self.disable_selection:
                     button.disable()
 
@@ -1719,7 +1696,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                 break
 
             # single choice
-            elif not self.multiple_choice:
+            elif button.pressed and not self.multiple_choice:
                 self.selected_list.append(name) if not self.selected_list else self.selected_list.clear()
                 if self.disable_selection:
                     for other_button in self.buttons.values():
@@ -1735,6 +1712,9 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             self.vert_scroll_bar.hide()
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         # destroy old buttons and clear selected list
         for button in self.buttons.values():
             button.kill()
@@ -1883,6 +1863,9 @@ class UIDropDown(UIDropDownContainer):
         self.close()
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         # destroy old buttons and clear selected list
         for button in self.child_button_dicts.values():
             button.kill()
@@ -1923,7 +1906,8 @@ class UIDropDown(UIDropDownContainer):
 
                 if self.disable_selection:
                     button.disable()
-
+                if self.child_trigger_close:
+                    self.close()
                 break
 
             # single choice
@@ -1939,8 +1923,6 @@ class UIDropDown(UIDropDownContainer):
                         other_button.enable()
                     button.disable()
                 break
-
-        self.child_buttons = self.child_button_dicts.values()
 
         super().update(time_delta)
 
@@ -1961,14 +1943,12 @@ class UIScrollingDropDown(UIDropDownContainer):
             offset_scroll: bool = True,
             multiple_choice: bool = True,
             disable_selection: bool = False,
-            child_trigger_close: bool = False,
-            two_click_remove: bool = False,
-            parent_text_equals_last_selected: bool = False,
             starting_height: int = 1,
             object_id: str = None,
             visible: bool = True,
             anchors: dict = None,
-            starting_selection: list = None,
+            child_trigger_close=False,
+            starting_selection: list = None
     ):
         """
         Class to handle the creation and management of scrolling dropdowns. It's recommended to use the on_use()
@@ -1989,7 +1969,6 @@ class UIScrollingDropDown(UIDropDownContainer):
         :param multiple_choice: If the selected_list should hold multiple selections, defaults to True
         :param disable_selection: If the clicked child_button should be disabled, defaults to False
         :param child_trigger_close: If clicking a child_button should close the dropdown, defaults to False
-        :param two_click_remove: To remove an item from the selected_items list, it's button must be clicked twice
         :param starting_selection: Items from item_list that should begin selected.
         """
 
@@ -2005,11 +1984,10 @@ class UIScrollingDropDown(UIDropDownContainer):
             starting_selection=starting_selection
         )
 
-        self.parent_text = parent_text
         # create parent button
         self.parent_button = UISurfaceImageButton(
             ui_scale(relative_rect.copy()),
-            self.parent_text,
+            parent_text,
             get_button_dict(parent_style, relative_rect.size),
             manager=manager,
             object_id=f"@buttonstyles_{parent_style.value}",
@@ -2044,32 +2022,28 @@ class UIScrollingDropDown(UIDropDownContainer):
             button_style=child_style,
             multiple_choice=multiple_choice,
             disable_selection=disable_selection,
-            starting_selection=starting_selection,
-            two_click_remove=two_click_remove
+            starting_selection=starting_selection
         )
         self.child_buttons = self.child_button_container.buttons.values()
         self.child_button_dicts = self.child_button_container.buttons
-
-        self.parent_text_equals_last_selected = parent_text_equals_last_selected
-        self.last_selected = None
 
         self.close()
 
     def update(self, time_delta: float):
 
-        if self.parent_text_equals_last_selected:
-            if self.parent_button.text != self.last_selected:
-                if not self.last_selected:
-                    self.parent_button.set_text(self.parent_text)
-                else:
-                    self.parent_button.set_text(self.last_selected)
+        if self.is_open and self.child_trigger_close:
+            for button in self.child_buttons:
+                if button.pressed:
+                    self.close()
 
         super().update(time_delta)
 
-        self.last_selected = self.child_button_container.last_selected
-        self.selected_list = self.child_button_container.selected_list.copy()
+        self.selected_list = self.child_button_container.selected_list
 
     def new_item_list(self, item_list):
+        """
+        Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
+        """
         self.child_button_container.new_item_list(item_list)
 
         self.child_buttons = self.child_button_container.buttons.values()
@@ -2099,6 +2073,15 @@ class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
             anchors: Optional[Dict[str, Union[str, UIElement]]] = None,
             visible: int = 1
     ):
+        """
+        A collapsible container that can be created with a title (text visible while closed) as well as top and bottom
+        buttons on the right or left side.
+        :param title_text: Text visible while container is closed, this will align with the top button
+        :param top_button_oriented_left: The top button will appear on the far left of the container if this is True,
+        else it will appear on the right. Default is True.
+        :param bottom_button: Should this container have a bottom button. Default is True
+        :param bottom_button_oriented_left: If it has a bottom button, will it be oriented to the left side. Default is True
+        """
         super().__init__(
             relative_rect=relative_rect,
             min_edges_rect=min_edges_rect,
