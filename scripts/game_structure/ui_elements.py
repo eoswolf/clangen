@@ -1716,6 +1716,10 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
         if not self.visible:
             self.vert_scroll_bar.hide()
 
+    def set_selected_list(self, new_list):
+        self.selected_list.clear()
+        self.selected_list = new_list
+
     def new_item_list(self, item_list):
         """
         Replace the old item_list with a new one. This kills and then rebuilds the child buttons.
@@ -1940,9 +1944,9 @@ class UIScrollingDropDown(UIDropDownContainer):
             manager: IUIManagerInterface,
             parent_text: str,
             item_list: list,
+            dropdown_dimensions: tuple,
             container: UIContainer = None,
             child_dimensions: tuple = None,
-            dropdown_dimensions: tuple = None,
             parent_style: ButtonStyles = ButtonStyles.DROPDOWN,
             child_style: ButtonStyles = ButtonStyles.DROPDOWN,
             offset_scroll: bool = True,
@@ -2044,6 +2048,9 @@ class UIScrollingDropDown(UIDropDownContainer):
         super().update(time_delta)
 
         self.selected_list = self.child_button_container.selected_list
+
+    def set_selected_list(self, new_list):
+        self.child_button_container.set_selected_list(new_list)
 
     def new_item_list(self, item_list):
         """

@@ -9,6 +9,7 @@ import ujson
 
 from scripts.cat.cats import Cat
 from scripts.cat.pelts import Pelt
+from scripts.cat.personality import Personality
 from scripts.cat.skills import SkillPath, Skill
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
@@ -229,6 +230,10 @@ class EventEdit(Screens):
     all_ages.reverse()
 
     all_skills = {k: v for (k, v) in zip([path.name for path in SkillPath], [path.value for path in SkillPath])}
+
+    adult_traits = Personality.trait_ranges["normal_traits"].keys()
+    kit_traits = Personality.trait_ranges["kit_traits"].keys()
+
     section_tabs = {
         "settings": Icon.PAW,
         "main cat": Icon.CAT_HEAD,
@@ -304,13 +309,18 @@ class EventEdit(Screens):
         self.open_path = None
         self.chosen_level = None
 
+        self.trait_element = {}
+        self.trait_allowed = True
+
         self.main_cat_info = {
             "rank": [],
             "age": [],
             "rel_status": [],
             "dies": False,
             "skill": [],
-            "not_skill": []
+            "not_skill": [],
+            "trait": [],
+            "not_trait": [],
         }
 
         self.chosen_type = None
@@ -471,6 +481,23 @@ class EventEdit(Screens):
                     self.update_skill_info()
                     break
 
+            # TRAIT TOGGLE
+            elif event.ui_element == self.trait_element["allow"]:
+                self.trait_element["allow"].disable()
+                self.trait_element["exclude"].enable()
+                self.trait_allowed = True
+                # reset selected list
+                self.trait_element["adult"].set_selected_list(list(set(self.main_cat_info["trait"]).intersection(self.adult_traits)))
+                self.trait_element["kitten"].set_selected_list(list(set(self.main_cat_info["trait"]).intersection(self.kit_traits)))
+
+            elif event.ui_element == self.trait_element["exclude"]:
+                self.trait_element["exclude"].disable()
+                self.trait_element["allow"].enable()
+                self.trait_allowed = False
+                # reset selected list
+                self.trait_element["adult"].set_selected_list(list(set(self.main_cat_info["not_trait"]).intersection(self.adult_traits)))
+                self.trait_element["kitten"].set_selected_list(list(set(self.main_cat_info["not_trait"]).intersection(self.kit_traits)))
+
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
             if event.ui_element == self.event_id_element.get("event_id_entry"):
@@ -606,9 +633,8 @@ class EventEdit(Screens):
 
     def on_use(self):
         """
-        We'll use this to check and update our dropdowns, since dropdown elements now store their selections as a handy
-        attribute, as well as handling a lot of state changes within their own update funcs. handle_event() runs before
-        update() funcs, causing issues for dropdowns if we try to use it
+        We'll use this to check and update some of our custom ui_elements due to the order update() and handle_event()
+        funcs run in.
         """
         if self.current_editor_tab == "settings":
             self.handle_settings_on_use()
@@ -627,6 +653,7 @@ class EventEdit(Screens):
         if (self.age_element.get("dropdown")
                 and self.age_element["dropdown"].selected_list != self.main_cat_info["age"]):
             self.main_cat_info["age"] = self.age_element["dropdown"].selected_list.copy()
+
             if self.main_cat_info["age"]:
                 self.age_element["info"].set_text(f"chosen age: {self.main_cat_info['age']}")
             else:
@@ -646,9 +673,42 @@ class EventEdit(Screens):
                 self.open_path = None
                 self.update_level_list()
 
+        # TRAITS
+        if self.trait_element.get("adult"):
+            combined_selection = self.trait_element["adult"].selected_list.copy()
+            combined_selection.extend(self.trait_element["kitten"].selected_list)
 
+            if not combined_selection:
+                combined_selection = []
+
+            saved_traits = "trait" if self.trait_allowed else "not_trait"
+            if combined_selection != self.main_cat_info[saved_traits]:
+                self.update_traits(self.kit_traits, self.trait_element["kitten"].selected_list)
+                self.update_traits(self.adult_traits, self.trait_element["adult"].selected_list)
 
         super().on_use()
+
+    def update_traits(self, trait_dict, selected_list):
+        saved_traits = "trait" if self.trait_allowed else "not_trait"
+
+        selected_traits = set(self.main_cat_info[saved_traits]).intersection(trait_dict)
+        if selected_list != selected_traits:
+            removed = [trait for trait in selected_traits
+                       if trait not in selected_list]
+            added = [trait for trait in selected_list
+                     if trait not in selected_traits]
+            if removed:
+                for trait in removed:
+                    self.main_cat_info[saved_traits].remove(trait)
+            if added:
+                self.main_cat_info[saved_traits].extend(added)
+
+        if self.trait_allowed:
+            self.trait_element["include_info"].set_text(f"chosen allowed traits: {self.main_cat_info['trait']}")
+            self.editor_container.on_contained_elements_changed(self.trait_element["include_info"])
+        else:
+            self.trait_element["exclude_info"].set_text(f"chosen excluded traits: {self.main_cat_info['not_trait']}")
+            self.editor_container.on_contained_elements_changed(self.trait_element["exclude_info"])
 
     def handle_settings_on_use(self):
         # CHANGE TYPE
@@ -1252,6 +1312,91 @@ class EventEdit(Screens):
 
         # SKILLS
         self.create_skill_editor()
+
+        # TRAITS
+        self.trait_element["text"] = UITextBoxTweaked(
+            "screens.event_edit.trait_info",
+            ui_scale(pygame.Rect((0, 14), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["skills"]
+            }
+        )
+
+        self.trait_element["allow"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((130, 10), (80, 30))),
+            "allow",
+            get_button_dict(ButtonStyles.MENU_LEFT, (80, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_left",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.trait_element["text"]
+            }
+        )
+        # allow is picked by default, so this is initially disabled
+        self.trait_element["allow"].disable()
+        self.trait_element["exclude"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 10), (80, 30))),
+            "exclude",
+            get_button_dict(ButtonStyles.MENU_RIGHT, (80, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_right",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.trait_element["allow"],
+                "top_target": self.trait_element["text"]
+            }
+        )
+        self.trait_element["kitten"] = UIScrollingDropDown(
+            pygame.Rect((30, 20), (140, 30)),
+            dropdown_dimensions=(140, 198),
+            item_list=self.kit_traits,
+            parent_text="kitten traits",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.trait_element["allow"]
+            },
+            manager=MANAGER
+        )
+        self.trait_element["adult"] = UIScrollingDropDown(
+            pygame.Rect((110, 20), (140, 30)),
+            dropdown_dimensions=(140, 198),
+            item_list=self.adult_traits,
+            parent_text="adult traits",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.trait_element["allow"],
+            },
+            manager=MANAGER
+        )
+
+        self.trait_element["include_info"] = UITextBoxTweaked(
+            "chosen allowed traits: []",
+            ui_scale(pygame.Rect((10, 50), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.trait_element["allow"],
+            },
+            allow_split_dashes=False
+        )
+        self.trait_element["exclude_info"] = UITextBoxTweaked(
+            "chosen excluded traits: []",
+            ui_scale(pygame.Rect((10, 0), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.trait_element["include_info"],
+            },
+            allow_split_dashes=False
+        )
+        self.create_divider(self.trait_element["exclude_info"], "traits")
 
     def create_skill_editor(self):
         self.skill_element["text"] = UITextBoxTweaked(

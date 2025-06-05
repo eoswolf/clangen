@@ -14,6 +14,7 @@
         "rank_info": "<b>rank:</b> Click to add or remove an allowed rank.",
         "age_info": "<b>age:</b> Click to add or remove an allowed age.",
         "skill_info": "<b>skill:</b> Click a path, then select a level to add or remove the skill. The chosen level includes that level and any higher levels. Levels are listed from lowest to highest. Exclusions will override allowances.",
+        "trait_info": "<b>trait:</b> Click to add or remove a trait.",
         "classic": "Is this limited to classic mode?",
         "cruel_season": "Is this limited to cruel season?",
         "no_body": "Is the dead cat's body irretrievable?",
