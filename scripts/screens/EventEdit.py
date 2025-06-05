@@ -229,7 +229,6 @@ class EventEdit(Screens):
     all_ages.reverse()
 
     all_skills = {k: v for (k, v) in zip([path.name for path in SkillPath], [path.value for path in SkillPath])}
-    print(all_skills)
     section_tabs = {
         "settings": Icon.PAW,
         "main cat": Icon.CAT_HEAD,
@@ -301,14 +300,17 @@ class EventEdit(Screens):
 
         self.skill_element = {}
         self.level_element = {}
+        self.skill_allowed = True
         self.open_path = None
+        self.chosen_level = None
 
         self.main_cat_info = {
             "rank": [],
             "age": [],
             "rel_status": [],
             "dies": False,
-            "skill": []
+            "skill": [],
+            "not_skill": []
         }
 
         self.chosen_type = None
@@ -421,6 +423,7 @@ class EventEdit(Screens):
 
                         self.update_rel_status_info()
                         break
+            # REL VALUE BUTTONS
             elif event.ui_element in self.rel_value_element.values():
                 for name, button in self.rel_value_element.items():
                     if button != event.ui_element:
@@ -449,6 +452,24 @@ class EventEdit(Screens):
                     self.main_cat_info["rel_status"].append(f"{value}_{amount}")
                     self.rel_value_element[f"{value}_entry"].set_text(str(amount))
                     self.update_rel_status_info()
+
+            # SKILL TOGGLE
+            elif event.ui_element == self.skill_element["allow"]:
+                self.skill_element["allow"].disable()
+                self.skill_element["exclude"].enable()
+                self.skill_allowed = True
+            elif event.ui_element == self.skill_element["exclude"]:
+                self.skill_element["exclude"].disable()
+                self.skill_element["allow"].enable()
+                self.skill_allowed = False
+            # SKILL LEVELS
+            elif event.ui_element in self.level_element.values():
+                for name, button in self.level_element.items():
+                    if button != event.ui_element:
+                        continue
+                    self.chosen_level = name
+                    self.update_skill_info()
+                    break
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -601,6 +622,8 @@ class EventEdit(Screens):
             else:
                 self.rank_element["info"].set_text(f"chosen rank: ['any']")
             self.editor_container.on_contained_elements_changed(self.rank_element["info"])
+
+        # AGES
         if (self.age_element.get("dropdown")
                 and self.age_element["dropdown"].selected_list != self.main_cat_info["age"]):
             self.main_cat_info["age"] = self.age_element["dropdown"].selected_list.copy()
@@ -609,6 +632,21 @@ class EventEdit(Screens):
             else:
                 self.age_element["info"].set_text(f"chosen age: ['any']")
             self.editor_container.on_contained_elements_changed(self.age_element["info"])
+
+        # SKILLS
+        if self.skill_element.get("paths"):
+            # chosen path has changed
+            if self.skill_element["paths"].selected_list and self.open_path not in self.skill_element["paths"].selected_list:
+                self.open_path = self.skill_element["paths"].selected_list[0]
+                self.update_level_list()
+            # there is no path selected
+            elif not self.skill_element["paths"].selected_list and self.open_path:
+                self.chosen_level = None
+                self.update_skill_info()
+                self.open_path = None
+                self.update_level_list()
+
+
 
         super().on_use()
 
@@ -633,6 +671,27 @@ class EventEdit(Screens):
                 and self.season_element["season_dropdown"].selected_list != self.season_info):
             self.season_info = self.season_element["season_dropdown"].selected_list.copy()
             self.update_season_info()
+
+    def update_skill_info(self):
+
+        skill_tag = f"{self.open_path},{self.chosen_level if self.chosen_level else 0}"
+
+        if self.skill_allowed:
+            already_tagged = [tag for tag in self.main_cat_info["skill"] if self.open_path in tag]
+            if already_tagged:
+                self.main_cat_info["skill"].remove(already_tagged[0])
+            if self.chosen_level:
+                self.main_cat_info["skill"].append(skill_tag)
+            self.skill_element["include_info"].set_text(f"chosen allowed skills: {self.main_cat_info['skill']}")
+            self.editor_container.on_contained_elements_changed(self.skill_element["include_info"])
+        else:
+            already_tagged = [tag for tag in self.main_cat_info["not_skill"] if self.open_path in tag]
+            if already_tagged:
+                self.main_cat_info["not_skill"].remove(already_tagged[0])
+            if self.chosen_level:
+                self.main_cat_info["not_skill"].append(skill_tag)
+            self.skill_element["exclude_info"].set_text(f"chosen excluded skills: {self.main_cat_info['not_skill']}")
+            self.editor_container.on_contained_elements_changed(self.skill_element["exclude_info"])
 
     def update_rel_status_info(self):
 
@@ -1192,6 +1251,9 @@ class EventEdit(Screens):
         self.create_rel_status_editor()
 
         # SKILLS
+        self.create_skill_editor()
+
+    def create_skill_editor(self):
         self.skill_element["text"] = UITextBoxTweaked(
             "screens.event_edit.skill_info",
             ui_scale(pygame.Rect((0, 14), (440, -1))),
@@ -1203,20 +1265,17 @@ class EventEdit(Screens):
                 "top_target": self.editor_element["rel_status"]
             }
         )
-
         self.skill_element["paths"] = UIScrollingButtonList(
             pygame.Rect((30, 20), (140, 198)),
             item_list=[path for path in self.all_skills.keys()],
             button_dimensions=(140, 30),
             multiple_choice=False,
-            disable_selection=True,
             container=self.editor_container,
             anchors={
                 "top_target": self.skill_element["text"]
             },
             manager=MANAGER
         )
-
         self.skill_element["allow"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((30, 20), (80, 30))),
             "allow",
@@ -1231,7 +1290,6 @@ class EventEdit(Screens):
         )
         # allow is picked by default, so this is initially disabled
         self.skill_element["allow"].disable()
-
         self.skill_element["exclude"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 20), (80, 30))),
             "exclude",
@@ -1244,7 +1302,6 @@ class EventEdit(Screens):
                 "top_target": self.skill_element["text"]
             }
         )
-
         self.skill_element["frame"] = UIModifiedImage(
             ui_scale(pygame.Rect((-20, 20), (254, 130))),
             get_box(BoxStyles.ROUNDED_BOX, (254, 130)),
@@ -1256,9 +1313,6 @@ class EventEdit(Screens):
             }
         )
         self.skill_element["frame"].disable()
-        self.open_path = "DARK"
-        self.update_level_list()
-
         self.skill_element["include_info"] = UITextBoxTweaked(
             "chosen allowed skills: []",
             ui_scale(pygame.Rect((10, 20), (440, -1))),
@@ -1286,8 +1340,12 @@ class EventEdit(Screens):
     def update_level_list(self):
         # kill existing buttons
         if self.level_element:
-            for ele in self.level_element:
+            for ele in self.level_element.values():
                 ele.kill()
+
+        # if no path is selected, don't make new buttons
+        if not self.open_path:
+            return
 
         # make new buttons
         level_list = (self.all_skills[self.open_path])
@@ -1552,7 +1610,7 @@ class EventEdit(Screens):
             }
         )
         self.rank_element["dropdown"] = UIScrollingDropDown(
-            pygame.Rect((0, 20), (200, 30)),
+            pygame.Rect((0, 28), (200, 30)),
             manager=MANAGER,
             container=self.editor_container,
             parent_text="ranks",

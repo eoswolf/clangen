@@ -1697,7 +1697,12 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
 
             # single choice
             elif button.pressed and not self.multiple_choice:
-                self.selected_list.append(name) if not self.selected_list else self.selected_list.clear()
+                if name in self.selected_list:
+                    self.selected_list.clear()
+                else:
+                    self.selected_list.clear()
+                    self.selected_list.append(name)
+
                 if self.disable_selection:
                     for other_button in self.buttons.values():
                         other_button.enable()
