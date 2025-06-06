@@ -342,6 +342,9 @@ class EventEdit(Screens):
         }
         self.current_cat_dict = self.main_cat_info
 
+        self.new_cat_editor = {}
+        self.new_cat_list = []
+
         self.chosen_type = None
         self.chosen_biome = None
         self.chosen_event = None
@@ -415,129 +418,11 @@ class EventEdit(Screens):
             elif self.current_editor_tab == "settings":
                 self.handle_settings_events(event)
 
-            # DIES
-            elif event.ui_element == self.death_element["checkbox"]:
-                checked = event.ui_element.checked
-                if not checked:
-                    event.ui_element.check()
-                else:
-                    event.ui_element.uncheck()
-                self.current_cat_dict["dies"] = event.ui_element.checked
-                self.death_element["info"].set_text(f"dies: {event.ui_element.checked}")
+            # MAIN/RANDOM CAT TAB EVENTS
+            elif self.current_editor_tab in ["main cat", "random cat"]:
+                self.handle_main_and_random_cat_events(event)
 
-            # REL STATUS CHECKBOXES
-            elif event.ui_element in self.rel_status_checkbox.values():
-                event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
-                for info in self.rel_tag_list:
-                    if event.ui_element == self.rel_status_checkbox.get(info["tag"]):
-                        index = self.rel_tag_list.index(info)
-                        self.rel_tag_list[index] = {
-                            "tag": info["tag"],
-                            "setting": False if info["setting"] else True,
-                            "conflict": info["conflict"]
-                        }
-
-                        # flip the setting of any conflicting tags
-                        if info["conflict"]:
-                            for tag in info["conflict"]:
-                                conflict_info = [block for block in self.rel_tag_list if tag == block["tag"]][0]
-                                conflict_index = self.rel_tag_list.index(conflict_info)
-                                if not info["setting"]:  # unchecks if conflicted setting is checked
-                                    self.rel_status_checkbox[tag].uncheck()
-                                self.rel_tag_list[conflict_index] = {
-                                    "tag": conflict_info["tag"],
-                                    "setting": False,
-                                    "conflict": conflict_info["conflict"]
-                                }
-
-                        self.update_rel_status_info()
-                        break
-            # REL VALUE BUTTONS
-            elif event.ui_element in self.rel_value_element.values():
-                for name, button in self.rel_value_element.items():
-                    if button != event.ui_element:
-                        continue
-                    amount = 0
-                    value = name
-                    if "low" in name:
-                        value = name.replace("_low_button", "")
-                        amount = 10
-                    elif "mid" in name:
-                        value = name.replace("_mid_button", "")
-                        amount = 30
-                    elif "high" in name:
-                        value = name.replace("_high_button", "")
-                        amount = 50
-
-                    # removing tag if it's already present
-                    remove_tag = None
-                    for tag in self.current_cat_dict["rel_status"]:
-                        if value in tag:
-                            remove_tag = tag
-                            break
-                    if remove_tag:
-                        self.current_cat_dict["rel_status"].remove(remove_tag)
-
-                    self.current_cat_dict["rel_status"].append(f"{value}_{amount}")
-                    self.rel_value_element[f"{value}_entry"].set_text(str(amount))
-                    self.update_rel_status_info()
-
-            # SKILL TOGGLE
-            elif event.ui_element == self.skill_element["allow"]:
-                self.skill_element["allow"].disable()
-                self.skill_element["exclude"].enable()
-                self.skill_allowed = True
-            elif event.ui_element == self.skill_element["exclude"]:
-                self.skill_element["exclude"].disable()
-                self.skill_element["allow"].enable()
-                self.skill_allowed = False
-            # SKILL LEVELS
-            elif event.ui_element in self.level_element.values():
-                for name, button in self.level_element.items():
-                    if button != event.ui_element:
-                        continue
-                    self.chosen_level = name
-                    self.update_skill_info()
-                    break
-
-            # TRAIT TOGGLE
-            elif event.ui_element == self.trait_element["allow"]:
-                self.trait_element["allow"].disable()
-                self.trait_element["exclude"].enable()
-                self.trait_allowed = True
-                # reset selected list
-                self.trait_element["adult"].set_selected_list(
-                    list(set(self.current_cat_dict["trait"]).intersection(self.adult_traits)))
-                self.trait_element["kitten"].set_selected_list(
-                    list(set(self.current_cat_dict["trait"]).intersection(self.kit_traits)))
-
-            elif event.ui_element == self.trait_element["exclude"]:
-                self.trait_element["exclude"].disable()
-                self.trait_element["allow"].enable()
-                self.trait_allowed = False
-                # reset selected list
-                self.trait_element["adult"].set_selected_list(
-                    list(set(self.current_cat_dict["not_trait"]).intersection(self.adult_traits)))
-                self.trait_element["kitten"].set_selected_list(
-                    list(set(self.current_cat_dict["not_trait"]).intersection(self.kit_traits)))
-
-            # BACKSTORY LIST
-            elif event.ui_element in self.backstory_element["list"].buttons.values():
-                for name, button in self.backstory_element["list"].buttons.items():
-                    if button != event.ui_element:
-                        continue
-                    chosen_stories = self.current_cat_dict["backstory"]
-
-                    if name in chosen_stories:
-                        chosen_stories.remove(name)
-                        if not set(chosen_stories).intersection(self.backstory_element["list"].selected_list):
-                            chosen_stories.append(self.open_pool)
-                    else:
-                        chosen_stories.append(name)
-                        if self.open_pool in chosen_stories:
-                            chosen_stories.remove(self.open_pool)
-                    self.update_backstory_info()
-                    break
+            # NEW CAT TAB EVENTS
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -561,6 +446,131 @@ class EventEdit(Screens):
                         self.current_cat_dict["rel_status"].append(f"{value}_{element.text}")
                     self.update_rel_status_info()
                     break
+
+    def handle_main_and_random_cat_events(self, event):
+        # DIES
+        if event.ui_element == self.death_element["checkbox"]:
+            checked = event.ui_element.checked
+            if not checked:
+                event.ui_element.check()
+            else:
+                event.ui_element.uncheck()
+            self.current_cat_dict["dies"] = event.ui_element.checked
+            self.death_element["info"].set_text(f"dies: {event.ui_element.checked}")
+
+        # REL STATUS CHECKBOXES
+        elif event.ui_element in self.rel_status_checkbox.values():
+            event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+            for info in self.rel_tag_list:
+                if event.ui_element == self.rel_status_checkbox.get(info["tag"]):
+                    index = self.rel_tag_list.index(info)
+                    self.rel_tag_list[index] = {
+                        "tag": info["tag"],
+                        "setting": False if info["setting"] else True,
+                        "conflict": info["conflict"]
+                    }
+
+                    # flip the setting of any conflicting tags
+                    if info["conflict"]:
+                        for tag in info["conflict"]:
+                            conflict_info = [block for block in self.rel_tag_list if tag == block["tag"]][0]
+                            conflict_index = self.rel_tag_list.index(conflict_info)
+                            if not info["setting"]:  # unchecks if conflicted setting is checked
+                                self.rel_status_checkbox[tag].uncheck()
+                            self.rel_tag_list[conflict_index] = {
+                                "tag": conflict_info["tag"],
+                                "setting": False,
+                                "conflict": conflict_info["conflict"]
+                            }
+
+                    self.update_rel_status_info()
+                    break
+        # REL VALUE BUTTONS
+        elif event.ui_element in self.rel_value_element.values():
+            for name, button in self.rel_value_element.items():
+                if button != event.ui_element:
+                    continue
+                amount = 0
+                value = name
+                if "low" in name:
+                    value = name.replace("_low_button", "")
+                    amount = 10
+                elif "mid" in name:
+                    value = name.replace("_mid_button", "")
+                    amount = 30
+                elif "high" in name:
+                    value = name.replace("_high_button", "")
+                    amount = 50
+
+                # removing tag if it's already present
+                remove_tag = None
+                for tag in self.current_cat_dict["rel_status"]:
+                    if value in tag:
+                        remove_tag = tag
+                        break
+                if remove_tag:
+                    self.current_cat_dict["rel_status"].remove(remove_tag)
+
+                self.current_cat_dict["rel_status"].append(f"{value}_{amount}")
+                self.rel_value_element[f"{value}_entry"].set_text(str(amount))
+                self.update_rel_status_info()
+
+        # SKILL TOGGLE
+        elif event.ui_element == self.skill_element["allow"]:
+            self.skill_element["allow"].disable()
+            self.skill_element["exclude"].enable()
+            self.skill_allowed = True
+        elif event.ui_element == self.skill_element["exclude"]:
+            self.skill_element["exclude"].disable()
+            self.skill_element["allow"].enable()
+            self.skill_allowed = False
+        # SKILL LEVELS
+        elif event.ui_element in self.level_element.values():
+            for name, button in self.level_element.items():
+                if button != event.ui_element:
+                    continue
+                self.chosen_level = name
+                self.update_skill_info()
+                break
+
+        # TRAIT TOGGLE
+        elif event.ui_element == self.trait_element["allow"]:
+            self.trait_element["allow"].disable()
+            self.trait_element["exclude"].enable()
+            self.trait_allowed = True
+            # reset selected list
+            self.trait_element["adult"].set_selected_list(
+                list(set(self.current_cat_dict["trait"]).intersection(self.adult_traits)))
+            self.trait_element["kitten"].set_selected_list(
+                list(set(self.current_cat_dict["trait"]).intersection(self.kit_traits)))
+
+        elif event.ui_element == self.trait_element["exclude"]:
+            self.trait_element["exclude"].disable()
+            self.trait_element["allow"].enable()
+            self.trait_allowed = False
+            # reset selected list
+            self.trait_element["adult"].set_selected_list(
+                list(set(self.current_cat_dict["not_trait"]).intersection(self.adult_traits)))
+            self.trait_element["kitten"].set_selected_list(
+                list(set(self.current_cat_dict["not_trait"]).intersection(self.kit_traits)))
+
+        # BACKSTORY LIST
+        elif event.ui_element in self.backstory_element["list"].buttons.values():
+            for name, button in self.backstory_element["list"].buttons.items():
+                if button != event.ui_element:
+                    continue
+                chosen_stories = self.current_cat_dict["backstory"]
+
+                if name in chosen_stories:
+                    chosen_stories.remove(name)
+                    if not set(chosen_stories).intersection(self.backstory_element["list"].selected_list):
+                        chosen_stories.append(self.open_pool)
+                else:
+                    chosen_stories.append(name)
+                    if self.open_pool in chosen_stories:
+                        chosen_stories.remove(self.open_pool)
+                self.update_backstory_info()
+                break
 
     def handle_settings_events(self, event):
         # TEXT PREVIEW
@@ -680,6 +690,12 @@ class EventEdit(Screens):
         if self.current_editor_tab == "settings":
             self.handle_settings_on_use()
 
+        elif self.current_editor_tab in ["main cat", "random cat"]:
+            self.handle_main_and_random_cat_on_use()
+
+        super().on_use()
+
+    def handle_main_and_random_cat_on_use(self):
         # RANKS
         if (self.rank_element.get("dropdown")
                 and self.rank_element["dropdown"].selected_list != self.current_cat_dict["rank"]):
@@ -689,7 +705,6 @@ class EventEdit(Screens):
             else:
                 self.rank_element["info"].set_text(f"chosen rank: ['any']")
             self.editor_container.on_contained_elements_changed(self.rank_element["info"])
-
         # AGES
         if (self.age_element.get("dropdown")
                 and self.age_element["dropdown"].selected_list != self.current_cat_dict["age"]):
@@ -700,7 +715,6 @@ class EventEdit(Screens):
             else:
                 self.age_element["info"].set_text(f"chosen age: ['any']")
             self.editor_container.on_contained_elements_changed(self.age_element["info"])
-
         # SKILLS
         if self.skill_element.get("paths"):
             # chosen path has changed
@@ -714,7 +728,6 @@ class EventEdit(Screens):
                 self.update_skill_info()
                 self.open_path = None
                 self.update_level_list()
-
         # TRAITS
         if self.trait_element.get("adult"):
             combined_selection = self.trait_element["adult"].selected_list.copy()
@@ -725,9 +738,8 @@ class EventEdit(Screens):
 
             saved_traits = "trait" if self.trait_allowed else "not_trait"
             if combined_selection != self.current_cat_dict[saved_traits]:
-                self.update_traits(self.kit_traits, self.trait_element["kitten"].selected_list)
-                self.update_traits(self.adult_traits, self.trait_element["adult"].selected_list)
-
+                self.update_trait_info(self.kit_traits, self.trait_element["kitten"].selected_list)
+                self.update_trait_info(self.adult_traits, self.trait_element["adult"].selected_list)
         # BACKSTORIES
         if self.backstory_element.get("pools"):
             selected_list = self.backstory_element["pools"].selected_list
@@ -756,43 +768,6 @@ class EventEdit(Screens):
                 self.backstory_element["list"].new_item_list([])
                 self.update_backstory_info()
 
-        super().on_use()
-
-    def update_backstory_info(self):
-        chosen_stories = self.current_cat_dict["backstory"]
-
-        if self.open_pool:
-            pool = self.all_backstories[self.open_pool]
-
-            # pool category added only if none of its stories have been selected
-            if self.open_pool not in chosen_stories and not set(chosen_stories).intersection(set(pool)):
-                chosen_stories.append(self.open_pool)
-
-        self.backstory_element["info"].set_text(f"chosen backstory: {chosen_stories}")
-        self.editor_container.on_contained_elements_changed(self.backstory_element["info"])
-
-    def update_traits(self, trait_dict, selected_list):
-        saved_traits = "trait" if self.trait_allowed else "not_trait"
-
-        selected_traits = set(self.current_cat_dict[saved_traits]).intersection(trait_dict)
-        if selected_list != selected_traits:
-            removed = [trait for trait in selected_traits
-                       if trait not in selected_list]
-            added = [trait for trait in selected_list
-                     if trait not in selected_traits]
-            if removed:
-                for trait in removed:
-                    self.current_cat_dict[saved_traits].remove(trait)
-            if added:
-                self.current_cat_dict[saved_traits].extend(added)
-
-        if self.trait_allowed:
-            self.trait_element["include_info"].set_text(f"chosen allowed traits: {self.current_cat_dict['trait']}")
-            self.editor_container.on_contained_elements_changed(self.trait_element["include_info"])
-        else:
-            self.trait_element["exclude_info"].set_text(f"chosen excluded traits: {self.current_cat_dict['not_trait']}")
-            self.editor_container.on_contained_elements_changed(self.trait_element["exclude_info"])
-
     def handle_settings_on_use(self):
         # CHANGE TYPE
         if (self.type_element.get("pick_type")
@@ -814,6 +789,41 @@ class EventEdit(Screens):
                 and self.season_element["season_dropdown"].selected_list != self.season_info):
             self.season_info = self.season_element["season_dropdown"].selected_list.copy()
             self.update_season_info()
+
+    def update_backstory_info(self):
+        chosen_stories = self.current_cat_dict["backstory"]
+
+        if self.open_pool:
+            pool = self.all_backstories[self.open_pool]
+
+            # pool category added only if none of its stories have been selected
+            if self.open_pool not in chosen_stories and not set(chosen_stories).intersection(set(pool)):
+                chosen_stories.append(self.open_pool)
+
+        self.backstory_element["info"].set_text(f"chosen backstory: {chosen_stories}")
+        self.editor_container.on_contained_elements_changed(self.backstory_element["info"])
+
+    def update_trait_info(self, trait_dict, selected_list):
+        saved_traits = "trait" if self.trait_allowed else "not_trait"
+
+        selected_traits = set(self.current_cat_dict[saved_traits]).intersection(trait_dict)
+        if selected_list != selected_traits:
+            removed = [trait for trait in selected_traits
+                       if trait not in selected_list]
+            added = [trait for trait in selected_list
+                     if trait not in selected_traits]
+            if removed:
+                for trait in removed:
+                    self.current_cat_dict[saved_traits].remove(trait)
+            if added:
+                self.current_cat_dict[saved_traits].extend(added)
+
+        if self.trait_allowed:
+            self.trait_element["include_info"].set_text(f"chosen allowed traits: {self.current_cat_dict['trait']}")
+            self.editor_container.on_contained_elements_changed(self.trait_element["include_info"])
+        else:
+            self.trait_element["exclude_info"].set_text(f"chosen excluded traits: {self.current_cat_dict['not_trait']}")
+            self.editor_container.on_contained_elements_changed(self.trait_element["exclude_info"])
 
     def update_skill_info(self):
 
@@ -845,7 +855,8 @@ class EventEdit(Screens):
                 self.current_cat_dict["rel_status"].remove(info["tag"])
 
         if self.rel_status_element.get("info"):
-            self.rel_status_element["info"].set_text(f"chosen relationship_status: {self.current_cat_dict['rel_status']}")
+            self.rel_status_element["info"].set_text(
+                f"chosen relationship_status: {self.current_cat_dict['rel_status']}")
             self.editor_container.on_contained_elements_changed(self.rel_status_element["info"])
 
     def replace_accs_with_group(self, group):
@@ -1089,7 +1100,7 @@ class EventEdit(Screens):
         )
 
         if not self.current_editor_tab:
-            self.current_editor_tab = "random cat"
+            self.current_editor_tab = "new cats"
 
     def kill_tabs(self):
         for tab in self.type_tab_buttons:
@@ -1358,6 +1369,8 @@ class EventEdit(Screens):
         elif self.current_editor_tab == "random cat":
             self.current_cat_dict = self.random_cat_info
             self.generate_random_cat_tab()
+        elif self.current_editor_tab == "new cats":
+            self.generate_new_cats_tab()
 
     def generate_settings_tab(self):
         # EVENT ID
@@ -1436,6 +1449,39 @@ class EventEdit(Screens):
 
         # BACKSTORIES
         self.create_backstory_editor()
+
+    def generate_new_cats_tab(self):
+        self.new_cat_editor["intro"] = UITextBoxTweaked(
+            "screens.event_edit.n_c_info",
+            ui_scale(pygame.Rect((0, 10), (270, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container
+        )
+
+        self.new_cat_editor["frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((-8, 30), (142, 192))),
+            get_box(BoxStyles.FRAME, (142, 192)),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "left_target": self.new_cat_editor["intro"]
+            }
+        )
+
+        self.new_cat_editor["cat_list"] = UIScrollingButtonList(
+            pygame.Rect((0, 38), (130, 174)),
+            item_list=self.all_ranks,
+            button_dimensions=(126, 30),
+            multiple_choice=False,
+            disable_selection=True,
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "left_target": self.new_cat_editor["intro"]
+            }
+        )
 
     def create_backstory_editor(self):
         self.backstory_element["text"] = UITextBoxTweaked(
@@ -1693,6 +1739,7 @@ class EventEdit(Screens):
             prev_element = self.level_element[f"{level + 1}"]
 
     def create_dies_editor(self, editor):
+        # TODO: set up a lock if subtype is death
         self.death_element["checkbox"] = UICheckbox(
             position=(7, 7),
             container=self.editor_container,
