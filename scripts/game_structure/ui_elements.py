@@ -1719,6 +1719,9 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
     def set_selected_list(self, new_list):
         self.selected_list.clear()
         self.selected_list = new_list
+        if self.disable_selection:
+            for item in self.selected_list:
+                self.buttons[item].disable()
 
     def new_item_list(self, item_list):
         """
