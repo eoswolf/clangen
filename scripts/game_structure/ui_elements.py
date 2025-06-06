@@ -1917,7 +1917,7 @@ class UIDropDown(UIDropDownContainer):
         for name, button in self.child_button_dicts.items():
             if not button.pressed:
                 continue
-                
+
             if self.child_trigger_close:
                 self.close()
 
