@@ -1768,6 +1768,7 @@ class UIDropDown(UIDropDownContainer):
             child_dimensions: tuple = None,
             parent_style: ButtonStyles = ButtonStyles.DROPDOWN,
             parent_override=None,
+            parent_reflect_selection=False,
             child_style: ButtonStyles = ButtonStyles.DROPDOWN,
             multiple_choice: bool = False,
             disable_selection: bool = True,
@@ -1790,6 +1791,7 @@ class UIDropDown(UIDropDownContainer):
         parent and child buttons with differing dimensions
         :param parent_style: The button style to use for the parent button, defaults to DROPDOWN
         :param parent_override: This isn't best practice to use, but it's an exception added for the filter dropdown
+        :param parent_reflect_selection: When a selection is made, the parent text changes to reflect the selection.
         :param child_style: The button style to use for the child buttons, defaults to DROPDOWN
         :param multiple_choice: If the selected_list should hold multiple selections, defaults to False
         :param disable_selection: If the clicked child_button should be disabled, defaults to True
@@ -1799,6 +1801,7 @@ class UIDropDown(UIDropDownContainer):
         self.selected_list = [item for item in starting_selection if starting_selection] if starting_selection else []
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
+        self.parent_text = parent_text
 
         super().__init__(
             relative_rect=ui_scale(relative_rect.copy()),
@@ -1914,6 +1917,10 @@ class UIDropDown(UIDropDownContainer):
         for name, button in self.child_button_dicts.items():
             if not button.pressed:
                 continue
+                
+            if self.child_trigger_close:
+                self.close()
+
             # multiple choice
             if self.multiple_choice:
                 if name in self.selected_list:
@@ -1923,18 +1930,17 @@ class UIDropDown(UIDropDownContainer):
 
                 if self.disable_selection:
                     button.disable()
-                if self.child_trigger_close:
-                    self.close()
-                break
 
+                break
             # single choice
             elif not self.multiple_choice:
                 if self.selected_list and self.selected_list[0] == name:
                     self.selected_list.clear()
+                    self.parent_button.set_text(self.parent_text)
                 else:
                     self.selected_list.clear()
                     self.selected_list.append(name)
-                print(self.selected_list)
+                    self.parent_button.set_text(name)
                 if self.disable_selection:
                     for other_button in self.child_buttons:
                         other_button.enable()
