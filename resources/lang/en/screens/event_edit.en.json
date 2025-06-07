@@ -26,6 +26,7 @@
         "new_cat_adoptive_info": "<b>adoptive:</b> Choose adoptive parents for this cat. Adoptive parents must be made first. The mates of an adoptive parent will automatically be included as additional adoptive parents",
         "new_cat_mate_info": "<b>mate:</b> Choose mates for this cat. Mates must be made first.",
         "exclude_info": "<b>exclude_involved:</b> These cats will be excluded from the involved cat buttons that players see alongside the event.",
+        "injury_info": "<b>injury:</b> Each injury block dictates cats who can receive the injury and the pool of injuries they will pull from. Cats will gain an injury from every block they are included in.",
         "classic": "Is this limited to classic mode?",
         "cruel_season": "Is this limited to cruel season?",
         "no_body": "Is the dead cat's body irretrievable?",

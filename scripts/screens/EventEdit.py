@@ -409,6 +409,8 @@ class EventEdit(Screens):
         self.exclusion_element = {}
         self.excluded_cats = []
 
+        self.injury_element = {}
+
         self.chosen_type = None
         self.chosen_biome = None
         self.chosen_event = None
@@ -900,6 +902,7 @@ class EventEdit(Screens):
             if self.exclusion_element["cat_list"].selected_list != self.excluded_cats:
                 self.excluded_cats = self.exclusion_element["cat_list"].selected_list.copy()
                 self.exclusion_element["info"].set_text(f"exclude_involved: {self.excluded_cats}")
+
     def handle_new_cat_on_use(self):
         # NEW CAT CONSTRAINT DISPLAY
         if self.selected_new_cat and not self.new_cat_element.get("checkbox_container"):
@@ -1874,7 +1877,64 @@ class EventEdit(Screens):
         # EXCLUDE INVOLVED
         self.create_exclude_involved_editor()
 
+        self.editor_element["injury"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((40, 10), (120, 30))),
+            "injuries",
+            get_button_dict(ButtonStyles.MENU_LEFT, (120, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_left",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["exclude"]
+            }
+        )
+        # injury is picked by default, so this is initially disabled
+        self.editor_element["injury"].disable()
+        self.editor_element["history"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 10), (120, 30))),
+            "history",
+            get_button_dict(ButtonStyles.MENU_MIDDLE, (120, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_middle",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.editor_element["injury"],
+                "top_target": self.editor_element["exclude"]
+            }
+        )
+        self.editor_element["relationships"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 10), (120, 30))),
+            "relationships",
+            get_button_dict(ButtonStyles.MENU_RIGHT, (120, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_right",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.editor_element["history"],
+                "top_target": self.editor_element["exclude"]
+            }
+        )
+
         # INJURY
+
+        self.injury_element["container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            anchors={
+                "top_target": self.editor_element["history"]
+            }
+        )
+        self.exclusion_element["intro"] = UITextBoxTweaked(
+            "screens.event_edit.injury_info",
+            ui_scale(pygame.Rect((0, 10), (300, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"]
+        )
 
         # HISTORY
 
