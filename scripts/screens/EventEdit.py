@@ -406,6 +406,9 @@ class EventEdit(Screens):
         self.connections_element = {}
         self.open_connection = "parent"
 
+        self.exclusion_element = {}
+        self.excluded_cats = []
+
         self.chosen_type = None
         self.chosen_biome = None
         self.chosen_event = None
@@ -886,8 +889,17 @@ class EventEdit(Screens):
         elif self.current_editor_tab == "new cats":
             self.handle_new_cat_on_use()
 
+        elif self.current_editor_tab == "personal consequences":
+            self.handle_personal_on_use()
+
         super().on_use()
 
+    def handle_personal_on_use(self):
+        # EXCLUDE
+        if self.exclusion_element.get("cat_list"):
+            if self.exclusion_element["cat_list"].selected_list != self.excluded_cats:
+                self.excluded_cats = self.exclusion_element["cat_list"].selected_list.copy()
+                self.exclusion_element["info"].set_text(f"exclude_involved: {self.excluded_cats}")
     def handle_new_cat_on_use(self):
         # NEW CAT CONSTRAINT DISPLAY
         if self.selected_new_cat and not self.new_cat_element.get("checkbox_container"):
@@ -1544,7 +1556,7 @@ class EventEdit(Screens):
         )
 
         if not self.current_editor_tab:
-            self.current_editor_tab = "new cats"
+            self.current_editor_tab = "personal consequences"
 
     # EVENT DISPLAY
     def kill_tabs(self):
@@ -1818,6 +1830,8 @@ class EventEdit(Screens):
         elif self.current_editor_tab == "new cats":
             self.current_cat_dict = self.new_cat_info
             self.generate_new_cats_tab()
+        elif self.current_editor_tab == "personal consequences":
+            self.generate_personal_tab()
 
     def create_divider(self, top_anchor, name, off_set: int = -12):
 
@@ -1835,6 +1849,77 @@ class EventEdit(Screens):
                 "top_target": top_anchor
             }
         )
+
+    def get_involved_cats(self, index_limit=None):
+        """
+        :param index_limit: indicate a maximum index for the new cat list.
+        """
+        # TODO: make sure this gets an option to indicate if r_c is in the event
+        involved_cats = ["m_c"]
+        if self.random_cat_info:
+            involved_cats.append("r_c")
+
+        new_cat_list = list(self.new_cat_list.keys())
+        if isinstance(index_limit, int):
+            for index, item in enumerate(new_cat_list.copy()):
+                if index >= index_limit:
+                    new_cat_list.remove(item)
+
+        involved_cats.extend(new_cat_list)
+
+        return involved_cats
+
+    # PERSONAL CONSEQUENCES EDITOR
+    def generate_personal_tab(self):
+        # EXCLUDE INVOLVED
+        self.create_exclude_involved_editor()
+
+        # INJURY
+
+        # HISTORY
+
+        # RELATIONSHIPS
+
+    def create_exclude_involved_editor(self):
+        self.exclusion_element["intro"] = UITextBoxTweaked(
+            "screens.event_edit.exclude_info",
+            ui_scale(pygame.Rect((0, 10), (300, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container
+        )
+        self.exclusion_element["frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((12, 20), (112, 166))),
+            get_box(BoxStyles.FRAME, (112, 166)),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "left_target": self.exclusion_element["intro"]
+            }
+        )
+        self.exclusion_element["cat_list"] = UIScrollingButtonList(
+            pygame.Rect((20, 28), (100, 148)),
+            item_list=self.get_involved_cats(),
+            button_dimensions=(96, 30),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "left_target": self.exclusion_element["intro"]
+            }
+        )
+        self.exclusion_element["info"] = UITextBoxTweaked(
+            "exclude_involved: []",
+            ui_scale(pygame.Rect((10, 0), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.exclusion_element["intro"]
+            }
+        )
+        self.create_divider(self.exclusion_element["frame"], "exclude")
 
     # NEW CATS EDITOR
     def generate_new_cats_tab(self):
@@ -2025,25 +2110,6 @@ class EventEdit(Screens):
             }
         )
         self.create_divider(self.connections_element["frame"], "connections")
-
-    def get_involved_cats(self, index_limit=None):
-        """
-        :param index_limit: indicate a maximum index for the new cat list.
-        """
-        # TODO: make sure this gets an option to indicate if r_c is in the event
-        involved_cats = ["m_c"]
-        if self.random_cat_info:
-            involved_cats.append("r_c")
-
-        new_cat_list = list(self.new_cat_list.keys())
-        if isinstance(index_limit, int):
-            for index, item in enumerate(new_cat_list.copy()):
-                if index >= index_limit:
-                    new_cat_list.remove(item)
-
-        involved_cats.extend(new_cat_list)
-
-        return involved_cats
 
     def create_new_cat_gender_editor(self):
         self.new_gender_element["text"] = UITextBoxTweaked(
