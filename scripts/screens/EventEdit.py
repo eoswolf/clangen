@@ -11,6 +11,7 @@ from scripts.cat.cats import Cat, BACKSTORIES
 from scripts.cat.pelts import Pelt
 from scripts.cat.personality import Personality
 from scripts.cat.skills import SkillPath, Skill
+from scripts.events_module.short.handle_short_events import INJURY_GROUPS, EVENT_ALLOWED_CONDITIONS
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
@@ -278,6 +279,11 @@ class EventEdit(Screens):
 
     new_cat_genders = ["male", "female", "can_birth"]
 
+    all_injury_pools = INJURY_GROUPS
+    all_possible_injuries = EVENT_ALLOWED_CONDITIONS
+
+    all_scars = Pelt.scars1 + Pelt.scars2 + Pelt.scars3
+
     section_tabs = {
         "settings": Icon.PAW,
         "main cat": Icon.CAT_HEAD,
@@ -409,7 +415,10 @@ class EventEdit(Screens):
         self.exclusion_element = {}
         self.excluded_cats = []
 
+        self.open_block = "injury"
         self.injury_element = {}
+        self.history_element = {}
+        self.relationships_element = {}
 
         self.chosen_type = None
         self.chosen_biome = None
@@ -489,9 +498,33 @@ class EventEdit(Screens):
                 self.handle_main_and_random_cat_events(event)
 
             # NEW CAT TAB EVENTS
-            # ADD CAT
             elif self.current_editor_tab == "new cats":
                 self.handle_new_cat_events(event)
+
+            # PERSONAL CONSEQUENCES TAB EVENTS
+            elif self.current_editor_tab == "personal consequences":
+                # TODO: switch to killing and creating each block section
+                if event.ui_element == self.injury_element["injury"]:
+                    self.injury_element["injury"].disable()
+                    self.history_element["history"].enable()
+                    self.relationships_element["relationships"].enable()
+
+                    self.open_block = "injury"
+                    self.change_block_editor()
+                elif event.ui_element == self.history_element["history"]:
+                    self.injury_element["injury"].enable()
+                    self.history_element["history"].disable()
+                    self.relationships_element["relationships"].enable()
+
+                    self.open_block = "history"
+                    self.change_block_editor()
+                elif event.ui_element == self.relationships_element["relationships"]:
+                    self.injury_element["injury"].enable()
+                    self.history_element["history"].enable()
+                    self.relationships_element["relationships"].disable()
+
+                    self.open_block = "relationships"
+                    self.change_block_editor()
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -1836,7 +1869,9 @@ class EventEdit(Screens):
         elif self.current_editor_tab == "personal consequences":
             self.generate_personal_tab()
 
-    def create_divider(self, top_anchor, name, off_set: int = -12):
+    def create_divider(self, top_anchor, name, off_set: int = -12, container=None):
+        if not container:
+            container = self.editor_container
 
         self.editor_element[name] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((0, off_set), (524, 24))),
@@ -1846,7 +1881,7 @@ class EventEdit(Screens):
                 ).convert_alpha(),
                 ui_scale_dimensions((524, 24)),
             ),
-            container=self.editor_container,
+            container=container,
             manager=MANAGER,
             anchors={
                 "top_target": top_anchor
@@ -1877,7 +1912,7 @@ class EventEdit(Screens):
         # EXCLUDE INVOLVED
         self.create_exclude_involved_editor()
 
-        self.editor_element["injury"] = UISurfaceImageButton(
+        self.injury_element["injury"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((40, 10), (120, 30))),
             "injuries",
             get_button_dict(ButtonStyles.MENU_LEFT, (120, 30)),
@@ -1889,8 +1924,8 @@ class EventEdit(Screens):
             }
         )
         # injury is picked by default, so this is initially disabled
-        self.editor_element["injury"].disable()
-        self.editor_element["history"] = UISurfaceImageButton(
+        self.injury_element["injury"].disable()
+        self.history_element["history"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 10), (120, 30))),
             "history",
             get_button_dict(ButtonStyles.MENU_MIDDLE, (120, 30)),
@@ -1898,11 +1933,11 @@ class EventEdit(Screens):
             object_id="@buttonstyles_menu_middle",
             container=self.editor_container,
             anchors={
-                "left_target": self.editor_element["injury"],
+                "left_target": self.injury_element["injury"],
                 "top_target": self.editor_element["exclude"]
             }
         )
-        self.editor_element["relationships"] = UISurfaceImageButton(
+        self.relationships_element["relationships"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 10), (120, 30))),
             "relationships",
             get_button_dict(ButtonStyles.MENU_RIGHT, (120, 30)),
@@ -1910,13 +1945,34 @@ class EventEdit(Screens):
             object_id="@buttonstyles_menu_right",
             container=self.editor_container,
             anchors={
-                "left_target": self.editor_element["history"],
+                "left_target": self.history_element["history"],
                 "top_target": self.editor_element["exclude"]
             }
         )
 
-        # INJURY
+        # BLOCKS
+        self.open_block = "injury"
+        self.change_block_editor()
 
+    def change_block_editor(self):
+
+        if self.injury_element.get("container"):
+            self.injury_element["container"].kill()
+        if self.history_element.get("container"):
+            self.history_element["container"].kill()
+        if self.relationships_element.get("container"):
+            self.relationships_element["container"].kill()
+
+        if self.open_block == "injury":
+            self.create_injury_editor()
+        elif self.open_block == "history":
+            self.create_history_editor()
+        elif self.open_block == "relationships":
+            self.create_relationships_editor()
+
+    def create_injury_editor(self):
+
+        # CONTAINER
         self.injury_element["container"] = pygame_gui.elements.UIAutoResizingContainer(
             ui_scale(pygame.Rect((0, 0), (0, 0))),
             container=self.editor_container,
@@ -1924,10 +1980,12 @@ class EventEdit(Screens):
             resize_left=False,
             resize_top=False,
             anchors={
-                "top_target": self.editor_element["history"]
+                "top_target": self.history_element["history"]
             }
         )
-        self.exclusion_element["intro"] = UITextBoxTweaked(
+
+        # INTRO
+        self.injury_element["start_intro"] = UITextBoxTweaked(
             "screens.event_edit.injury_info",
             ui_scale(pygame.Rect((0, 10), (300, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
@@ -1936,9 +1994,240 @@ class EventEdit(Screens):
             container=self.injury_element["container"]
         )
 
-        # HISTORY
+        # BLOCK LIST
+        self.injury_element["block_frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((12, 20), (112, 136))),
+            get_box(BoxStyles.FRAME, (112, 136)),
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "left_target": self.injury_element["start_intro"]
+            }
+        )
 
-        # RELATIONSHIPS
+        self.injury_element["block_list"] = UIScrollingButtonList(
+            pygame.Rect((20, 28), (100, 118)),
+            item_list=[],
+            button_dimensions=(96, 30),
+            multiple_choice=False,
+            disable_selection=True,
+            container=self.injury_element["container"],
+            manager=MANAGER,
+            anchors={
+                "left_target": self.injury_element["start_intro"]
+            }
+        )
+        self.injury_element["add"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((30, 4), (36, 36))),
+            "+",
+            get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_bottom",
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["block_list"],
+                "left_target": self.injury_element["start_intro"]
+            },
+            tool_tip_text="add a new block"
+        )
+
+        self.injury_element["delete"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((5, 4), (36, 36))),
+            "-",
+            get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_bottom",
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["block_list"],
+                "left_target": self.injury_element["add"]
+            },
+            tool_tip_text="delete selected block"
+        )
+
+        self.create_divider(self.injury_element["delete"], "injury_start", container=self.injury_element["container"])
+
+        # CAT SELECTION
+        self.injury_element["cat_intro"] = UITextBoxTweaked(
+            "screens.event_edit.cat_info",
+            ui_scale(pygame.Rect((0, 10), (300, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.editor_element["injury_start"],
+            },
+        )
+        self.injury_element["cat_frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((12, 20), (112, 166))),
+            get_box(BoxStyles.FRAME, (112, 166)),
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "left_target": self.injury_element["cat_intro"],
+                "top_target": self.editor_element["injury_start"],
+            }
+        )
+        self.injury_element["cat_list"] = UIScrollingButtonList(
+            pygame.Rect((20, 28), (100, 148)),
+            item_list=self.get_involved_cats(),
+            button_dimensions=(96, 30),
+            container=self.injury_element["container"],
+            manager=MANAGER,
+            anchors={
+                "left_target": self.injury_element["cat_intro"],
+                "top_target": self.editor_element["injury_start"],
+            }
+        )
+        self.injury_element["cat_info"] = UITextBoxTweaked(
+            "cats: []",
+            ui_scale(pygame.Rect((10, 0), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["cat_intro"]
+            }
+        )
+        self.create_divider(self.injury_element["cat_frame"], "injury_cat", container=self.injury_element["container"])
+
+        # INJURY SELECTION
+        # CAT SELECTION
+        self.injury_element["injury_intro"] = UITextBoxTweaked(
+            "screens.event_edit.injury_pick_info",
+            ui_scale(pygame.Rect((0, 10), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.editor_element["injury_cat"],
+            },
+        )
+
+        self.injury_element["injury_pools"] = UIScrollingDropDown(
+            ui_scale(pygame.Rect((20, 10), (150, 30))),
+            manager=MANAGER,
+            parent_text="injury pools",
+            item_list=self.all_injury_pools,
+            dropdown_dimensions=(150, 300),
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["injury_intro"]
+            }
+        )
+        self.injury_element["individual_injuries"] = UIScrollingDropDown(
+            ui_scale(pygame.Rect((100, 10), (200, 30))),
+            manager=MANAGER,
+            parent_text="individual injuries",
+            item_list=self.all_possible_injuries,
+            dropdown_dimensions=(200, 300),
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["injury_intro"]
+            }
+        )
+        self.injury_element["injury_info"] = UITextBoxTweaked(
+            "injuries: []",
+            ui_scale(pygame.Rect((10, 50), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["injury_intro"]
+            }
+        )
+        self.create_divider(self.injury_element["injury_info"], "injury_cat", container=self.injury_element["container"])
+
+        self.injury_element["scar_text"] = UITextBoxTweaked(
+            "screens.event_edit.scar_pick_info",
+            ui_scale(pygame.Rect((0, 14), (260, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.editor_element["injury_cat"]
+            }
+        )
+        self.injury_element["scar_frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((12, 20), (152, 226))),
+            get_box(BoxStyles.FRAME, (152, 226)),
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "left_target": self.injury_element["scar_text"],
+                "top_target": self.editor_element["injury_cat"],
+            }
+        )
+        self.injury_element["scar_list"] = UIScrollingButtonList(
+            pygame.Rect((20, 30), (140, 206)),
+            item_list=self.all_scars,
+            button_dimensions=(136, 30),
+            container=self.injury_element["container"],
+            manager=MANAGER,
+            anchors={
+                "left_target": self.injury_element["scar_text"],
+                "top_target": self.editor_element["injury_cat"],
+            }
+        )
+
+        self.injury_element["scar_info"] = UITextBoxTweaked(
+            "scars: []",
+            ui_scale(pygame.Rect((10, 20), (440, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.injury_element["container"],
+            anchors={
+                "top_target": self.injury_element["scar_text"]
+            }
+        )
+        self.create_divider(self.injury_element["scar_frame"], "injury_scars", container=self.injury_element["container"])
+
+
+    def create_history_editor(self):
+        self.history_element["container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            anchors={
+                "top_target": self.history_element["history"]
+            }
+        )
+        self.history_element["intro"] = UITextBoxTweaked(
+            "screens.event_edit.history_info",
+            ui_scale(pygame.Rect((0, 10), (300, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.history_element["container"]
+        )
+
+    def create_relationships_editor(self):
+        self.relationships_element["container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            anchors={
+                "top_target": self.history_element["history"]
+            }
+        )
+        self.relationships_element["intro"] = UITextBoxTweaked(
+            "screens.event_edit.relationships_info",
+            ui_scale(pygame.Rect((0, 10), (300, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.relationships_element["container"]
+        )
 
     def create_exclude_involved_editor(self):
         self.exclusion_element["intro"] = UITextBoxTweaked(
@@ -2170,6 +2459,8 @@ class EventEdit(Screens):
             }
         )
         self.create_divider(self.connections_element["frame"], "connections")
+
+
 
     def create_new_cat_gender_editor(self):
         self.new_gender_element["text"] = UITextBoxTweaked(
