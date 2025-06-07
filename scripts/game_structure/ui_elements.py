@@ -1802,6 +1802,7 @@ class UIDropDown(UIDropDownContainer):
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
         self.parent_text = parent_text
+        self.parent_reflect_selection = parent_reflect_selection
 
         super().__init__(
             relative_rect=ui_scale(relative_rect.copy()),
@@ -1912,6 +1913,13 @@ class UIDropDown(UIDropDownContainer):
 
         self.child_buttons = self.child_button_dicts.values()
 
+    def set_selected_list(self, new_list):
+        self.selected_list.clear()
+        self.selected_list = new_list
+        if self.disable_selection:
+            for item in self.selected_list:
+                self.child_button_dicts[item].disable()
+
     def update(self, time_delta: float):
         # updates our selection list
         for name, button in self.child_button_dicts.items():
@@ -1936,11 +1944,13 @@ class UIDropDown(UIDropDownContainer):
             elif not self.multiple_choice:
                 if self.selected_list and self.selected_list[0] == name:
                     self.selected_list.clear()
-                    self.parent_button.set_text(self.parent_text)
+                    if self.parent_reflect_selection:
+                        self.parent_button.set_text(self.parent_text)
                 else:
                     self.selected_list.clear()
                     self.selected_list.append(name)
-                    self.parent_button.set_text(name)
+                    if self.parent_reflect_selection:
+                        self.parent_button.set_text(name)
                 if self.disable_selection:
                     for other_button in self.child_buttons:
                         other_button.enable()

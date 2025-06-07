@@ -250,7 +250,7 @@ class EventEdit(Screens):
         {
             "tag": "meeting",
             "setting": False,
-            "conflict": []
+            "conflict": ["old_name", "new_name"]
         },
         {
             "tag": "exists",
@@ -268,6 +268,15 @@ class EventEdit(Screens):
             "conflict": ["new_name", "litter", "meeting"]
         },
     ]
+
+    new_cat_ranks = all_ranks.copy()
+    new_cat_ranks.remove("leader")
+    new_cat_ranks.remove("deputy")
+
+    new_cat_ages = all_ages.copy()
+    new_cat_ages.extend(["has_kits", "mate"])
+
+    new_cat_genders = ["male", "female", "can_birth"]
 
     section_tabs = {
         "settings": Icon.PAW,
@@ -362,6 +371,7 @@ class EventEdit(Screens):
             "not_trait": [],
             "backstory": []
         }
+        # TODO: add a checkbox somewhere that indicates if the event should have a random cat
         self.random_cat_info = {
             "rank": [],
             "age": [],
@@ -375,7 +385,10 @@ class EventEdit(Screens):
         }
         self.new_cat_info_dict = {}
         self.new_cat_info = {
-            "backstory": []
+            "backstory": [],
+            "parent": [],
+            "adoptive": [],
+            "mate": []
         }
 
         self.current_cat_dict = self.main_cat_info
@@ -387,6 +400,11 @@ class EventEdit(Screens):
 
         self.new_cat_checkbox = {}
         self.cat_story_element = {}
+        self.new_status_element = {}
+        self.new_age_element = {}
+        self.new_gender_element = {}
+        self.connections_element = {}
+        self.open_connection = "parent"
 
         self.chosen_type = None
         self.chosen_biome = None
@@ -468,72 +486,7 @@ class EventEdit(Screens):
             # NEW CAT TAB EVENTS
             # ADD CAT
             elif self.current_editor_tab == "new cats":
-                if event.ui_element == self.new_cat_editor["add"]:
-                    new_index = len(self.new_cat_list) if self.new_cat_list else 0
-                    self.selected_new_cat = f"n_c:{new_index}"
-                    self.update_new_cat_info()
-                    self.new_cat_list[self.selected_new_cat] = []
-                    self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
-                    self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
-                    self.new_cat_editor["info"].set_text(f"selected cat: []")
-                    self.update_new_cat_checkboxes()
-
-                # DELETE CAT
-                elif event.ui_element == self.new_cat_editor["delete"] and self.selected_new_cat:
-                    # retain needed info then clear new_cat_list
-                    deleted = self.selected_new_cat
-                    self.new_cat_list.pop(deleted)
-                    old_list = self.new_cat_list.copy()
-                    self.new_cat_list.clear()
-
-                    # create new cat list
-                    for index, cat in enumerate(old_list.values()):
-                        self.new_cat_list[f"n_c:{index}"] = cat
-
-                    self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
-
-                    self.selected_new_cat = list(self.new_cat_list.keys())[-1] if self.new_cat_list.keys() else None
-
-                    if self.selected_new_cat:
-                        self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
-                        self.new_cat_editor["info"].set_text(
-                            f"selected cat: {self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
-                        self.update_new_cat_info()
-
-                    else:
-                        self.new_cat_editor["info"].set_text("No cat selected")
-
-                    self.update_new_cat_checkboxes()
-
-                # CHECKBOXES
-                elif event.ui_element in self.new_cat_checkbox.values():
-                    event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
-                    for info in self.new_cat_bools:
-                        if event.ui_element == self.new_cat_checkbox.get(info["tag"]):
-                            index = self.new_cat_bools.index(info)
-                            self.new_cat_bools[index] = {
-                                "tag": info["tag"],
-                                "setting": False if info["setting"] else True,
-                                "conflict": info["conflict"]
-                            }
-
-                            # flip the setting of any conflicting tags
-                            if info["conflict"]:
-                                for tag in info["conflict"]:
-                                    conflict_info = [block for block in self.new_cat_bools if tag == block["tag"]][0]
-                                    conflict_index = self.new_cat_bools.index(conflict_info)
-                                    if not info["setting"]:  # unchecks if conflicted setting is checked
-                                        self.new_cat_checkbox[tag].uncheck()
-                                    self.new_cat_bools[conflict_index] = {
-                                        "tag": conflict_info["tag"],
-                                        "setting": False,
-                                        "conflict": conflict_info["conflict"]
-                                    }
-                            self.update_new_cat_tags()
-                            break
-                else:
-                    self.handle_main_and_random_cat_events(event)
-                    self.update_new_cat_tags()
+                self.handle_new_cat_events(event)
 
         elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
             # CHANGE EVENT ID
@@ -558,20 +511,130 @@ class EventEdit(Screens):
                     self.update_rel_status_info()
                     break
 
-    def update_new_cat_info(self):
-        if not self.new_cat_info_dict.get(self.selected_new_cat):
-            self.new_cat_info_dict[self.selected_new_cat] = {"backstory": []}
-        self.new_cat_info = self.new_cat_info_dict[self.selected_new_cat]
-        self.current_cat_dict = self.new_cat_info
+    def handle_new_cat_events(self, event):
+        # ADD CAT
+        if event.ui_element == self.new_cat_editor["add"]:
+            new_index = len(self.new_cat_list) if self.new_cat_list else 0
+            self.selected_new_cat = f"n_c:{new_index}"
+            self.change_new_cat_info_dict()
+            self.new_cat_list[self.selected_new_cat] = []
+            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
+            self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
+            self.new_cat_editor["info"].set_text(f"selected cat: []")
+            if self.new_cat_element.get("checkbox_container"):
+                self.update_new_cat_options()
 
-    def update_new_cat_checkboxes(self):
-        for info in self.new_cat_bools:
-            if info["tag"] in self.new_cat_list[self.selected_new_cat] and not info["setting"]:
-                info["setting"] = True
-                self.new_cat_checkbox[info["tag"]].check()
-            elif info["tag"] not in self.new_cat_list[self.selected_new_cat] and info["setting"]:
-                info["setting"] = False
-                self.new_cat_checkbox[info["tag"]].uncheck()
+        # DELETE CAT
+        elif event.ui_element == self.new_cat_editor["delete"] and self.selected_new_cat:
+            # retain needed info then clear new_cat_list
+            deleted = self.selected_new_cat
+            self.new_cat_list.pop(deleted)
+            self.new_cat_info_dict.pop(deleted)
+            old_list = self.new_cat_list.copy()
+            self.new_cat_list.clear()
+
+            # create new cat list
+            for index, cat in enumerate(old_list.values()):
+                self.new_cat_list[f"n_c:{index}"] = cat
+
+            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
+
+            self.selected_new_cat = list(self.new_cat_list.keys())[-1] if self.new_cat_list.keys() else None
+
+            if self.selected_new_cat:
+                self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
+                self.new_cat_editor["info"].set_text(
+                    f"selected cat: {self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
+                self.change_new_cat_info_dict()
+
+            else:
+                self.new_cat_editor["info"].set_text("No cat selected")
+
+            self.update_new_cat_options()
+
+        # CHECKBOXES
+        elif event.ui_element in self.new_cat_checkbox.values():
+            event.ui_element.uncheck() if event.ui_element.checked else event.ui_element.check()
+            for info in self.new_cat_bools:
+                if event.ui_element == self.new_cat_checkbox.get(info["tag"]):
+                    index = self.new_cat_bools.index(info)
+                    self.new_cat_bools[index] = {
+                        "tag": info["tag"],
+                        "setting": False if info["setting"] else True,
+                        "conflict": info["conflict"]
+                    }
+
+                    # flip the setting of any conflicting tags
+                    if info["conflict"]:
+                        for tag in info["conflict"]:
+                            conflict_info = [block for block in self.new_cat_bools if tag == block["tag"]][0]
+                            conflict_index = self.new_cat_bools.index(conflict_info)
+                            if not info["setting"]:  # unchecks if conflicted setting is checked
+                                self.new_cat_checkbox[tag].uncheck()
+                            self.new_cat_bools[conflict_index] = {
+                                "tag": conflict_info["tag"],
+                                "setting": False,
+                                "conflict": conflict_info["conflict"]
+                            }
+                    self.update_new_cat_tags()
+                    break
+
+        # CONNECTIONS
+        elif event.ui_element == self.connections_element["birth_parent"]:
+            self.open_connection = "parent"
+            self.connections_element["birth_parent"].disable()
+            self.connections_element["adopt_parent"].enable()
+            self.connections_element["mate"].enable()
+
+            self.connections_element["text"].set_text("screens.event_edit.new_cat_parent_info")
+            self.editor_container.on_contained_elements_changed(self.connections_element["text"])
+            self.connections_element["info"].set_text(f"chosen cats: {self.new_cat_info['parent']}")
+
+            self.connections_element["cat_list"].set_selected_list(self.new_cat_info["parent"].copy())
+            used_cats = self.new_cat_info["adoptive"] + self.new_cat_info["mate"]
+            for cat, button in self.connections_element["cat_list"].buttons.items():
+                if cat in used_cats:
+                    button.disable()
+                else:
+                    button.enable()
+
+        elif event.ui_element == self.connections_element["adopt_parent"]:
+            self.open_connection = "adoptive"
+            self.connections_element["birth_parent"].enable()
+            self.connections_element["adopt_parent"].disable()
+            self.connections_element["mate"].enable()
+
+            self.connections_element["text"].set_text("screens.event_edit.new_cat_adoptive_info")
+            self.editor_container.on_contained_elements_changed(self.connections_element["text"])
+            self.connections_element["info"].set_text(f"chosen cats: {self.new_cat_info['adoptive']}")
+
+            self.connections_element["cat_list"].set_selected_list(self.new_cat_info["adoptive"].copy())
+            used_cats = self.new_cat_info["parent"] + self.new_cat_info["mate"]
+            for cat, button in self.connections_element["cat_list"].buttons.items():
+                if cat in used_cats:
+                    button.disable()
+                else:
+                    button.enable()
+        elif event.ui_element == self.connections_element["mate"]:
+            self.open_connection = "mate"
+            self.connections_element["birth_parent"].enable()
+            self.connections_element["adopt_parent"].enable()
+            self.connections_element["mate"].disable()
+
+            self.connections_element["text"].set_text("screens.event_edit.new_cat_mate_info")
+            self.editor_container.on_contained_elements_changed(self.connections_element["text"])
+            self.connections_element["info"].set_text(f"chosen cats: {self.new_cat_info['mate']}")
+
+            self.connections_element["cat_list"].set_selected_list(self.new_cat_info["mate"].copy())
+            used_cats = self.new_cat_info["adoptive"] + self.new_cat_info["parent"]
+            for cat, button in self.connections_element["cat_list"].buttons.items():
+                if cat in used_cats:
+                    button.disable()
+                else:
+                    button.enable()
+        else:
+            self.handle_main_and_random_cat_events(event)
+            self.update_new_cat_tags()
 
     def handle_main_and_random_cat_events(self, event):
         # DIES
@@ -682,7 +745,7 @@ class EventEdit(Screens):
 
         # BACKSTORY LIST
         elif event.ui_element in (self.backstory_element.get("list").buttons.values()
-                                  if self.backstory_element.get("list") else []):
+        if self.backstory_element.get("list") else []):
             for name, button in self.backstory_element["list"].buttons.items():
                 if button != event.ui_element:
                     continue
@@ -821,30 +884,42 @@ class EventEdit(Screens):
             self.handle_main_and_random_cat_on_use()
 
         elif self.current_editor_tab == "new cats":
-            # NEW CAT CONSTRAINT DISPLAY
-            if self.selected_new_cat and not self.new_cat_element.get("checkbox_container"):
-                self.display_new_cat_constraints()
-
-            elif not self.selected_new_cat and self.new_cat_element.get("checkbox_container"):
-                self.clear_new_cat_constraints()
-
-            # CHANGE SELECTED CAT
-            elif self.new_cat_editor.get("cat_list"):
-                new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
-                                 if self.new_cat_editor["cat_list"].selected_list else None)
-                if self.selected_new_cat != new_selection:
-                    self.selected_new_cat = new_selection
-                    self.update_new_cat_info()
-                    self.new_cat_editor["info"].set_text(
-                        f"selected cat: "
-                        f"{self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
-
-                    self.update_new_cat_checkboxes()
-
-            self.handle_main_and_random_cat_on_use()
-            self.update_new_cat_tags()
+            self.handle_new_cat_on_use()
 
         super().on_use()
+
+    def handle_new_cat_on_use(self):
+        # NEW CAT CONSTRAINT DISPLAY
+        if self.selected_new_cat and not self.new_cat_element.get("checkbox_container"):
+            self.display_new_cat_constraints()
+
+        elif not self.selected_new_cat and self.new_cat_element.get("checkbox_container"):
+            self.clear_new_cat_constraints()
+        # CHANGE SELECTED CAT
+        if self.new_cat_editor.get("cat_list"):
+            new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
+                             if self.new_cat_editor["cat_list"].selected_list else None)
+            if self.selected_new_cat != new_selection:
+                self.selected_new_cat = new_selection
+                self.change_new_cat_info_dict()
+                self.update_new_cat_options()
+                self.new_cat_editor["info"].set_text(
+                    f"selected cat: "
+                    f"{self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
+
+                # need to reset the cat connections info here or it'll be incorrect
+                new_selection = (self.connections_element["cat_list"].selected_list.copy()
+                                 if self.connections_element["cat_list"].selected_list else [])
+                self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
+        # CAT CONNECTIONS
+        if self.connections_element.get("cat_list"):
+            new_selection = (self.connections_element["cat_list"].selected_list.copy()
+                             if self.connections_element["cat_list"].selected_list else [])
+            if self.new_cat_info[self.open_connection] != new_selection:
+                self.new_cat_info[self.open_connection] = new_selection
+                self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
+        self.handle_main_and_random_cat_on_use()
+        self.update_new_cat_tags()
 
     def handle_main_and_random_cat_on_use(self):
         # RANKS
@@ -895,8 +970,12 @@ class EventEdit(Screens):
         if self.backstory_element.get("pools"):
             selected_list = self.backstory_element["pools"].selected_list
 
+            if not self.open_pool and not selected_list:
+                self.backstory_element["list"].new_item_list([])
+                self.update_backstory_info()
+
             # pool has changed
-            if selected_list and self.open_pool not in selected_list:
+            elif selected_list and self.open_pool not in selected_list:
                 self.open_pool = selected_list[0]
                 self.backstory_element["list"].new_item_list(self.all_backstories[self.open_pool])
 
@@ -905,7 +984,7 @@ class EventEdit(Screens):
                 self.update_backstory_info()
 
             # there is no pool selected
-            if not selected_list and self.open_pool:
+            elif not selected_list and self.open_pool:
                 if self.open_pool in self.current_cat_dict["backstory"]:
                     self.current_cat_dict["backstory"].remove(self.open_pool)
 
@@ -941,6 +1020,83 @@ class EventEdit(Screens):
             self.season_info = self.season_element["season_dropdown"].selected_list.copy()
             self.update_season_info()
 
+    def change_new_cat_info_dict(self):
+        if not self.new_cat_info_dict.get(self.selected_new_cat):
+            self.new_cat_info_dict[self.selected_new_cat] = {
+                "backstory": [],
+                "parent": [],
+                "adoptive": [],
+                "mate": []
+            }
+        self.new_cat_info = self.new_cat_info_dict[self.selected_new_cat]
+        self.current_cat_dict = self.new_cat_info
+
+    def update_new_cat_options(self):
+        # BOOLS
+        for info in self.new_cat_bools:
+            if info["tag"] in self.new_cat_list[self.selected_new_cat] and not info["setting"]:
+                info["setting"] = True
+                self.new_cat_checkbox[info["tag"]].check()
+            elif info["tag"] not in self.new_cat_list[self.selected_new_cat] and info["setting"]:
+                info["setting"] = False
+                self.new_cat_checkbox[info["tag"]].uncheck()
+
+        # AVAILABLE CATS
+        self.connections_element["cat_list"].new_item_list(self.get_involved_cats(
+            index_limit=int(self.selected_new_cat.strip("n_c:"))
+        ))
+
+        # EVERYTHING ELSE
+        cat_type = []
+        stories = []
+        pool = []
+        rank = []
+        age = []
+        gender = []
+        parent = []
+        adopt = []
+        mate = []
+
+        for tag in self.new_cat_list[self.selected_new_cat]:
+            if tag in self.new_cat_types:
+                cat_type = [tag]
+            elif "backstory" in tag:
+                stories = tag.replace("backstory:", "")
+                stories = stories.split(",")
+                if not isinstance(stories, list):
+                    stories = [stories]
+                if stories:
+                    for pool_name in self.all_backstories:
+                        if pool_name in stories:
+                            pool = pool_name
+                else:
+                    pool = []
+            elif "status" in tag:
+                rank = [tag.replace("status:", "")]
+            elif "age" in tag:
+                age = [tag.replace("age:", "")]
+            elif tag in self.new_cat_genders:
+                gender = [tag]
+            elif "parent" in tag:
+                parent = tag.replace("parent:", "").split(",")
+            elif "adoptive" in tag:
+                adopt = tag.replace("adoptive:", "").split(",")
+            elif "mate" in tag:
+                mate = tag.replace("mate:", "").split(",")
+
+        self.cat_story_element["list"].set_selected_list(cat_type)
+        self.backstory_element["pools"].set_selected_list(pool)
+        self.backstory_element["list"].set_selected_list(stories)
+        self.new_status_element["list"].set_selected_list(rank)
+        self.new_age_element["list"].set_selected_list(age)
+        self.new_gender_element["list"].set_selected_list(gender)
+        if self.open_connection == "parent":
+            self.connections_element["cat_list"].set_selected_list(parent)
+        elif self.open_connection == "adoptive":
+            self.connections_element["cat_list"].set_selected_list(adopt)
+        elif self.open_connection == "mate":
+            self.connections_element["cat_list"].set_selected_list(mate)
+
     def update_new_cat_tags(self):
         if not self.selected_new_cat:
             return
@@ -965,6 +1121,7 @@ class EventEdit(Screens):
             if cat_type != selected_type and cat_type in selected_cat_info:
                 selected_cat_info.remove(cat_type)
 
+        # BACKSTORIES
         possible_stories = (list(self.all_backstories.keys()) + self.individual_stories)
         chosen_stories = set(possible_stories).intersection(self.new_cat_info["backstory"])
 
@@ -986,7 +1143,92 @@ class EventEdit(Screens):
         if new_story_tag and not existing_tag:
             selected_cat_info.append(new_story_tag)
 
-        self.new_cat_editor["info"].set_text(f"selected cat: {selected_cat_info}")
+        # RANK
+        if self.new_status_element['list'].selected_list:
+            rank = self.new_status_element['list'].selected_list[0]
+        else:
+            rank = None
+
+        new_rank_tag = f"status:{rank}" if rank else None
+
+        existing_tag = False
+        for tag in selected_cat_info.copy():
+            if "status" in tag and tag != new_rank_tag:
+                existing_tag = True
+                selected_cat_info.remove(tag)
+                break
+            elif tag == new_rank_tag:
+                existing_tag = True
+                break
+            existing_tag = False
+
+        if new_rank_tag and not existing_tag:
+            selected_cat_info.append(new_rank_tag)
+
+        # AGE
+        if self.new_age_element['list'].selected_list:
+            age = self.new_age_element['list'].selected_list[0]
+        else:
+            age = None
+
+        new_age_tag = f"age:{age}" if age else None
+
+        existing_tag = False
+        for tag in selected_cat_info.copy():
+            if "age" in tag and tag != new_age_tag:
+                existing_tag = True
+                selected_cat_info.remove(tag)
+                break
+            elif tag == new_age_tag:
+                existing_tag = True
+                break
+            existing_tag = False
+
+        if new_age_tag and not existing_tag:
+            selected_cat_info.append(new_age_tag)
+
+        # GENDER
+        if self.new_gender_element['list'].selected_list:
+            gender = self.new_gender_element['list'].selected_list[0]
+        else:
+            gender = None
+
+        if gender and gender not in selected_cat_info:
+            for option in self.new_cat_genders:
+                if option in selected_cat_info:
+                    selected_cat_info.remove(option)
+            selected_cat_info.append(gender)
+
+        elif not gender:
+            for option in self.new_cat_genders:
+                if option in selected_cat_info:
+                    selected_cat_info.remove(option)
+
+        # CAT CONNECTIONS
+        if self.connections_element["cat_list"].selected_list:
+            connections = self.connections_element["cat_list"].selected_list
+        else:
+            connections = []
+
+        new_tag = None
+        if connections:
+            new_tag = f"{self.open_connection}:{','.join(connections)}"
+
+        if new_tag and new_tag not in selected_cat_info:
+            for tag in selected_cat_info.copy():
+                if self.open_connection in tag:
+                    selected_cat_info.remove(tag)
+                    break
+            selected_cat_info.append(new_tag)
+
+        elif not new_tag:
+            for tag in selected_cat_info.copy():
+                if self.open_connection in tag:
+                    selected_cat_info.remove(tag)
+
+        if self.new_cat_editor["info"].html_text != f"selected cat: {selected_cat_info}":
+            self.new_cat_editor["info"].set_text(f"selected cat: {selected_cat_info}")
+
         self.editor_container.on_contained_elements_changed(self.new_cat_editor["info"])
 
     # MAIN/RANDOM CAT UPDATES
@@ -1687,6 +1929,209 @@ class EventEdit(Screens):
         self.create_bool_editor()
 
         # BACKSTORY
+        self.create_story_editor()
+
+        # STATUS
+        self.create_new_cat_status_editor()
+
+        # AGE
+        self.create_new_cat_age_editor()
+
+        # GENDER
+        self.create_new_cat_gender_editor()
+
+        # PARENT/ADOPTIVE/MATE
+        self.connections_element["birth_parent"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((50, 20), (120, 30))),
+            "birth parents",
+            get_button_dict(ButtonStyles.MENU_LEFT, (120, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_left",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["gender"],
+            }
+        )
+        # parent is picked by default, so this is initially disabled
+        self.connections_element["birth_parent"].disable()
+
+        self.connections_element["adopt_parent"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 20), (140, 30))),
+            "adoptive parents",
+            get_button_dict(ButtonStyles.MENU_MIDDLE, (140, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_middle",
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["gender"],
+                "left_target": self.connections_element["birth_parent"]
+            }
+        )
+        self.connections_element["mate"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 20), (80, 30))),
+            "mates",
+            get_button_dict(ButtonStyles.MENU_RIGHT, (80, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_menu_right",
+            container=self.editor_container,
+            anchors={
+                "left_target": self.connections_element["adopt_parent"],
+                "top_target": self.editor_element["gender"]
+            }
+        )
+
+        self.connections_element["text"] = UITextBoxTweaked(
+            "screens.event_edit.new_cat_parent_info",
+            ui_scale(pygame.Rect((0, 14), (260, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.connections_element["adopt_parent"]
+            }
+        )
+        self.connections_element["info"] = UITextBoxTweaked(
+            "chosen cats: []",
+            ui_scale(pygame.Rect((0, 10), (260, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.connections_element["text"]
+            }
+        )
+        self.connections_element["frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((12, 20), (132, 166))),
+            get_box(BoxStyles.FRAME, (132, 166)),
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.connections_element["mate"],
+                "left_target": self.connections_element["text"]
+            }
+        )
+
+        self.connections_element["cat_list"] = UIScrollingButtonList(
+            pygame.Rect((20, 28), (120, 148)),
+            item_list=self.get_involved_cats(index_limit=int(self.selected_new_cat.strip("n_c:"))),
+            button_dimensions=(116, 30),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "top_target": self.connections_element["mate"],
+                "left_target": self.connections_element["text"]
+            }
+        )
+        self.create_divider(self.connections_element["frame"], "connections")
+
+    def get_involved_cats(self, index_limit=None):
+        """
+        :param index_limit: indicate a maximum index for the new cat list.
+        """
+        # TODO: make sure this gets an option to indicate if r_c is in the event
+        involved_cats = ["m_c"]
+        if self.random_cat_info:
+            involved_cats.append("r_c")
+
+        new_cat_list = list(self.new_cat_list.keys())
+        if isinstance(index_limit, int):
+            for index, item in enumerate(new_cat_list.copy()):
+                if index >= index_limit:
+                    new_cat_list.remove(item)
+
+        involved_cats.extend(new_cat_list)
+
+        return involved_cats
+
+    def create_new_cat_gender_editor(self):
+        self.new_gender_element["text"] = UITextBoxTweaked(
+            "screens.event_edit.new_cat_gender_info",
+            ui_scale(pygame.Rect((0, 14), (290, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["age"]
+            }
+        )
+        self.new_gender_element["list"] = UIDropDown(
+            ui_scale(pygame.Rect((0, 26), (130, 30))),
+            parent_text="options",
+            item_list=self.new_cat_genders,
+            disable_selection=False,
+            container=self.editor_container,
+            child_trigger_close=True,
+            parent_reflect_selection=True,
+            anchors={
+                "top_target": self.editor_element["age"],
+                "left_target": self.new_gender_element["text"]
+            },
+            manager=MANAGER
+        )
+        self.create_divider(self.new_gender_element["text"], "gender")
+
+    def create_new_cat_age_editor(self):
+        self.new_age_element["text"] = UITextBoxTweaked(
+            "screens.event_edit.new_cat_age_info",
+            ui_scale(pygame.Rect((0, 14), (290, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["rank"]
+            }
+        )
+        self.new_age_element["list"] = UIDropDown(
+            ui_scale(pygame.Rect((0, 26), (130, 30))),
+            parent_text="ages",
+            item_list=self.new_cat_ages,
+            disable_selection=False,
+            container=self.editor_container,
+            child_trigger_close=True,
+            parent_reflect_selection=True,
+            anchors={
+                "top_target": self.editor_element["rank"],
+                "left_target": self.new_age_element["text"]
+            },
+            manager=MANAGER
+        )
+        self.new_age_element["list"].child_button_dicts["mate"].set_tooltip("screens.event_edit.mate")
+        self.new_age_element["list"].child_button_dicts["has_kits"].set_tooltip("screens.event_edit.has_kits")
+        self.create_divider(self.new_age_element["text"], "age")
+
+    def create_new_cat_status_editor(self):
+        self.new_status_element["text"] = UITextBoxTweaked(
+            "screens.event_edit.new_cat_rank_info",
+            ui_scale(pygame.Rect((0, 14), (260, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["backstory"]
+            }
+        )
+        self.new_status_element["list"] = UIDropDown(
+            ui_scale(pygame.Rect((0, 26), (180, 30))),
+            parent_text="ranks",
+            item_list=self.new_cat_ranks,
+            disable_selection=False,
+            container=self.editor_container,
+            child_trigger_close=True,
+            parent_reflect_selection=True,
+            anchors={
+                "top_target": self.editor_element["backstory"],
+                "left_target": self.new_status_element["text"]
+            },
+            manager=MANAGER
+        )
+        self.create_divider(self.new_status_element["text"], "rank")
+
+    def create_story_editor(self):
         self.cat_story_element["text"] = UITextBoxTweaked(
             "screens.event_edit.cat_type_info",
             ui_scale(pygame.Rect((0, 14), (310, -1))),
@@ -1705,6 +2150,7 @@ class EventEdit(Screens):
             disable_selection=False,
             container=self.editor_container,
             child_trigger_close=True,
+            parent_reflect_selection=True,
             anchors={
                 "top_target": self.editor_element["bools"],
                 "left_target": self.cat_story_element["text"]
@@ -1712,6 +2158,7 @@ class EventEdit(Screens):
             manager=MANAGER
         )
         self.create_backstory_editor(self.cat_story_element["text"])
+        self.create_divider(self.backstory_element["info"], "backstory")
 
     def create_bool_editor(self):
         self.new_cat_element["checkbox_container"] = pygame_gui.elements.UIAutoResizingContainer(
@@ -1813,7 +2260,7 @@ class EventEdit(Screens):
         # BACKSTORIES
         self.create_backstory_editor()
 
-    def create_backstory_editor(self, prev_element):
+    def create_backstory_editor(self, prev_element=None):
         prev_element = prev_element if prev_element else self.editor_element["traits"]
 
         self.backstory_element["text"] = UITextBoxTweaked(
