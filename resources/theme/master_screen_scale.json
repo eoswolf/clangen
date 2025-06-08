@@ -364,6 +364,10 @@
         "prototype": "#text_box_30",
         "misc": {"text_horiz_alignment": "center"}
     },
+    "#text_box_30_horizcenter_pad_10_10": {
+        "prototype": "#text_box_30_horizcenter",
+        "misc": {"padding": "5,5"}
+    },
     "#text_box_30_horizcenter_red": {
         "prototype": "#text_box_30_horizcenter",
         "colours": {"normal_text": "#ae1515"}
@@ -649,6 +653,18 @@
             "shape_corner_radius": [2, 2],
             "border_width": "1",
             "text_horiz_alignment": "right"
+        }
+    },
+    "#visible_entry_box": {
+        "prototype": "#search_entry_box",
+        "colours": {
+            "normal_border": "#2F2918"
+        },
+        "misc": {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": [2, 2],
+            "border_width": "1",
+            "text_horiz_alignment": "left"
         }
     },
     "#text_box_34_horizcenter_light": {
