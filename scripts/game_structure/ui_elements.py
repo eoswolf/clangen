@@ -205,7 +205,8 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
 
     def on_unhovered(self):
         if self._is_tab and self.tab_movement["hovered"]:
-            self.find_text_layer_pos()
+            if self._is_bottom_tab:
+                self.find_text_layer_pos()
             self.text_layer.set_position(self.text_layer_offset)
         super().on_unhovered()
 
