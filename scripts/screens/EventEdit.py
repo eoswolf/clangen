@@ -18,7 +18,7 @@ from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
     UICheckbox, UIModifiedImage, UIScrollingButtonList, UIDropDown, \
     UICollapsibleContainer, UIScrollingDropDown
-from scripts.game_structure.windows import EditorSaveCheck
+from scripts.game_structure.windows import EditorSaveCheck, EditorMissingInfo
 from scripts.screens.RelationshipScreen import RelationshipScreen
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
@@ -551,11 +551,17 @@ class EventEdit(Screens):
             elif event.ui_element in self.editor_element.values():
                 # SAVE NEW EVENT
                 if event.ui_element == self.editor_element["save"]:
-                    new_event = self.compile_new_event()
-                    path = self.find_event_path()
-                    self.get_event_json(path)
-                    self.event_list.append(new_event)
-                    EditorSaveCheck(path, self.editor_element["save"], self.event_list)
+                    if (not self.event_id_info
+                            or not self.event_text_element["event_text"].get_text()
+                            or not self.weight_info
+                            or not self.type_info):
+                        EditorMissingInfo()
+                    else:
+                        new_event = self.compile_new_event()
+                        path = self.find_event_path()
+                        self.get_event_json(path)
+                        self.event_list.append(new_event)
+                        EditorSaveCheck(path, self.editor_element["save"], self.event_list)
 
                 # SWITCH EDITOR TAB
                 else:
@@ -747,14 +753,20 @@ class EventEdit(Screens):
 
     def compile_new_event(self):
         new_event = {
-            "event_id": self.event_id_info,
-            "location": self.location_info,
-            "season": self.season_info,
-            "sub_type": self.sub_info,
-            "tags": self.tag_info,
-            "weight": self.weight_info,
-            "event_text": self.event_text_element["event_text"].get_text()
+            "event_id": self.event_id_info
         }
+        if self.location_info:
+            new_event["location"] = self.location_info
+        if self.season_info:
+            new_event["season"] = self.season_info
+        if self.sub_info:
+            new_event["sub_type"] = self.sub_info
+        if self.tag_info:
+            new_event["tags"] = self.tag_info
+
+        new_event["weight"] = self.weight_info
+        new_event["event_text"] = self.event_text_element["event_text"].get_text()
+
         if self.acc_info:
             new_event["new_accessory"] = self.acc_info
 
@@ -837,7 +849,6 @@ class EventEdit(Screens):
             biome_path = biomes[0]
 
         return f"resources/lang/en/events/{type}/{biome_path}.json"
-
 
     def add_block(self, event):
         if event not in [self.injury_element.get("add"),

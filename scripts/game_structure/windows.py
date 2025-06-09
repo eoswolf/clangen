@@ -349,8 +349,8 @@ class EditorSaveCheck(UIWindow):
 
         super().__init__(
             ui_scale(pygame.Rect((200, 200), (400, 200))),
-            window_display_title="Save Check",
-            object_id="#save_check_window",
+            window_display_title="Editor Save Check",
+            object_id="#editor_save_check_window",
             resizable=False,
             always_on_top=True,
         )
@@ -425,6 +425,51 @@ class EditorSaveCheck(UIWindow):
                 self.kill()
 
             elif event.ui_element == self.back_button:
+                self.kill()
+
+        return super().process_event(event)
+
+class EditorMissingInfo(UIWindow):
+    def __init__(self):
+
+        super().__init__(
+            ui_scale(pygame.Rect((200, 200), (400, 200))),
+            window_display_title="Info Missing",
+            object_id="#editor_missing_info_window",
+            resizable=False,
+            always_on_top=True,
+        )
+
+        # adding a variable for starting_height to make sure that this menu is always on top
+        top_stack_menu_layer_height = 10000
+
+        self.missing_info = UITextBoxTweaked(
+            "windows.editor_missing_info",
+            ui_scale(pygame.Rect((0, -30), (360, -1))),
+            line_spacing=1,
+            object_id="#text_box_30_horizcenter",
+            container=self,
+            anchors={
+                "centerx": "centerx",
+                "centery": "centery"
+            }
+        )
+
+        self.back_button = UIImageButton(
+            ui_scale(pygame.Rect((370, 5), (22, 22))),
+            "",
+            object_id="#exit_window_button",
+            starting_height=top_stack_menu_layer_height,
+            container=self,
+        )
+
+        self.back_button.enable()
+        self.set_blocking(True)
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+
+            if event.ui_element == self.back_button:
                 self.kill()
 
         return super().process_event(event)
