@@ -587,7 +587,7 @@ class EventEdit(Screens):
             # CHANGE EVENT ID
             if self.current_editor_tab == "settings":
                 if event.ui_element == self.event_id_element.get("event_id_entry"):
-                    self.event_id_info = self.event_id_element["event_id_entry"]
+                    self.event_id_info = self.event_id_element["event_id_entry"].text
 
             # REL VALUE CONSTRAINTS
             elif self.current_editor_tab in ["random cat", "main cat"]:
@@ -752,7 +752,7 @@ class EventEdit(Screens):
             "sub_type": self.sub_info,
             "tags": self.tag_info,
             "weight": self.weight_info,
-            "event_text": self.event_text_element["event_text"].get_text
+            "event_text": self.event_text_element["event_text"].get_text()
         }
         if self.acc_info:
             new_event["new_accessory"] = self.acc_info
@@ -777,32 +777,25 @@ class EventEdit(Screens):
         if self.main_cat_info["dies"]:
             new_event["m_c"]["dies"] = self.main_cat_info["dies"]
 
-        # this is just a double check, if the user has inputted some r_c info but not checked the r_c setting
-        # then this means we'll still get the r_c info
-        for entry in self.random_cat_info:
-            if self.random_cat_info[entry]:
-                self.r_c_needed = True
-
-        if self.r_c_needed:
-            new_event["r_c"] = {}
-            if self.random_cat_info["age"]:
-                new_event["r_c"]["age"] = self.random_cat_info["age"]
-            if self.random_cat_info["rank"]:
-                new_event["r_c"]["status"] = self.random_cat_info["rank"]
-            if self.random_cat_info["relationship_status"]:
-                new_event["r_c"]["relationship_status"] = self.random_cat_info["rel_status"]
-            if self.random_cat_info["skill"]:
-                new_event["r_c"]["skill"] = self.random_cat_info["skill"]
-            if self.random_cat_info["not_skill"]:
-                new_event["r_c"]["not_skill"] = self.random_cat_info["not_skill"]
-            if self.random_cat_info["trait"]:
-                new_event["r_c"]["trait"] = self.random_cat_info["trait"]
-            if self.random_cat_info["not_trait"]:
-                new_event["r_c"]["not_trait"] = self.random_cat_info["not_trait"]
-            if self.random_cat_info["backstory"]:
-                new_event["r_c"]["backstory"] = self.random_cat_info["backstory"]
-            if self.random_cat_info["dies"]:
-                new_event["r_c"]["dies"] = self.random_cat_info["dies"]
+        new_event["r_c"] = {}
+        if self.random_cat_info["age"]:
+            new_event["r_c"]["age"] = self.random_cat_info["age"]
+        if self.random_cat_info["rank"]:
+            new_event["r_c"]["status"] = self.random_cat_info["rank"]
+        if self.random_cat_info["rel_status"]:
+            new_event["r_c"]["relationship_status"] = self.random_cat_info["rel_status"]
+        if self.random_cat_info["skill"]:
+            new_event["r_c"]["skill"] = self.random_cat_info["skill"]
+        if self.random_cat_info["not_skill"]:
+            new_event["r_c"]["not_skill"] = self.random_cat_info["not_skill"]
+        if self.random_cat_info["trait"]:
+            new_event["r_c"]["trait"] = self.random_cat_info["trait"]
+        if self.random_cat_info["not_trait"]:
+            new_event["r_c"]["not_trait"] = self.random_cat_info["not_trait"]
+        if self.random_cat_info["backstory"]:
+            new_event["r_c"]["backstory"] = self.random_cat_info["backstory"]
+        if self.random_cat_info["dies"]:
+            new_event["r_c"]["dies"] = self.random_cat_info["dies"]
 
         if self.new_cat_list:
             new_event["new_cat"] = self.new_cat_list.values()
@@ -819,10 +812,10 @@ class EventEdit(Screens):
         if self.relationships_block_list:
             new_event["relationships"] = self.relationships_block_list
 
-        if self.outsider_info:
+        if self.outsider_info["current_rep"] or self.outsider_info["changed"]:
             new_event["outsider"] = self.outsider_info
 
-        if self.other_clan_info:
+        if self.other_clan_info["current_rep"] or self.outsider_info["changed"]:
             new_event["other_clan"] = self.other_clan_info
 
         if self.supply_block_list:
@@ -832,7 +825,7 @@ class EventEdit(Screens):
 
     def find_event_path(self):
 
-        type = self.type_info
+        type = self.type_info[0]
         biomes = []
         biome_path = "general"
         for locale in self.location_info:
@@ -845,7 +838,6 @@ class EventEdit(Screens):
         return f"resources/lang/en/events/{type}/{biome_path}.json"
 
     def add_new_event(self, path):
-
         event_json = ujson.dumps(self.event_list, indent=4)
         event_json = event_json.replace(
             "\/", "/"
@@ -2529,7 +2521,6 @@ class EventEdit(Screens):
                 "top_target": self.biome_tab_buttons["desert"]
             }
         )
-
 
     def get_event_json(self, path):
 
@@ -5418,7 +5409,7 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.editor_element["r_c"]
+                "top_target": self.editor_element["event_id"]
             }
         )
         biome_list = game.clan.BIOME_TYPES
@@ -5484,32 +5475,6 @@ class EventEdit(Screens):
                 }
             )
             prev_element = self.location_element[camp]
-
-    def create_random_cat_check(self):
-        self.random_cat_editor["r_c_check"] = UICheckbox(
-            position=(20, 10),
-            container=self.editor_container,
-            manager=MANAGER,
-            anchors={
-                "top_target": self.editor_element["event_id"]
-            },
-            check=True
-        )
-        self.r_c_needed = True
-        self.random_cat_editor["r_c_check_text"] = UITextBoxTweaked(
-            "This event will include a random cat.",
-            ui_scale(pygame.Rect((0, 10), (-1, -1))),
-            object_id="#text_box_30_horizleft_pad_10_10",
-            line_spacing=1,
-            manager=MANAGER,
-            container=self.editor_container,
-            anchors={
-                "top_target": self.editor_element["event_id"],
-                "left_target": self.random_cat_editor["r_c_check"]
-            }
-        )
-        self.create_divider(self.random_cat_editor["r_c_check"], "r_c")
-
 
     def create_event_id_editor(self):
         # TODO: add a way to detect if inputted event_id is a dupe
