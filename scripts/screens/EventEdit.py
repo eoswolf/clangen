@@ -545,6 +545,7 @@ class EventEdit(Screens):
             elif event.ui_element == self.add_button:
                 self.chosen_event = None
                 self.current_editor_tab = "settings"
+                self.clear_event_info()
                 self.clear_editor_tab()
 
             elif event.ui_element in self.editor_element.values():
@@ -1723,20 +1724,7 @@ class EventEdit(Screens):
             self.clear_new_cat_constraints()
         # CHANGE SELECTED CAT
         if self.new_cat_editor.get("cat_list"):
-            new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
-                             if self.new_cat_editor["cat_list"].selected_list else None)
-            if self.selected_new_cat != new_selection:
-                self.selected_new_cat = new_selection
-                self.change_new_cat_info_dict()
-                self.update_new_cat_options()
-                self.new_cat_editor["info"].set_text(
-                    f"selected cat: "
-                    f"{self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
-
-                # need to reset the cat connections info here or it'll be incorrect
-                new_selection = (self.connections_element["cat_list"].selected_list.copy()
-                                 if self.connections_element["cat_list"].selected_list else [])
-                self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
+            self.new_cat_select()
         # CAT CONNECTIONS
         if self.connections_element.get("cat_list"):
             new_selection = (self.connections_element["cat_list"].selected_list.copy()
@@ -1746,6 +1734,22 @@ class EventEdit(Screens):
                 self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
         self.handle_main_and_random_cat_on_use()
         self.update_new_cat_tags()
+
+    def new_cat_select(self):
+        new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
+                         if self.new_cat_editor["cat_list"].selected_list else None)
+        if self.selected_new_cat != new_selection:
+            self.selected_new_cat = new_selection
+            self.change_new_cat_info_dict()
+            self.update_new_cat_options()
+            self.new_cat_editor["info"].set_text(
+                f"selected cat: "
+                f"{self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
+
+            # need to reset the cat connections info here or it'll be incorrect
+            new_selection = (self.connections_element["cat_list"].selected_list.copy()
+                             if self.connections_element["cat_list"].selected_list else [])
+            self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
 
     def handle_main_and_random_cat_on_use(self):
         # RANKS
@@ -2292,60 +2296,49 @@ class EventEdit(Screens):
 
         self.editor_container.kill()
 
+        self.display_editor()
+
+    def clear_event_info(self):
         # resetting everything back to zero!
         # Settings elements
         self.event_id_element = {}
         self.event_id_info = None
-
         self.location_element = {}
         self.location_info = []
-
         self.season_element = {}
         self.season_info = []
-
         self.type_element = {}
         self.type_info = ["death"]
-
         self.sub_element = {}
         self.sub_info = []
-
         self.tag_element = {}
         self.basic_tag_checkbox = {}
         self.rank_tag_checkbox = {}
         self.tag_info = []
-
         self.weight_element = {}
         self.weight_info = 20
-
         self.acc_element = {}
         self.acc_info = []
         self.acc_categories = Pelt.acc_categories
         self.open_category = None
         self.acc_button = {}
-
         self.main_cat_editor = {}
         self.random_cat_editor = {}
-
         self.death_element = {}
         self.rank_element = {}
         self.age_element = {}
-
         self.rel_status_element = {}
         self.rel_status_checkbox = {}
         self.rel_value_element = {}
-
         self.skill_element = {}
         self.level_element = {}
         self.skill_allowed = True
         self.open_path = None
         self.chosen_level = None
-
         self.trait_element = {}
         self.trait_allowed = True
-
         self.backstory_element = {}
         self.open_pool = None
-
         self.main_cat_info = {
             "rank": [],
             "age": [],
@@ -2377,14 +2370,11 @@ class EventEdit(Screens):
             "adoptive": [],
             "mate": []
         }
-
         self.current_cat_dict = self.main_cat_info
-
         self.new_cat_editor = {}
         self.new_cat_element = {}
         self.new_cat_list = {}
         self.selected_new_cat = None
-
         self.new_cat_checkbox = {}
         self.cat_story_element = {}
         self.new_status_element = {}
@@ -2392,10 +2382,8 @@ class EventEdit(Screens):
         self.new_gender_element = {}
         self.connections_element = {}
         self.open_connection = "parent"
-
         self.exclusion_element = {}
         self.excluded_cats = []
-
         self.open_block = "injury"
         self.injury_element = {}
         self.injury_block_list = []
@@ -2405,7 +2393,6 @@ class EventEdit(Screens):
             "scars": []
         }
         self.selected_injury_block: str = ""
-
         self.history_element = {}
         self.history_block_list = []
         self.history_info = {
@@ -2415,7 +2402,6 @@ class EventEdit(Screens):
             "lead_death": ""
         }
         self.selected_history_block: str = ""
-
         self.relationships_element = {}
         self.relationships_block_list = []
         self.relationships_info = {
@@ -2426,7 +2412,6 @@ class EventEdit(Screens):
             "amount": 0
         }
         self.selected_relationships_block: str = ""
-
         self.outsider_element = {}
         self.outsider_info = {
             "current_rep": [],
@@ -2445,9 +2430,7 @@ class EventEdit(Screens):
             "trigger": [],
             "adjust": ""
         }
-
         self.current_preview_state = self.preview_states[0]
-        self.display_editor()
 
     def screen_switches(self):
 
@@ -2727,7 +2710,6 @@ class EventEdit(Screens):
     def kill_event_buttons(self):
         for event in self.event_buttons:
             self.event_buttons[event].kill()
-
 
     # EDITOR DISPLAY
     def display_editor(self):
@@ -4312,6 +4294,14 @@ class EventEdit(Screens):
         )
 
         self.create_divider(self.new_cat_editor["info"], "info")
+        if self.new_cat_info_dict:
+            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_info_dict.keys())
+            selected_cat = (self.selected_new_cat 
+                            if self.selected_new_cat
+                            else list(self.new_cat_info_dict.keys()))
+            self.new_cat_editor["cat_list"].set_selected_list([selected_cat])
+            self.display_new_cat_constraints()
+            self.new_cat_select()
 
     def clear_new_cat_constraints(self):
         for ele in self.new_cat_checkbox.values():
