@@ -542,11 +542,9 @@ class EventEdit(Screens):
 
             # OPEN EDITOR
             elif event.ui_element == self.add_button:
-                # TODO: need confirmation window for clicking after editor is already open
-                if not self.event_id_element.get("event_id_text"):
-                    self.chosen_event = None
-                    self.current_editor_tab = "settings"
-                    self.clear_editor_tab()
+                self.chosen_event = None
+                self.current_editor_tab = "settings"
+                self.clear_editor_tab()
 
             elif event.ui_element in self.editor_element.values():
                 # SAVE NEW EVENT
@@ -2291,6 +2289,161 @@ class EventEdit(Screens):
 
         self.editor_container.kill()
 
+        # resetting everything back to zero!
+        # Settings elements
+        self.event_id_element = {}
+        self.event_id_info = None
+
+        self.location_element = {}
+        self.location_info = []
+
+        self.season_element = {}
+        self.season_info = []
+
+        self.type_element = {}
+        self.type_info = ["death"]
+
+        self.sub_element = {}
+        self.sub_info = []
+
+        self.tag_element = {}
+        self.basic_tag_checkbox = {}
+        self.rank_tag_checkbox = {}
+        self.tag_info = []
+
+        self.weight_element = {}
+        self.weight_info = 20
+
+        self.acc_element = {}
+        self.acc_info = []
+        self.acc_categories = Pelt.acc_categories
+        self.open_category = None
+        self.acc_button = {}
+
+        self.main_cat_editor = {}
+        self.random_cat_editor = {}
+
+        self.death_element = {}
+        self.rank_element = {}
+        self.age_element = {}
+
+        self.rel_status_element = {}
+        self.rel_status_checkbox = {}
+        self.rel_value_element = {}
+
+        self.skill_element = {}
+        self.level_element = {}
+        self.skill_allowed = True
+        self.open_path = None
+        self.chosen_level = None
+
+        self.trait_element = {}
+        self.trait_allowed = True
+
+        self.backstory_element = {}
+        self.open_pool = None
+
+        self.main_cat_info = {
+            "rank": [],
+            "age": [],
+            "rel_status": [],
+            "dies": False,
+            "skill": [],
+            "not_skill": [],
+            "trait": [],
+            "not_trait": [],
+            "backstory": []
+        }
+        # TODO: add a checkbox somewhere that indicates if the event should have a random cat
+        self.r_c_needed = False
+        self.random_cat_info = {
+            "rank": [],
+            "age": [],
+            "rel_status": [],
+            "dies": False,
+            "skill": [],
+            "not_skill": [],
+            "trait": [],
+            "not_trait": [],
+            "backstory": []
+        }
+        self.new_cat_info_dict = {}
+        self.new_cat_info = {
+            "backstory": [],
+            "parent": [],
+            "adoptive": [],
+            "mate": []
+        }
+
+        self.current_cat_dict = self.main_cat_info
+
+        self.new_cat_editor = {}
+        self.new_cat_element = {}
+        self.new_cat_list = {}
+        self.selected_new_cat = None
+
+        self.new_cat_checkbox = {}
+        self.cat_story_element = {}
+        self.new_status_element = {}
+        self.new_age_element = {}
+        self.new_gender_element = {}
+        self.connections_element = {}
+        self.open_connection = "parent"
+
+        self.exclusion_element = {}
+        self.excluded_cats = []
+
+        self.open_block = "injury"
+        self.injury_element = {}
+        self.injury_block_list = []
+        self.injury_info = {
+            "cats": [],
+            "injuries": [],
+            "scars": []
+        }
+        self.selected_injury_block: str = ""
+
+        self.history_element = {}
+        self.history_block_list = []
+        self.history_info = {
+            "cats": [],
+            "scar": "",
+            "reg_death": "",
+            "lead_death": ""
+        }
+        self.selected_history_block: str = ""
+
+        self.relationships_element = {}
+        self.relationships_block_list = []
+        self.relationships_info = {
+            "cats_from": [],
+            "cats_to": [],
+            "mutual": False,
+            "values": [],
+            "amount": 0
+        }
+        self.selected_relationships_block: str = ""
+
+        self.outsider_element = {}
+        self.outsider_info = {
+            "current_rep": [],
+            "changed": 0
+        }
+        self.other_clan_element = {}
+        self.other_clan_info = {
+            "current_rep": [],
+            "changed": 0
+        }
+        self.supply_element = {}
+        self.supply_block_list = []
+        self.selected_supply_block: str = ""
+        self.supply_info = {
+            "type": "",
+            "trigger": [],
+            "adjust": ""
+        }
+
+        self.current_preview_state = self.preview_states[0]
         self.display_editor()
 
     def screen_switches(self):
@@ -5088,6 +5241,8 @@ class EventEdit(Screens):
             },
             allow_split_dashes=False
         )
+
+        self.create_divider(self.acc_element["acc_info"], "acc")
 
     def update_acc_list(self):
         # kill old buttons

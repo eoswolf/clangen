@@ -17,7 +17,7 @@
         "edit_beach": "edit beach",
         "edit_desert": "edit desert",
         "edit_wetlands": "edit wetlands",
-        "add_event": "write new event",
+        "add_event": "write new event, this will erase all current editor selections",
         "preview_text": "preview text with pronouns",
         "collapse_up": "collapse this section",
         "collapse_down": "show options for this section",
