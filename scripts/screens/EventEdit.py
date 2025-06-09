@@ -2846,8 +2846,8 @@ class EventEdit(Screens):
                 manager=MANAGER,
                 container=self.event_text_container,
             )
-            if self.event_text_info:
-                self.event_text_element["event_text"].set_text(self.event_text_info)
+        if self.event_text_info:
+            self.event_text_element["event_text"].set_text(self.event_text_info)
 
         # SECTION TABS
         if not self.editor_element.get(list(self.section_tabs.keys())[0]):
