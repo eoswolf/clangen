@@ -348,7 +348,7 @@ class EditorSaveCheck(UIWindow):
     def __init__(self, path, editor_save, event_list):
 
         super().__init__(
-            ui_scale(pygame.Rect((250, 200), (300, 200))),
+            ui_scale(pygame.Rect((200, 200), (400, 200))),
             window_display_title="Save Check",
             object_id="#save_check_window",
             resizable=False,
@@ -362,7 +362,7 @@ class EditorSaveCheck(UIWindow):
 
         self.game_over_message = UITextBoxTweaked(
             "windows.editor_save_check_message",
-            ui_scale(pygame.Rect((20, 20), (260, -1))),
+            ui_scale(pygame.Rect((0, 20), (360, -1))),
             line_spacing=1,
             object_id="#text_box_30_horizcenter",
             container=self,
@@ -372,7 +372,7 @@ class EditorSaveCheck(UIWindow):
         )
         self.path_text = UITextBoxTweaked(
             path,
-            ui_scale(pygame.Rect((20, 10), (260, -1))),
+            ui_scale(pygame.Rect((0, 0), (360, -1))),
             line_spacing=1,
             object_id="#text_box_30_horizcenter",
             container=self,
@@ -383,8 +383,8 @@ class EditorSaveCheck(UIWindow):
         )
 
         self.save_button = UISurfaceImageButton(
-            ui_scale(pygame.Rect((0, 115), (114, 30))),
-            "buttons.save_clan",
+            ui_scale(pygame.Rect((0, 145), (114, 30))),
+            "buttons.save",
             get_button_dict(ButtonStyles.SQUOVAL, (114, 30)),
             object_id="@buttonstyles_squoval",
             sound_id="save",
@@ -394,7 +394,7 @@ class EditorSaveCheck(UIWindow):
         )
 
         self.back_button = UIImageButton(
-            ui_scale(pygame.Rect((270, 5), (22, 22))),
+            ui_scale(pygame.Rect((370, 5), (22, 22))),
             "",
             object_id="#exit_window_button",
             starting_height=top_stack_menu_layer_height,
@@ -421,7 +421,7 @@ class EditorSaveCheck(UIWindow):
 
             if event.ui_element == self.save_button:
                 self.add_new_event()
-                self.editor_save.set_text("Saved")
+                self.editor_save.set_text("buttons.clan_saved")
                 self.kill()
 
             elif event.ui_element == self.back_button:

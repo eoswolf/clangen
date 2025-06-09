@@ -1375,14 +1375,6 @@ class EventEdit(Screens):
                 self.event_text_element["preview_text"].set_text(text)
                 self.event_text_element["preview_text"].show()
 
-        if event.ui_element == self.random_cat_editor["r_c_check"]:
-            if self.random_cat_editor["r_c_check"].checked:
-                self.r_c_needed = False
-                self.random_cat_editor["r_c_check"].uncheck()
-            elif not self.random_cat_editor["r_c_check"].checked:
-                self.r_c_needed = True
-                self.random_cat_editor["r_c_check"].check()
-
         # CHANGE LOCATION LIST
         if event.ui_element in self.location_element.values():
             biome_list = game.clan.BIOME_TYPES
@@ -2645,12 +2637,12 @@ class EventEdit(Screens):
 
         self.editor_element["save"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((320, -8), (80, 36))),
-            "Add",
+            "buttons.save",
             get_button_dict(ButtonStyles.HORIZONTAL_TAB_MIRRORED, (80, 36)),
             manager=MANAGER,
             object_id="@buttonstyles_horizontal_tab_mirrored",
             starting_height=1,
-            tool_tip_text="Add this event to the event list.",
+            tool_tip_text="Add this event to the event json.",
             anchors=(
                 {
                     "top_target": self.editor_element["frame"],
@@ -5020,8 +5012,6 @@ class EventEdit(Screens):
     def generate_settings_tab(self):
         # EVENT ID
         self.create_event_id_editor()
-        # RANDOM CAT CHECK
-        self.create_random_cat_check()
         # LOCATION
         self.create_location_editor()
         # SEASON
