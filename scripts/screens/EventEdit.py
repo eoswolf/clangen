@@ -2699,31 +2699,38 @@ class EventEdit(Screens):
             event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome.casefold()}.json"))
 
         self.event_list_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((70, 90), (230, 540))),
+            ui_scale(pygame.Rect((68, 90), (234, 544))),
             starting_height=3,
             manager=MANAGER,
             allow_scroll_y=True,
         )
 
-        x = 0
-        for event in event_list:
+        for index, event in enumerate(event_list):
             if not event_type:
                 self.all_event_ids.append(event["event_id"])
             else:
-                self.event_buttons[x] = UISurfaceImageButton(
-                    ui_scale(pygame.Rect((0, 0), (230, 36))),
+                test_dict = {}
+                for abbr in self.test_cat_names:
+                    pronoun = choice(
+                        [pro for pro in self.test_pronouns if pro["conju"] == 2]
+                    )
+                    test_dict[abbr] = (
+                        self.test_cat_names[abbr], pronoun
+                    )
+                preview = process_text(event["event_text"], test_dict)
+                self.event_buttons[index] = UISurfaceImageButton(
+                    ui_scale(pygame.Rect((0, -2), (230, 36))),
                     event["event_id"],
                     get_button_dict(ButtonStyles.DROPDOWN, (230, 36)),
                     manager=MANAGER,
                     object_id="@buttonstyles_dropdown",
                     starting_height=1,
                     anchors={
-                        "top_target": self.event_buttons[x - 1]
-                    } if self.event_buttons.get(x - 1) else None,
+                        "top_target": self.event_buttons[index - 1]
+                    } if self.event_buttons.get(index - 1) else None,
                     container=self.event_list_container,
-                    tool_tip_text=event["event_text"]
+                    tool_tip_text=preview
                 )
-                x += 1
 
     def kill_event_buttons(self):
         for event in self.event_buttons:
