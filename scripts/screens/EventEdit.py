@@ -337,6 +337,7 @@ class EventEdit(Screens):
 
         # Settings elements
         self.event_id_element = {}
+        self.event_id_info = None
 
         self.location_element = {}
         self.location_info = []
@@ -399,6 +400,7 @@ class EventEdit(Screens):
             "backstory": []
         }
         # TODO: add a checkbox somewhere that indicates if the event should have a random cat
+        self.r_c_needed = False
         self.random_cat_info = {
             "rank": [],
             "age": [],
@@ -492,8 +494,6 @@ class EventEdit(Screens):
 
         self.current_preview_state = self.preview_states[0]
 
-        self.new_event = {}
-
     def handle_event(self, event):
         # HANDLE TEXT LINKS
         if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
@@ -550,11 +550,19 @@ class EventEdit(Screens):
 
             # SWITCH EDITOR TAB
             elif event.ui_element in self.editor_element.values():
-                for name, button in self.editor_element.items():
-                    if event.ui_element == button and name != self.current_editor_tab:
-                        self.current_editor_tab = name
-                        self.clear_editor_tab()
-                        break
+                if event.ui_element == self.editor_element["save"]:
+                    new_event = self.compile_new_event()
+                    path = self.find_event_path()
+                    self.get_event_json(path)
+                    self.event_list.append(new_event)
+                    self.add_new_event(path)
+                    self.editor_element["save"].set_text("saved!")
+                else:
+                    for name, button in self.editor_element.items():
+                        if event.ui_element == button and name != self.current_editor_tab:
+                            self.current_editor_tab = name
+                            self.clear_editor_tab()
+                            break
 
             # SETTINGS TAB EVENTS
             elif self.current_editor_tab == "settings":
@@ -579,7 +587,7 @@ class EventEdit(Screens):
             # CHANGE EVENT ID
             if self.current_editor_tab == "settings":
                 if event.ui_element == self.event_id_element.get("event_id_entry"):
-                    self.new_event.update({"event_id": self.event_id_element["event_id_entry"].text})
+                    self.event_id_info = self.event_id_element["event_id_entry"]
 
             # REL VALUE CONSTRAINTS
             elif self.current_editor_tab in ["random cat", "main cat"]:
@@ -735,6 +743,119 @@ class EventEdit(Screens):
         self.add_block(event.ui_element)
         # REMOVE BLOCK
         self.delete_block(event.ui_element)
+
+    def compile_new_event(self):
+        new_event = {
+            "event_id": self.event_id_info,
+            "location": self.location_info,
+            "season": self.season_info,
+            "sub_type": self.sub_info,
+            "tags": self.tag_info,
+            "weight": self.weight_info,
+            "event_text": self.event_text_element["event_text"].get_text
+        }
+        if self.acc_info:
+            new_event["new_accessory"] = self.acc_info
+
+        new_event["m_c"] = {}
+        if self.main_cat_info["age"]:
+            new_event["m_c"]["age"] = self.main_cat_info["age"]
+        if self.main_cat_info["rank"]:
+            new_event["m_c"]["status"] = self.main_cat_info["rank"]
+        if self.main_cat_info["rel_status"]:
+            new_event["m_c"]["relationship_status"] = self.main_cat_info["rel_status"]
+        if self.main_cat_info["skill"]:
+            new_event["m_c"]["skill"] = self.main_cat_info["skill"]
+        if self.main_cat_info["not_skill"]:
+            new_event["m_c"]["not_skill"] = self.main_cat_info["not_skill"]
+        if self.main_cat_info["trait"]:
+            new_event["m_c"]["trait"] = self.main_cat_info["trait"]
+        if self.main_cat_info["not_trait"]:
+            new_event["m_c"]["not_trait"] = self.main_cat_info["not_trait"]
+        if self.main_cat_info["backstory"]:
+            new_event["m_c"]["backstory"] = self.main_cat_info["backstory"]
+        if self.main_cat_info["dies"]:
+            new_event["m_c"]["dies"] = self.main_cat_info["dies"]
+
+        # this is just a double check, if the user has inputted some r_c info but not checked the r_c setting
+        # then this means we'll still get the r_c info
+        for entry in self.random_cat_info:
+            if self.random_cat_info[entry]:
+                self.r_c_needed = True
+
+        if self.r_c_needed:
+            new_event["r_c"] = {}
+            if self.random_cat_info["age"]:
+                new_event["r_c"]["age"] = self.random_cat_info["age"]
+            if self.random_cat_info["rank"]:
+                new_event["r_c"]["status"] = self.random_cat_info["rank"]
+            if self.random_cat_info["relationship_status"]:
+                new_event["r_c"]["relationship_status"] = self.random_cat_info["rel_status"]
+            if self.random_cat_info["skill"]:
+                new_event["r_c"]["skill"] = self.random_cat_info["skill"]
+            if self.random_cat_info["not_skill"]:
+                new_event["r_c"]["not_skill"] = self.random_cat_info["not_skill"]
+            if self.random_cat_info["trait"]:
+                new_event["r_c"]["trait"] = self.random_cat_info["trait"]
+            if self.random_cat_info["not_trait"]:
+                new_event["r_c"]["not_trait"] = self.random_cat_info["not_trait"]
+            if self.random_cat_info["backstory"]:
+                new_event["r_c"]["backstory"] = self.random_cat_info["backstory"]
+            if self.random_cat_info["dies"]:
+                new_event["r_c"]["dies"] = self.random_cat_info["dies"]
+
+        if self.new_cat_list:
+            new_event["new_cat"] = self.new_cat_list.values()
+
+        if self.injury_block_list:
+            new_event["injury"] = self.injury_block_list
+
+        if self.excluded_cats:
+            new_event["exclude_involved"] = self.excluded_cats
+
+        if self.history_block_list:
+            new_event["history"] = self.history_block_list
+
+        if self.relationships_block_list:
+            new_event["relationships"] = self.relationships_block_list
+
+        if self.outsider_info:
+            new_event["outsider"] = self.outsider_info
+
+        if self.other_clan_info:
+            new_event["other_clan"] = self.other_clan_info
+
+        if self.supply_block_list:
+            new_event["supplies"] = self.supply_block_list
+
+        return new_event
+
+    def find_event_path(self):
+
+        type = self.type_info
+        biomes = []
+        biome_path = "general"
+        for locale in self.location_info:
+            biome = locale.split("_")[0]
+            if biome in game.clan.BIOME_TYPES:
+                biomes.append(biome)
+        if len(biomes) > 1 and "any" != biomes[0]:
+            biome_path = biomes[0]
+
+        return f"resources/lang/en/events/{type}/{biome_path}.json"
+
+    def add_new_event(self, path):
+
+        event_json = ujson.dumps(self.event_list, indent=4)
+        event_json = event_json.replace(
+            "\/", "/"
+        )  # ujson tries to escape "/", but doesn't end up doing a good job.
+
+        try:
+            with open(path, "w", encoding="utf-8") as write_file:
+                write_file.write(event_json)
+        except:
+            print(f"Something went wrong with event writing. Is {path} valid?")
 
     def add_block(self, event):
         if event not in [self.injury_element.get("add"),
@@ -1271,6 +1392,14 @@ class EventEdit(Screens):
                 text = process_text(text, test_dict)
                 self.event_text_element["preview_text"].set_text(text)
                 self.event_text_element["preview_text"].show()
+
+        if event.ui_element == self.random_cat_editor["r_c_check"]:
+            if self.random_cat_editor["r_c_check"].checked:
+                self.r_c_needed = False
+                self.random_cat_editor["r_c_check"].uncheck()
+            elif not self.random_cat_editor["r_c_check"].checked:
+                self.r_c_needed = True
+                self.random_cat_editor["r_c_check"].check()
 
         # CHANGE LOCATION LIST
         if event.ui_element in self.location_element.values():
@@ -1980,7 +2109,8 @@ class EventEdit(Screens):
             self.trait_element["include_info"].set_text(f"chosen allowed traits: {self.current_cat_dict.get('trait')}")
             self.editor_container.on_contained_elements_changed(self.trait_element["include_info"])
         else:
-            self.trait_element["exclude_info"].set_text(f"chosen excluded traits: {self.current_cat_dict.get('not_trait')}")
+            self.trait_element["exclude_info"].set_text(
+                f"chosen excluded traits: {self.current_cat_dict.get('not_trait')}")
             self.editor_container.on_contained_elements_changed(self.trait_element["exclude_info"])
 
     def update_skill_info(self):
@@ -2244,7 +2374,6 @@ class EventEdit(Screens):
 
         self.display_editor()
 
-
     # EVENT DISPLAY
     def kill_tabs(self):
         for tab in self.type_tab_buttons:
@@ -2401,13 +2530,8 @@ class EventEdit(Screens):
             }
         )
 
-    def display_events(self):
-        self.kill_event_buttons()
-        self.event_list = None
-        if self.editor_element.get("intro_text"):
-            self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
 
-        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome.casefold()}.json"
+    def get_event_json(self, path):
 
         try:
             with open(path, "r", encoding="utf-8") as read_file:
@@ -2425,6 +2549,16 @@ class EventEdit(Screens):
                 print(f"{path} isn't in the correct event format. Perhaps it isn't an event .json?")
         except KeyError:
             return
+
+    def display_events(self):
+        self.kill_event_buttons()
+        self.event_list = None
+        if self.editor_element.get("intro_text"):
+            self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
+
+        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome.casefold()}.json"
+
+        self.get_event_json(path)
 
         self.event_list_container = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((70, 90), (230, 540))),
@@ -2454,7 +2588,10 @@ class EventEdit(Screens):
         for event in self.event_buttons:
             self.event_buttons[event].kill()
 
-    # EDITOR DISPLAY
+    '''
+    EDITOR DISPLAY
+    '''
+
     def display_editor(self):
 
         self.editor_container = UIModifiedScrollingContainer(
@@ -2525,6 +2662,22 @@ class EventEdit(Screens):
                 )
                 prev_element = self.editor_element[name]
 
+        self.editor_element["save"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((320, -8), (80, 36))),
+            "Add",
+            get_button_dict(ButtonStyles.HORIZONTAL_TAB_MIRRORED, (80, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_horizontal_tab_mirrored",
+            starting_height=1,
+            tool_tip_text="Add this event to the event list.",
+            anchors=(
+                {
+                    "top_target": self.editor_element["frame"],
+                    "left_target": self.list_frame
+                }
+            )
+        )
+
         if self.current_editor_tab == "settings":
             self.generate_settings_tab()
         elif self.current_editor_tab == "main cat":
@@ -2579,7 +2732,10 @@ class EventEdit(Screens):
 
         return involved_cats
 
-    # OUTSIDE CONSEQUENCES
+    '''
+    OUTSIDE CONSEQUENCES TAB
+    '''
+
     def generate_outside_tab(self):
 
         # OUTSIDER
@@ -4883,6 +5039,8 @@ class EventEdit(Screens):
     def generate_settings_tab(self):
         # EVENT ID
         self.create_event_id_editor()
+        # RANDOM CAT CHECK
+        self.create_random_cat_check()
         # LOCATION
         self.create_location_editor()
         # SEASON
@@ -5260,7 +5418,7 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.editor_container,
             anchors={
-                "top_target": self.event_id_element["event_id_text"]
+                "top_target": self.editor_element["r_c"]
             }
         )
         biome_list = game.clan.BIOME_TYPES
@@ -5326,6 +5484,32 @@ class EventEdit(Screens):
                 }
             )
             prev_element = self.location_element[camp]
+
+    def create_random_cat_check(self):
+        self.random_cat_editor["r_c_check"] = UICheckbox(
+            position=(20, 10),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={
+                "top_target": self.editor_element["event_id"]
+            },
+            check=True
+        )
+        self.r_c_needed = True
+        self.random_cat_editor["r_c_check_text"] = UITextBoxTweaked(
+            "This event will include a random cat.",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "top_target": self.editor_element["event_id"],
+                "left_target": self.random_cat_editor["r_c_check"]
+            }
+        )
+        self.create_divider(self.random_cat_editor["r_c_check"], "r_c")
+
 
     def create_event_id_editor(self):
         # TODO: add a way to detect if inputted event_id is a dupe
