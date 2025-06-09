@@ -24,6 +24,7 @@
         "location": "location",
         "descriptor": "descriptor",
         "miscellaneous": "miscellaneous",
+        "editor_save_check_message": "This event will be saved to:",
         "save_check_message": "Would you like to save your game before exiting? If you don't, progress may be lost!",
         "delete_check_message": "Do you wish to delete %{clan}? This is permanent and cannot be undone.",
         "delete_yes": "Delete it!",

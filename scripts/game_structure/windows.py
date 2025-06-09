@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 import i18n
 import pygame
 import pygame_gui
+import ujson
 from pygame_gui.elements import UIWindow
 from pygame_gui.windows import UIMessageWindow
 
@@ -342,6 +343,91 @@ class SaveCheck(UIWindow):
                 # only allow one instance of this window
         return super().process_event(event)
 
+
+class EditorSaveCheck(UIWindow):
+    def __init__(self, path, editor_save, event_list):
+
+        super().__init__(
+            ui_scale(pygame.Rect((250, 200), (300, 200))),
+            window_display_title="Save Check",
+            object_id="#save_check_window",
+            resizable=False,
+            always_on_top=True,
+        )
+        self.path = path
+        self.editor_save = editor_save
+        self.event_list = event_list
+        # adding a variable for starting_height to make sure that this menu is always on top
+        top_stack_menu_layer_height = 10000
+
+        self.game_over_message = UITextBoxTweaked(
+            "windows.editor_save_check_message",
+            ui_scale(pygame.Rect((20, 20), (260, -1))),
+            line_spacing=1,
+            object_id="#text_box_30_horizcenter",
+            container=self,
+            anchors={
+                "centerx": "centerx"
+            }
+        )
+        self.path_text = UITextBoxTweaked(
+            path,
+            ui_scale(pygame.Rect((20, 10), (260, -1))),
+            line_spacing=1,
+            object_id="#text_box_30_horizcenter",
+            container=self,
+            anchors={
+                "top_target": self.game_over_message,
+                "centerx": "centerx"
+            }
+        )
+
+        self.save_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 115), (114, 30))),
+            "buttons.save_clan",
+            get_button_dict(ButtonStyles.SQUOVAL, (114, 30)),
+            object_id="@buttonstyles_squoval",
+            sound_id="save",
+            starting_height=top_stack_menu_layer_height,
+            container=self,
+            anchors={"centerx": "centerx"},
+        )
+
+        self.back_button = UIImageButton(
+            ui_scale(pygame.Rect((270, 5), (22, 22))),
+            "",
+            object_id="#exit_window_button",
+            starting_height=top_stack_menu_layer_height,
+            container=self,
+        )
+
+        self.back_button.enable()
+        self.set_blocking(True)
+
+    def add_new_event(self):
+        event_json = ujson.dumps(self.event_list, indent=4)
+        event_json = event_json.replace(
+            "\/", "/"
+        )  # ujson tries to escape "/", but doesn't end up doing a good job.
+
+        try:
+            with open(self.path, "w", encoding="utf-8") as write_file:
+                write_file.write(event_json)
+        except:
+            print(f"Something went wrong with event writing. Is {self.path} valid?")
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+
+            if event.ui_element == self.save_button:
+                self.add_new_event()
+                self.editor_save.set_text("Saved")
+                self.kill()
+
+            elif event.ui_element == self.back_button:
+                self.kill()
+
+        return super().process_event(event)
 
 class DeleteCheck(UIWindow):
     def __init__(self, reloadscreen, clan_name):

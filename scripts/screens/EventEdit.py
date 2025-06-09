@@ -18,6 +18,7 @@ from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
     UICheckbox, UIModifiedImage, UIScrollingButtonList, UIDropDown, \
     UICollapsibleContainer, UIScrollingDropDown
+from scripts.game_structure.windows import EditorSaveCheck
 from scripts.screens.RelationshipScreen import RelationshipScreen
 from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
@@ -542,21 +543,21 @@ class EventEdit(Screens):
             # OPEN EDITOR
             elif event.ui_element == self.add_button:
                 # TODO: need confirmation window for clicking after editor is already open
-                # TODO: as well as a proper func to clear info
                 if not self.event_id_element.get("event_id_text"):
                     self.chosen_event = None
                     self.current_editor_tab = "settings"
                     self.clear_editor_tab()
 
-            # SWITCH EDITOR TAB
             elif event.ui_element in self.editor_element.values():
+                # SAVE NEW EVENT
                 if event.ui_element == self.editor_element["save"]:
                     new_event = self.compile_new_event()
                     path = self.find_event_path()
                     self.get_event_json(path)
                     self.event_list.append(new_event)
-                    self.add_new_event(path)
-                    self.editor_element["save"].set_text("saved!")
+                    EditorSaveCheck(path, self.editor_element["save"], self.event_list)
+
+                # SWITCH EDITOR TAB
                 else:
                     for name, button in self.editor_element.items():
                         if event.ui_element == button and name != self.current_editor_tab:
@@ -837,17 +838,6 @@ class EventEdit(Screens):
 
         return f"resources/lang/en/events/{type}/{biome_path}.json"
 
-    def add_new_event(self, path):
-        event_json = ujson.dumps(self.event_list, indent=4)
-        event_json = event_json.replace(
-            "\/", "/"
-        )  # ujson tries to escape "/", but doesn't end up doing a good job.
-
-        try:
-            with open(path, "w", encoding="utf-8") as write_file:
-                write_file.write(event_json)
-        except:
-            print(f"Something went wrong with event writing. Is {path} valid?")
 
     def add_block(self, event):
         if event not in [self.injury_element.get("add"),
@@ -5315,7 +5305,7 @@ class EventEdit(Screens):
 
     def create_type_editor(self):
         self.type_element["type_text"] = UITextBoxTweaked(
-            "<b>* sub/type:</b>",
+            "<b>sub/type:</b>",
             ui_scale(pygame.Rect((0, 14), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
@@ -5479,7 +5469,7 @@ class EventEdit(Screens):
     def create_event_id_editor(self):
         # TODO: add a way to detect if inputted event_id is a dupe
         self.event_id_element["event_id_text"] = UITextBoxTweaked(
-            "<b>* event_id:</b>",
+            "<b>event_id:</b>",
             ui_scale(pygame.Rect((0, 10), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
