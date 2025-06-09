@@ -496,6 +496,7 @@ class EventEdit(Screens):
         self.current_preview_state = self.preview_states[0]
 
     def handle_event(self, event):
+
         # HANDLE TEXT LINKS
         if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
             if platform.system() == "Darwin":
@@ -1470,6 +1471,7 @@ class EventEdit(Screens):
         We'll use this to check and update some of our custom ui_elements due to the order update() and handle_event()
         funcs run in.
         """
+
         if self.current_editor_tab == "settings":
             self.handle_settings_on_use()
 
@@ -1483,67 +1485,68 @@ class EventEdit(Screens):
             self.handle_personal_on_use()
 
         elif self.current_editor_tab == "outside consequences":
-            # SUPPLY CONSTRAINT DISPLAY
-            if self.selected_supply_block and not self.supply_element.get("constraint_container"):
-                self.display_supply_constraints()
-            elif not self.selected_supply_block:
-                self.clear_supply_constraints()
-
-            # SELECT NEW SUPPLY BLOCK
-            if self.supply_element.get("adjust_list"):
-                selected_block = [str(self.selected_supply_block)] if self.selected_supply_block else []
-                if self.supply_element["block_list"].selected_list != selected_block:
-                    self.update_supply_block_options()
-
-            # OUTSIDER
-            if self.outsider_element.get("list"):
-                if self.outsider_element["list"].selected_list != self.outsider_info["current_rep"]:
-                    self.outsider_info["current_rep"] = self.outsider_element["list"].selected_list.copy()
-                    self.outsider_element["info"].set_text(f"{self.outsider_info}")
-            # OTHER CLAN
-            if self.other_clan_element.get("list"):
-                if self.other_clan_element["list"].selected_list != self.other_clan_info["current_rep"]:
-                    self.other_clan_info["current_rep"] = self.other_clan_element["list"].selected_list.copy()
-                    self.other_clan_element["info"].set_text(f"{self.other_clan_info}")
-
-            # SUPPLY TYPE
-            changed = False
-            selected_info = self.get_selected_block_info()
-            if self.supply_element.get("adjust_list"):
-                new_type = [selected_info["type"]] if selected_info["type"] else []
-                new_adjust = [selected_info["adjust"]] if selected_info["adjust"] else []
-
-                # TYPE
-                if self.supply_element["type_list"].selected_list != new_type:
-                    selected_info["type"] = (self.supply_element["type_list"].selected_list[0]
-                                             if self.supply_element["type_list"].selected_list else "")
-                    changed = True
-
-                # TRIGGER
-                elif self.supply_element["trigger_list"].selected_list != selected_info["trigger"]:
-                    selected_info["trigger"] = self.supply_element["trigger_list"].selected_list.copy()
-                    changed = True
-
-                # ADJUST
-                elif self.supply_element["adjust_list"].selected_list != new_adjust:
-                    # gotta be a little careful here, since the "increase" tag changes upon user input
-                    new_tag = (self.supply_element["adjust_list"].selected_list.copy()[0]
-                               if self.supply_element["adjust_list"].selected_list
-                               else "")
-                    tag_change = True
-                    if "increase_" in new_tag and "increase_" in selected_info["adjust"]:
-                        tag_change = False
-
-                    if tag_change:
-                        selected_info["adjust"] = new_tag
-
-                    self.create_supply_increase_editor()
-                    changed = True
-
-            if changed:
-                self.update_block_info()
+            self.handle_outside_on_use()
 
         super().on_use()
+        
+
+
+    def handle_outside_on_use(self):
+        # SUPPLY CONSTRAINT DISPLAY
+        if self.selected_supply_block and not self.supply_element.get("constraint_container"):
+            self.display_supply_constraints()
+        elif not self.selected_supply_block:
+            self.clear_supply_constraints()
+        # SELECT NEW SUPPLY BLOCK
+        if self.supply_element.get("adjust_list"):
+            selected_block = [str(self.selected_supply_block)] if self.selected_supply_block else []
+            if self.supply_element["block_list"].selected_list != selected_block:
+                self.update_supply_block_options()
+        # OUTSIDER
+        if self.outsider_element.get("list"):
+            if self.outsider_element["list"].selected_list != self.outsider_info["current_rep"]:
+                self.outsider_info["current_rep"] = self.outsider_element["list"].selected_list.copy()
+                self.outsider_element["info"].set_text(f"{self.outsider_info}")
+        # OTHER CLAN
+        if self.other_clan_element.get("list"):
+            if self.other_clan_element["list"].selected_list != self.other_clan_info["current_rep"]:
+                self.other_clan_info["current_rep"] = self.other_clan_element["list"].selected_list.copy()
+                self.other_clan_element["info"].set_text(f"{self.other_clan_info}")
+        # SUPPLY TYPE
+        changed = False
+        selected_info = self.get_selected_block_info()
+        if self.supply_element.get("adjust_list"):
+            new_type = [selected_info["type"]] if selected_info["type"] else []
+            new_adjust = [selected_info["adjust"]] if selected_info["adjust"] else []
+
+            # TYPE
+            if self.supply_element["type_list"].selected_list != new_type:
+                selected_info["type"] = (self.supply_element["type_list"].selected_list[0]
+                                         if self.supply_element["type_list"].selected_list else "")
+                changed = True
+
+            # TRIGGER
+            elif self.supply_element["trigger_list"].selected_list != selected_info["trigger"]:
+                selected_info["trigger"] = self.supply_element["trigger_list"].selected_list.copy()
+                changed = True
+
+            # ADJUST
+            elif self.supply_element["adjust_list"].selected_list != new_adjust:
+                # gotta be a little careful here, since the "increase" tag changes upon user input
+                new_tag = (self.supply_element["adjust_list"].selected_list.copy()[0]
+                           if self.supply_element["adjust_list"].selected_list
+                           else "")
+                tag_change = True
+                if "increase_" in new_tag and "increase_" in selected_info["adjust"]:
+                    tag_change = False
+
+                if tag_change:
+                    selected_info["adjust"] = new_tag
+
+                self.create_supply_increase_editor()
+                changed = True
+        if changed:
+            self.update_block_info()
 
     def handle_personal_on_use(self):
         # EXCLUDE
@@ -2725,10 +2728,8 @@ class EventEdit(Screens):
         for event in self.event_buttons:
             self.event_buttons[event].kill()
 
-    '''
-    EDITOR DISPLAY
-    '''
 
+    # EDITOR DISPLAY
     def display_editor(self):
 
         self.editor_container = UIModifiedScrollingContainer(
@@ -2869,10 +2870,8 @@ class EventEdit(Screens):
 
         return involved_cats
 
-    '''
-    OUTSIDE CONSEQUENCES TAB
-    '''
 
+    # OUTSIDE CONSEQUENCES TAB
     def generate_outside_tab(self):
 
         # OUTSIDER
