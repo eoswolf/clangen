@@ -3,9 +3,9 @@ from typing import List
 
 import i18n
 
+from scripts.clan_resources.herb.herb import HERBS
 from scripts.game_structure import localization
 from scripts.cat.cats import Cat
-from scripts.cat.enums import CatAgeEnum
 from scripts.cat.history import History
 from scripts.cat.pelts import Pelt
 from scripts.cat_relations.relationship import Relationship
@@ -40,6 +40,11 @@ from scripts.utility import (
 
 class HandleShortEvents:
     """Handles generating and executing ShortEvents"""
+
+    supply_types = ["fresh_kill", "all_herb", "any_herb"]
+    supply_types.extend(HERBS)
+    supply_triggers = ["always", "low", "adequate", "full", "excess"]
+    supply_adjustments = ["reduce_eighth", "reduce_quarter", "reduce_half", "reduce_full", "increase_#"]
 
     def __init__(self):
         self.current_lives = None

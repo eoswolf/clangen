@@ -1826,8 +1826,7 @@ class UIDropDown(UIDropDownContainer):
                 get_button_dict(parent_style, relative_rect.size),
                 manager=manager,
                 object_id=f"@buttonstyles_{parent_style.value}",
-                container=self,
-                anchors=anchors
+                container=self
             )
         else:
             self.parent_button = parent_override
