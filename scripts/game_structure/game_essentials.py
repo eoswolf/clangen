@@ -77,6 +77,8 @@ class Game:
     outsider_reps = ["welcoming", "neutral", "hostile"]
     other_clan_reps = ["ally", "neutral", "hostile"]
 
+    BIOME_TYPES = ["Forest", "Plains", "Mountainous", "Beach", "Wetlands", "Desert"]
+
     # store changing parts of the game that the user can toggle with buttons
     switches = {
         "cat": None,

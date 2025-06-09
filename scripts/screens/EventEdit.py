@@ -75,7 +75,7 @@ class EventEdit(Screens):
         }
     ]
 
-    all_camps = {
+    all_camps: dict = {
         "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
         "Mountainous": ["Cliff", "Cavern", "Crystal River", "Ruins"],
         "Plains": ["Grasslands", "Tunnels", "Wastelands"],
@@ -322,7 +322,6 @@ class EventEdit(Screens):
         self.editor_container = None
         self.add_button = None
         self.event_list_container = None
-        self.event_list = None
         self.list_frame = None
         self.main_menu_button = None
 
@@ -337,6 +336,7 @@ class EventEdit(Screens):
         self.event_text_element = {}
 
         # Settings elements
+        self.all_event_ids = []
         self.event_id_element = {}
         self.event_id_info = None
 
@@ -520,6 +520,7 @@ class EventEdit(Screens):
                     if event.ui_element == self.type_tab_buttons[tab]:
                         self.chosen_type = tab
                         break
+                self.display_events(event_type=self.chosen_type)
 
                 self.select_biome_tab_creation()
 
@@ -527,7 +528,7 @@ class EventEdit(Screens):
             elif event.ui_element in self.biome_tab_buttons.values():
                 if event.ui_element == self.biome_tab_buttons["back"]:
                     self.select_type_tab_creation()
-                    self.event_list = None
+                    self.display_events(event_type=self.chosen_type)
 
                 else:
                     for tab in self.biome_tab_buttons:
@@ -535,7 +536,7 @@ class EventEdit(Screens):
                             self.chosen_biome = tab.capitalize() if tab != "general" else tab
                             break
 
-                    self.display_events()
+                    self.display_events(event_type=self.chosen_type, biome=self.chosen_biome)
 
             # SELECT EVENT
             elif event.ui_element in self.event_buttons.values():
@@ -559,9 +560,9 @@ class EventEdit(Screens):
                     else:
                         new_event = self.compile_new_event()
                         path = self.find_event_path()
-                        self.get_event_json(path)
-                        self.event_list.append(new_event)
-                        EditorSaveCheck(path, self.editor_element["save"], self.event_list)
+                        event_list = self.get_event_json(path)
+                        event_list.append(new_event)
+                        EditorSaveCheck(path, self.editor_element["save"], event_list)
 
                 # SWITCH EDITOR TAB
                 else:
@@ -595,6 +596,7 @@ class EventEdit(Screens):
             if self.current_editor_tab == "settings":
                 if event.ui_element == self.event_id_element.get("event_id_entry"):
                     self.event_id_info = self.event_id_element["event_id_entry"].text
+                    self.change_id_validation_display()
 
             # REL VALUE CONSTRAINTS
             elif self.current_editor_tab in ["random cat", "main cat"]:
@@ -1489,8 +1491,6 @@ class EventEdit(Screens):
             self.handle_outside_on_use()
 
         super().on_use()
-        
-
 
     def handle_outside_on_use(self):
         # SUPPLY CONSTRAINT DISPLAY
@@ -2454,6 +2454,7 @@ class EventEdit(Screens):
         )
 
         self.select_type_tab_creation()
+        self.display_events()
 
         self.event_text_container = pygame_gui.elements.UIAutoResizingContainer(
             ui_scale(pygame.Rect((290, 30), (0, 0))),
@@ -2655,33 +2656,47 @@ class EventEdit(Screens):
         )
 
     def get_event_json(self, path):
+        event_list = []
 
         try:
             with open(path, "r", encoding="utf-8") as read_file:
                 events = read_file.read()
-                self.event_list = ujson.loads(events)
+                event_list = ujson.loads(events)
         except:
             print(f"Something went wrong with event loading. Is {path} valid?")
 
-        if not self.event_list:
+        if not event_list and self.editor_element.get("intro_text"):
             self.editor_element["intro_text"].set_text("screens.event_edit.empty_event_list")
-            return
+            return []
 
         try:
-            if not isinstance(self.event_list[0], dict):
+            if event_list and not isinstance(event_list[0], dict):
                 print(f"{path} isn't in the correct event format. Perhaps it isn't an event .json?")
         except KeyError:
-            return
+            return []
 
-    def display_events(self):
+        return event_list
+
+    def display_events(self, event_type=None, biome=None):
         self.kill_event_buttons()
-        self.event_list = None
+        event_list = []
         if self.editor_element.get("intro_text"):
             self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
 
-        path = f"resources/lang/en/events/{self.chosen_type}/{self.chosen_biome.casefold()}.json"
+        path = "resources/lang/en/events"
+        type_list = list(self.event_types.keys())
+        all_biomes = game.BIOME_TYPES.copy()
+        all_biomes.append("general")
 
-        self.get_event_json(path)
+        if not event_type:
+            for type_name in type_list:
+                for biome_name in all_biomes:
+                    event_list.extend(self.get_event_json(f"{path}/{type_name}/{biome_name.casefold()}.json"))
+        elif event_type and not biome:
+            for biome_name in all_biomes:
+                event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome_name.casefold()}.json"))
+        elif event_type and biome:
+            event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome.casefold()}.json"))
 
         self.event_list_container = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((70, 90), (230, 540))),
@@ -2691,21 +2706,24 @@ class EventEdit(Screens):
         )
 
         x = 0
-        for event in self.event_list:
-            self.event_buttons[x] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((0, 0), (230, 36))),
-                event["event_id"],
-                get_button_dict(ButtonStyles.DROPDOWN, (230, 36)),
-                manager=MANAGER,
-                object_id="@buttonstyles_dropdown",
-                starting_height=1,
-                anchors={
-                    "top_target": self.event_buttons[x - 1]
-                } if self.event_buttons.get(x - 1) else None,
-                container=self.event_list_container,
-                tool_tip_text=event["event_text"]
-            )
-            x += 1
+        for event in event_list:
+            if not event_type:
+                self.all_event_ids.append(event["event_id"])
+            else:
+                self.event_buttons[x] = UISurfaceImageButton(
+                    ui_scale(pygame.Rect((0, 0), (230, 36))),
+                    event["event_id"],
+                    get_button_dict(ButtonStyles.DROPDOWN, (230, 36)),
+                    manager=MANAGER,
+                    object_id="@buttonstyles_dropdown",
+                    starting_height=1,
+                    anchors={
+                        "top_target": self.event_buttons[x - 1]
+                    } if self.event_buttons.get(x - 1) else None,
+                    container=self.event_list_container,
+                    tool_tip_text=event["event_text"]
+                )
+                x += 1
 
     def kill_event_buttons(self):
         for event in self.event_buttons:
@@ -2851,7 +2869,6 @@ class EventEdit(Screens):
         involved_cats.extend(new_cat_list)
 
         return involved_cats
-
 
     # OUTSIDE CONSEQUENCES TAB
     def generate_outside_tab(self):
@@ -4296,7 +4313,7 @@ class EventEdit(Screens):
         self.create_divider(self.new_cat_editor["info"], "info")
         if self.new_cat_info_dict:
             self.new_cat_editor["cat_list"].new_item_list(self.new_cat_info_dict.keys())
-            selected_cat = (self.selected_new_cat 
+            selected_cat = (self.selected_new_cat
                             if self.selected_new_cat
                             else list(self.new_cat_info_dict.keys()))
             self.new_cat_editor["cat_list"].set_selected_list([selected_cat])
@@ -5612,9 +5629,8 @@ class EventEdit(Screens):
             prev_element = self.location_element[camp]
 
     def create_event_id_editor(self):
-        # TODO: add a way to detect if inputted event_id is a dupe
         self.event_id_element["event_id_text"] = UITextBoxTweaked(
-            "<b>event_id:</b>",
+            f"<b>event_id:</b>",
             ui_scale(pygame.Rect((0, 10), (-1, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
@@ -5622,12 +5638,38 @@ class EventEdit(Screens):
             container=self.editor_container
         )
         self.event_id_element["event_id_entry"] = pygame_gui.elements.UITextEntryLine(
-            ui_scale(pygame.Rect((0, 13), (300, 29))),
+            ui_scale(pygame.Rect((0, 13), (230, 29))),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
                 "left_target": self.event_id_element["event_id_text"]
             },
-            placeholder_text="screens.event_edit.empty_event_id"
+            initial_text=self.event_id_info if self.event_id_info else ""
         )
+
+        self.event_id_element["check_text"] = UITextBoxTweaked(
+            "",
+            ui_scale(pygame.Rect((0, 10), (-1, -1))),
+            object_id="#text_box_30_horizleft_pad_10_10",
+            line_spacing=1,
+            manager=MANAGER,
+            container=self.editor_container,
+            anchors={
+                "left_target": self.event_id_element["event_id_entry"]
+            }
+        )
+        self.change_id_validation_display()
         self.create_divider(self.event_id_element["event_id_text"], "event_id")
+
+    def change_id_validation_display(self):
+        """
+        Checks if event_id is valid and changes the display appropriately
+        """
+        if self.event_id_info in self.all_event_ids:
+            text = "screens.event_edit.dupe_id"
+        elif not self.event_id_info:
+            text = "screens.event_edit.invalid_id"
+        else:
+            text = "screens.event_edit.valid_id"
+
+        self.event_id_element["check_text"].set_text(text)
