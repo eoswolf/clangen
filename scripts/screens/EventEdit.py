@@ -33,7 +33,7 @@ class EventEdit(Screens):
     """
 
     # state 1 is plural pronouns, state 2 is singular pronouns
-    preview_states = ("off", 1, 2)
+    preview_states = (0, 1, 2)
     # placeholder names for each cat abbr
     test_cat_names = {
         "m_c": "MainCat",
@@ -46,7 +46,7 @@ class EventEdit(Screens):
     }
     # it's possible to have more than 6 new cats, but doubtful that we'll ever refer to more than 2 within event text
     for index in range(5):
-        test_cat_names[f"n_c{index}"] = f"NewCat{index}"
+        test_cat_names[f"n_c:{index}"] = f"NewCat{index}"
 
     # pronoun dicts to pull from
     test_pronouns = [
@@ -91,7 +91,7 @@ class EventEdit(Screens):
         "new_cat": ["war"]
     }
 
-    # TODO: consider moving some of these into a file that facilitates new additions
+    # TODO: consider moving some of these into a file that better facilitates new additions
     basic_tag_list = [
         {
             "tag": "classic",
@@ -318,6 +318,10 @@ class EventEdit(Screens):
 
     def __init__(self, name=None):
         super().__init__(name)
+        self.chosen_type: str = ""
+        """The type currently viewed in the existing events side bar"""
+        self.chosen_biome: str = ""
+        """The biome currently viewed in the existing events side bar"""
 
         self.event_text_container = None
         self.editor_container = None
@@ -326,7 +330,10 @@ class EventEdit(Screens):
         self.list_frame = None
         self.main_menu_button = None
 
-        self.event_list = []
+        self.event_list: list = []
+        """List of loaded existing events"""
+        self.all_event_ids: list = []
+        """List of all event_ids currently in use. Used to check if newly entered event_id is a duplicate."""
         self.open_event = None
         """event_id of the currently open existing event"""
 
@@ -338,39 +345,52 @@ class EventEdit(Screens):
 
         self.editor_element = {}
 
+        self.current_preview_state: int = self.preview_states[0]
+        """The currently used preview state. This can be 0 (preview off), 1 (plural), or 2 (singular"""
+
+        # Event text display
         self.event_text_element = {}
-        self.event_text_info = ""
+        self.event_text_info: str = ""
+        """Loaded event text"""
 
         # Settings elements
-        self.all_event_ids = []
         self.event_id_element = {}
-        self.event_id_info = None
+        self.event_id_info: str = ""
+        """Loaded event_id"""
 
         self.location_element = {}
-        self.location_info = []
+        self.location_info: list = []
+        """Loaded location tags"""
 
         self.season_element = {}
-        self.season_info = []
+        self.season_info: list = []
+        """Loaded season tags"""
 
         self.type_element = {}
-        self.type_info = ["death"]
+        self.type_info: list = ["death"]
+        """Loaded type, kept in a list for ease of use with it's dropdown, but there should only ever be one type"""
 
         self.sub_element = {}
-        self.sub_info = []
+        self.sub_info: list = []
+        """Loaded subtypes"""
 
         self.tag_element = {}
         self.basic_tag_checkbox = {}
         self.rank_tag_checkbox = {}
-        self.tag_info = []
+        self.tag_info: list = []
+        """Loaded tags"""
 
         self.weight_element = {}
-        self.weight_info = 20
+        self.weight_info: int = 20
+        """Loaded weight"""
 
         self.acc_element = {}
-        self.acc_info = []
-        self.acc_categories = Pelt.acc_categories
-        self.open_category = None
         self.acc_button = {}
+        self.acc_info: list = []
+        """Loaded accessory tags"""
+        self.acc_categories = Pelt.acc_categories
+        self.open_category: str = ""
+        """Currently open acc category (wild, collar, ect.)"""
 
         self.main_cat_editor = {}
         self.random_cat_editor = {}
@@ -385,17 +405,23 @@ class EventEdit(Screens):
 
         self.skill_element = {}
         self.level_element = {}
-        self.skill_allowed = True
-        self.open_path = None
-        self.chosen_level = None
+        self.skill_allowed: bool = True
+        """True if 'skill' is being assigned, False if 'not_skill' is being assigned"""
+        self.open_path: str = ""
+        """The skill path that is determining the skills that display"""
+        self.chosen_level: str = ""
+        """The skill last clicked by the user"""
 
         self.trait_element = {}
-        self.trait_allowed = True
+        self.trait_allowed: bool = True
+        """True if 'trait' is being assigned, False if 'not_trait' is being assigned"""
 
         self.backstory_element = {}
-        self.open_pool = None
+        self.open_pool: str = ""
+        """The backstory category that is determining the backstories that display"""
 
-        self.main_cat_info = {
+
+        self.main_cat_info: dict = {
             "rank": [],
             "age": [],
             "rel_status": [],
@@ -406,9 +432,9 @@ class EventEdit(Screens):
             "not_trait": [],
             "backstory": []
         }
-        # TODO: add a checkbox somewhere that indicates if the event should have a random cat
-        self.r_c_needed = False
-        self.random_cat_info = {
+        """The main cat's loaded information"""
+
+        self.random_cat_info: dict = {
             "rank": [],
             "age": [],
             "rel_status": [],
@@ -419,20 +445,27 @@ class EventEdit(Screens):
             "not_trait": [],
             "backstory": []
         }
-        self.selected_new_cat_info = {}
-        self.new_cat_info = {
+        """The random cat's loaded information"""
+
+        self.selected_new_cat_info: dict = {}
+        """The loaded backstory/parent/adoptive/mate information for the currently open new_cat block"""
+        
+        self.current_cat_dict: dict = self.main_cat_info
+        """The info dict for the currently loaded cat, this changes depending on the currently open tab"""
+
+        self.new_cat_template: dict = {
             "backstory": [],
             "parent": [],
             "adoptive": [],
             "mate": []
         }
+        """The new cat info *template*, this should not hold the open new_cat's information."""
 
-        self.current_cat_dict = self.main_cat_info
-
-        self.new_cat_editor = {}
-        self.new_cat_element = {}
-        self.new_cat_list = {}
-        self.selected_new_cat = None
+        self.new_cat_block_dict: dict = {}
+        """A dict holding every new_cat block's tag list, key is the new_cat's abbr (i.e. n_c:0) and value is that cat's
+         tag list"""
+        self.selected_new_cat: str = ""
+        """The new cat currently being viewed by the user"""
 
         self.new_cat_checkbox = {}
         self.cat_story_element = {}
@@ -440,65 +473,82 @@ class EventEdit(Screens):
         self.new_age_element = {}
         self.new_gender_element = {}
         self.connections_element = {}
-        self.open_connection = "parent"
+
+        self.open_connection: str = "parent"
+        """The connection tab (parent/adoptive/mate) currently viewed by the user"""
 
         self.exclusion_element = {}
-        self.excluded_cats = []
+        self.excluded_cats: list = []
+        """The loaded excluded cats"""
 
-        self.open_block = "injury"
+        self.open_block: str = "injury"
+        """The block list currently viewed by the user"""
         self.injury_element = {}
-        self.injury_block_list = []
-        self.injury_info = {
+        self.injury_block_list: list = []
+        """The list of currently loaded injury blocks"""
+        self.injury_template: dict = {
             "cats": [],
             "injuries": [],
             "scars": []
         }
+        """The template for the injury block info"""
         self.selected_injury_block: str = ""
+        """The list index for the injury block currently viewed by the user. This is kept as a string due to it doubling
+         as the text for its button."""
 
         self.history_element = {}
-        self.history_block_list = []
-        self.history_info = {
+        self.history_block_list: list = []
+        """The list of currently loaded history blocks"""
+        self.history_template: dict = {
             "cats": [],
             "scar": "",
             "reg_death": "",
             "lead_death": ""
         }
-        self.selected_history_block: str = ""
+        """The template for the history block info"""
+        self.selected_history_block_index: str = ""
+        """The list index for the history block currently viewed by the user. This is kept as a string due to it doubling
+             as the text for its button."""
 
         self.relationships_element = {}
-        self.relationships_block_list = []
-        self.relationships_info = {
+        self.relationships_block_list: list = []
+        """The list of currently loaded relationships blocks"""
+        self.relationships_template: dict = {
             "cats_from": [],
             "cats_to": [],
             "mutual": False,
             "values": [],
             "amount": 0
         }
-        self.selected_relationships_block: str = ""
+        """The template for the relationships block info"""
+        self.selected_relationships_block_index: str = ""
+        """The list index for the relationships block currently viewed by the user. This is kept as a string due to it doubling
+             as the text for its button."""
 
         self.outsider_element = {}
-        self.outsider_info = {
+        self.outsider_info: dict = {
             "current_rep": [],
             "changed": 0
         }
+        """The currently loaded outsider info"""
         self.other_clan_element = {}
-        self.other_clan_info = {
+        self.other_clan_info: dict = {
             "current_rep": [],
             "changed": 0
         }
+        """The currently loaded other clan info"""
         self.supply_element = {}
-        self.supply_block_list = []
-        self.selected_supply_block: str = ""
-        self.supply_info = {
+        self.supply_block_list: list = []
+        """The list of the currently loaded supply blocks"""
+        self.selected_supply_block_index: str = ""
+        """The list index for the supply block currently viewed by the user. This is kept as a string due to it doubling
+             as the text for its button."""
+        self.supply_info: dict = {
             "type": "",
             "trigger": [],
             "adjust": ""
         }
-
-        self.chosen_type = None
-        self.chosen_biome = None
-
-        self.current_preview_state = self.preview_states[0]
+        """The info for the currently viewed supply block"""
 
     def handle_event(self, event):
 
@@ -545,11 +595,11 @@ class EventEdit(Screens):
 
             # SELECT EVENT
             elif event.ui_element in self.event_buttons.values():
-                for name, button in self.event_buttons.items():
+                for index, button in self.event_buttons.items():
                     if button == event.ui_element:
                         game.event_editing = True
                         self.clear_event_info()
-                        opened_event = self.event_list[name]
+                        opened_event = self.event_list[index]
                         self.old_event_index = self.event_list.index(opened_event)
                         self.unpack_existing_event(opened_event)
                         self.current_editor_tab = "settings"
@@ -868,9 +918,9 @@ class EventEdit(Screens):
             }
         if event.get("new_cat"):
             names = [f"n_c:{index}" for index in range(len(event["new_cat"]))]
-            self.new_cat_list = {k: v for (k, v) in zip(names, event["new_cat"])}
+            self.new_cat_block_dict = {k: v for (k, v) in zip(names, event["new_cat"])}
         else:
-            self.new_cat_list = {}
+            self.new_cat_block_dict = {}
         self.injury_block_list = event["injury"] if event.get("injury") else []
         for block in self.injury_block_list:
             if "injuries" not in block:
@@ -957,8 +1007,8 @@ class EventEdit(Screens):
         if self.random_cat_info["dies"]:
             new_event["r_c"]["dies"] = self.random_cat_info["dies"]
 
-        if self.new_cat_list:
-            new_event["new_cat"] = self.new_cat_list.values()
+        if self.new_cat_block_dict:
+            new_event["new_cat"] = self.new_cat_block_dict.values()
 
         if self.injury_block_list:
             new_event["injury"] = self.injury_block_list
@@ -1016,13 +1066,13 @@ class EventEdit(Screens):
             self.selected_injury_block = attr["selected"]
             self.update_injury_block_options()
         elif self.open_block == "history":
-            self.selected_history_block = attr["selected"]
+            self.selected_history_block_index = attr["selected"]
             self.update_history_block_options()
         elif self.open_block == "supply":
-            self.selected_supply_block = attr["selected"]
+            self.selected_supply_block_index = attr["selected"]
             self.update_supply_block_options()
         else:
-            self.selected_relationships_block = attr["selected"]
+            self.selected_relationships_block_index = attr["selected"]
             self.update_relationships_block_options()
 
         self.update_block_info()
@@ -1049,17 +1099,17 @@ class EventEdit(Screens):
                 self.clear_injury_constraints()
             self.update_injury_block_options()
         elif self.open_block == "history":
-            self.selected_history_block = attr["selected"]
+            self.selected_history_block_index = attr["selected"]
             if not attr["selected"]:
                 self.clear_history_constraints()
             self.update_history_block_options()
         elif self.open_block == "supply":
-            self.selected_supply_block = attr["selected"]
+            self.selected_supply_block_index = attr["selected"]
             if not attr["selected"]:
                 self.clear_supply_constraints()
             self.update_supply_block_options()
         else:
-            self.selected_relationships_block = attr["selected"]
+            self.selected_relationships_block_index = attr["selected"]
             if not attr["selected"]:
                 self.clear_relationships_constraints()
             self.update_relationships_block_options()
@@ -1071,12 +1121,12 @@ class EventEdit(Screens):
         if not self.supply_element.get("adjust_list"):
             return
 
-        self.selected_supply_block = (self.supply_element["block_list"].selected_list.copy()[0]
-                                      if self.supply_element["block_list"].selected_list
-                                      else "")
+        self.selected_supply_block_index = (self.supply_element["block_list"].selected_list.copy()[0]
+                                            if self.supply_element["block_list"].selected_list
+                                            else "")
 
-        if self.selected_supply_block:
-            selected_constraints = self.supply_block_list.copy()[int(self.selected_supply_block)]
+        if self.selected_supply_block_index:
+            selected_constraints = self.supply_block_list.copy()[int(self.selected_supply_block_index)]
         else:
             selected_constraints = self.supply_info.copy()
 
@@ -1095,13 +1145,13 @@ class EventEdit(Screens):
         if not self.relationships_element.get("amount_down_high_button"):
             return
 
-        self.selected_relationships_block = (self.relationships_element["block_list"].selected_list.copy()[0]
-                                             if self.relationships_element["block_list"].selected_list
-                                             else "")
-        if self.selected_relationships_block:
-            selected_constraints = self.relationships_block_list.copy()[int(self.selected_relationships_block)]
+        self.selected_relationships_block_index = (self.relationships_element["block_list"].selected_list.copy()[0]
+                                                   if self.relationships_element["block_list"].selected_list
+                                                   else "")
+        if self.selected_relationships_block_index:
+            selected_constraints = self.relationships_block_list.copy()[int(self.selected_relationships_block_index)]
         else:
-            selected_constraints = self.relationships_info.copy()
+            selected_constraints = self.relationships_template.copy()
 
         # MUTUAL
         if self.relationships_element["mutual"].checked and not selected_constraints["mutual"]:
@@ -1141,13 +1191,13 @@ class EventEdit(Screens):
         if not self.history_element.get("lead_history_input"):
             return
 
-        self.selected_history_block = (self.history_element["block_list"].selected_list.copy()[0]
-                                       if self.history_element["block_list"].selected_list
-                                       else "")
-        if self.selected_history_block:
-            selected_constraints = self.history_block_list.copy()[int(self.selected_history_block)]
+        self.selected_history_block_index = (self.history_element["block_list"].selected_list.copy()[0]
+                                             if self.history_element["block_list"].selected_list
+                                             else "")
+        if self.selected_history_block_index:
+            selected_constraints = self.history_block_list.copy()[int(self.selected_history_block_index)]
         else:
-            selected_constraints = self.history_info.copy()
+            selected_constraints = self.history_template.copy()
 
         # CATS
         self.history_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
@@ -1173,7 +1223,7 @@ class EventEdit(Screens):
         if self.selected_injury_block:
             selected_constraints = self.injury_block_list.copy()[int(self.selected_injury_block)]
         else:
-            selected_constraints = self.injury_info.copy()
+            selected_constraints = self.injury_template.copy()
 
         # CATS
         self.injury_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
@@ -1206,29 +1256,29 @@ class EventEdit(Screens):
             element = self.injury_element
             view = self.injury_element["block_list"]
             block_list = self.injury_block_list
-            info_dict = self.injury_info
+            info_dict = self.injury_template
             selected = self.selected_injury_block if self.selected_injury_block else None
             display = self.injury_element["info"]
         elif self.open_block == "history":
             element = self.history_element
             view = self.history_element["block_list"]
             block_list = self.history_block_list
-            info_dict = self.history_info
-            selected = self.selected_history_block if self.selected_history_block else None
+            info_dict = self.history_template
+            selected = self.selected_history_block_index if self.selected_history_block_index else None
             display = self.history_element["info"]
         elif self.open_block == "supply":
             element = self.supply_element
             view = self.supply_element["block_list"]
             block_list = self.supply_block_list
             info_dict = self.supply_info
-            selected = self.selected_supply_block if self.selected_supply_block else None
+            selected = self.selected_supply_block_index if self.selected_supply_block_index else None
             display = self.supply_element["info"]
         else:
             element = self.relationships_element
             view = self.relationships_element["block_list"]
             block_list = self.relationships_block_list
-            info_dict = self.relationships_info
-            selected = self.selected_relationships_block if self.selected_relationships_block else None
+            info_dict = self.relationships_template
+            selected = self.selected_relationships_block_index if self.selected_relationships_block_index else None
             display = self.relationships_element["info"]
 
         return {
@@ -1256,11 +1306,11 @@ class EventEdit(Screens):
     def handle_new_cat_events(self, event):
         # ADD CAT
         if event.ui_element == self.new_cat_editor["add"]:
-            new_index = len(self.new_cat_list) if self.new_cat_list else 0
+            new_index = len(self.new_cat_block_dict) if self.new_cat_block_dict else 0
             self.selected_new_cat = f"n_c:{new_index}"
             self.change_new_cat_info_dict()
-            self.new_cat_list[self.selected_new_cat] = []
-            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
+            self.new_cat_block_dict[self.selected_new_cat] = []
+            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_block_dict.keys())
             self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
             self.new_cat_editor["info"].set_text(f"selected cat: []")
             if self.new_cat_element.get("checkbox_container"):
@@ -1270,23 +1320,23 @@ class EventEdit(Screens):
         elif event.ui_element == self.new_cat_editor["delete"] and self.selected_new_cat:
             # retain needed info then clear new_cat_list
             deleted = self.selected_new_cat
-            self.new_cat_list.pop(deleted)
+            self.new_cat_block_dict.pop(deleted)
             self.selected_new_cat_info.clear()
-            old_list = self.new_cat_list.copy()
-            self.new_cat_list.clear()
+            old_list = self.new_cat_block_dict.copy()
+            self.new_cat_block_dict.clear()
 
             # create new cat list
             for index, cat in enumerate(old_list.values()):
-                self.new_cat_list[f"n_c:{index}"] = cat
+                self.new_cat_block_dict[f"n_c:{index}"] = cat
 
-            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_list.keys())
+            self.new_cat_editor["cat_list"].new_item_list(self.new_cat_block_dict.keys())
 
-            self.selected_new_cat = list(self.new_cat_list.keys())[-1] if self.new_cat_list.keys() else None
+            self.selected_new_cat = list(self.new_cat_block_dict.keys())[-1] if self.new_cat_block_dict.keys() else None
 
             if self.selected_new_cat:
                 self.new_cat_editor["cat_list"].set_selected_list([self.selected_new_cat])
                 self.new_cat_editor["info"].set_text(
-                    f"selected cat: {self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
+                    f"selected cat: {self.new_cat_block_dict.get(self.selected_new_cat) if self.new_cat_block_dict.get(self.selected_new_cat) else '[]'}")
                 self.change_new_cat_info_dict()
 
             else:
@@ -1612,15 +1662,15 @@ class EventEdit(Screens):
 
     def handle_outside_on_use(self):
         # SUPPLY CONSTRAINT DISPLAY
-        if self.selected_supply_block and not self.supply_element.get("constraint_container"):
+        if self.selected_supply_block_index and not self.supply_element.get("constraint_container"):
             self.display_supply_constraints()
-        elif not self.selected_supply_block:
+        elif not self.selected_supply_block_index:
             self.clear_supply_constraints()
         # SELECT NEW SUPPLY BLOCK
         if self.supply_element.get("block_list").selected_list and not self.supply_element.get("adjust_list"):
             self.display_supply_constraints()
         if self.supply_element.get("adjust_list"):
-            selected_block = [str(self.selected_supply_block)] if self.selected_supply_block else []
+            selected_block = [str(self.selected_supply_block_index)] if self.selected_supply_block_index else []
             if self.supply_element["block_list"].selected_list != selected_block:
                 self.update_supply_block_options()
         # OUTSIDER
@@ -1725,14 +1775,14 @@ class EventEdit(Screens):
 
         elif self.open_block == "history":
             # CONSTRAINT DISPLAY
-            if self.selected_history_block and not self.history_element.get("constraint_container"):
+            if self.selected_history_block_index and not self.history_element.get("constraint_container"):
                 self.display_history_constraints()
-            elif not self.selected_history_block:
+            elif not self.selected_history_block_index:
                 self.clear_history_constraints()
 
             # SELECT NEW BLOCK
             if self.history_element.get("lead_history_input"):
-                selected_history = [str(self.selected_history_block)] if self.selected_history_block else []
+                selected_history = [str(self.selected_history_block_index)] if self.selected_history_block_index else []
                 if self.history_element["block_list"].selected_list != selected_history:
                     self.update_history_block_options()
 
@@ -1774,14 +1824,14 @@ class EventEdit(Screens):
 
         elif self.open_block == "relationships":
             # CONSTRAINT DISPLAY
-            if self.selected_relationships_block and not self.relationships_element.get("constraint_container"):
+            if self.selected_relationships_block_index and not self.relationships_element.get("constraint_container"):
                 self.display_relationships_constraints()
-            elif not self.selected_relationships_block:
+            elif not self.selected_relationships_block_index:
                 self.clear_relationships_constraints()
 
             if self.relationships_element.get("amount_down_high_button"):
                 selected_relationship = [
-                    str(self.selected_relationships_block)] if self.selected_relationships_block else []
+                    str(self.selected_relationships_block_index)] if self.selected_relationships_block_index else []
                 selected_info = self.get_selected_block_info()
 
                 # SELECT NEW BLOCK
@@ -1824,16 +1874,16 @@ class EventEdit(Screens):
     def get_selected_block_info(self):
         if self.open_block == "injury":
             return self.injury_block_list[
-                int(self.selected_injury_block)] if self.selected_injury_block else self.injury_info
+                int(self.selected_injury_block)] if self.selected_injury_block else self.injury_template
         elif self.open_block == "history":
             return self.history_block_list[
-                int(self.selected_history_block)] if self.selected_history_block else self.history_info
+                int(self.selected_history_block_index)] if self.selected_history_block_index else self.history_template
         elif self.open_block == "relationships":
             return self.relationships_block_list[
-                int(self.selected_relationships_block)] if self.selected_relationships_block else self.relationships_info
+                int(self.selected_relationships_block_index)] if self.selected_relationships_block_index else self.relationships_template
         elif self.open_block == "supply":
             return self.supply_block_list[
-                int(self.selected_supply_block)] if self.selected_supply_block else self.supply_info
+                int(self.selected_supply_block_index)] if self.selected_supply_block_index else self.supply_info
 
     def handle_new_cat_on_use(self):
         # NEW CAT CONSTRAINT DISPLAY
@@ -1868,7 +1918,7 @@ class EventEdit(Screens):
             self.update_new_cat_options()
             self.new_cat_editor["info"].set_text(
                 f"selected cat: "
-                f"{self.new_cat_list.get(self.selected_new_cat) if self.new_cat_list.get(self.selected_new_cat) else '[]'}")
+                f"{self.new_cat_block_dict.get(self.selected_new_cat) if self.new_cat_block_dict.get(self.selected_new_cat) else '[]'}")
 
             # need to reset the cat connections info here or it'll be incorrect
             new_selection = (self.connections_element["cat_list"].selected_list.copy()
@@ -1976,8 +2026,8 @@ class EventEdit(Screens):
 
     def change_new_cat_info_dict(self):
         if not self.selected_new_cat_info:
-            if self.new_cat_list.get(self.selected_new_cat):
-                saved_info = self.new_cat_list[self.selected_new_cat]
+            if self.new_cat_block_dict.get(self.selected_new_cat):
+                saved_info = self.new_cat_block_dict[self.selected_new_cat]
                 unpacked = {
                     "backstory": [],
                     "parent": [],
@@ -2016,10 +2066,10 @@ class EventEdit(Screens):
             return
         # BOOLS
         for info in self.new_cat_bools:
-            if info["tag"] in self.new_cat_list[self.selected_new_cat] and not info["setting"]:
+            if info["tag"] in self.new_cat_block_dict[self.selected_new_cat] and not info["setting"]:
                 info["setting"] = True
                 self.new_cat_checkbox[info["tag"]].check()
-            elif info["tag"] not in self.new_cat_list[self.selected_new_cat] and info["setting"]:
+            elif info["tag"] not in self.new_cat_block_dict[self.selected_new_cat] and info["setting"]:
                 info["setting"] = False
                 self.new_cat_checkbox[info["tag"]].uncheck()
 
@@ -2039,7 +2089,7 @@ class EventEdit(Screens):
         adopt = []
         mate = []
 
-        for tag in self.new_cat_list[self.selected_new_cat]:
+        for tag in self.new_cat_block_dict[self.selected_new_cat]:
             if tag in self.new_cat_types:
                 cat_type = [tag]
             elif "backstory" in tag:
@@ -2083,7 +2133,7 @@ class EventEdit(Screens):
         if not self.selected_new_cat:
             return
 
-        selected_cat_info = self.new_cat_list[self.selected_new_cat]
+        selected_cat_info = self.new_cat_block_dict[self.selected_new_cat]
 
         # BOOL TAGS
         for bool in self.new_cat_bools:
@@ -2514,7 +2564,7 @@ class EventEdit(Screens):
             "backstory": []
         }
         self.selected_new_cat_info = {}
-        self.new_cat_info = {
+        self.new_cat_template = {
             "backstory": [],
             "parent": [],
             "adoptive": [],
@@ -2523,7 +2573,7 @@ class EventEdit(Screens):
         self.current_cat_dict = self.main_cat_info
         self.new_cat_editor = {}
         self.new_cat_element = {}
-        self.new_cat_list = {}
+        self.new_cat_block_dict = {}
         self.selected_new_cat = None
         self.new_cat_checkbox = {}
         self.cat_story_element = {}
@@ -2537,7 +2587,7 @@ class EventEdit(Screens):
         self.open_block = "injury"
         self.injury_element = {}
         self.injury_block_list = []
-        self.injury_info = {
+        self.injury_template = {
             "cats": [],
             "injuries": [],
             "scars": []
@@ -2545,23 +2595,23 @@ class EventEdit(Screens):
         self.selected_injury_block: str = ""
         self.history_element = {}
         self.history_block_list = []
-        self.history_info = {
+        self.history_template = {
             "cats": [],
             "scar": "",
             "reg_death": "",
             "lead_death": ""
         }
-        self.selected_history_block: str = ""
+        self.selected_history_block_index: str = ""
         self.relationships_element = {}
         self.relationships_block_list = []
-        self.relationships_info = {
+        self.relationships_template = {
             "cats_from": [],
             "cats_to": [],
             "mutual": False,
             "values": [],
             "amount": 0
         }
-        self.selected_relationships_block: str = ""
+        self.selected_relationships_block_index: str = ""
         self.outsider_element = {}
         self.outsider_info = {
             "current_rep": [],
@@ -2574,7 +2624,7 @@ class EventEdit(Screens):
         }
         self.supply_element = {}
         self.supply_block_list = []
-        self.selected_supply_block: str = ""
+        self.selected_supply_block_index: str = ""
         self.supply_info = {
             "type": "",
             "trigger": [],
@@ -3023,7 +3073,7 @@ class EventEdit(Screens):
         if self.random_cat_info:
             involved_cats.append("r_c")
 
-        new_cat_list = list(self.new_cat_list.keys())
+        new_cat_list = list(self.new_cat_block_dict.keys())
         if isinstance(index_limit, int):
             for index, item in enumerate(new_cat_list.copy()):
                 if index >= index_limit:
@@ -3097,7 +3147,6 @@ class EventEdit(Screens):
             }
         )
 
-
         self.supply_element["add"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((30, 4), (36, 36))),
             "+",
@@ -3128,6 +3177,7 @@ class EventEdit(Screens):
 
         if self.supply_block_list:
             self.supply_element["block_list"].set_selected_list(["0"])
+
     def clear_supply_constraints(self):
         if self.supply_element.get("constraint_container"):
             self.supply_element["constraint_container"].kill()
@@ -4249,7 +4299,7 @@ class EventEdit(Screens):
                 "top_target": self.relationships_element["mutual"],
                 "left_target": self.relationships_element["cats_from_frame"]
             },
-            starting_selection=self.relationships_info["cats_to"]
+            starting_selection=self.relationships_template["cats_to"]
         )
         self.relationships_element["cats_from_info"] = UITextBoxTweaked(
             f"selected: {selected_constraints['cats_from']}",
@@ -4446,7 +4496,7 @@ class EventEdit(Screens):
         # TODO: consider tooltips to show the hovered cat's tag info
         self.new_cat_editor["cat_list"] = UIScrollingButtonList(
             pygame.Rect((20, 28), (100, 168)),
-            item_list=self.new_cat_list.keys(),
+            item_list=self.new_cat_block_dict.keys(),
             button_dimensions=(96, 30),
             multiple_choice=False,
             disable_selection=True,
@@ -4499,8 +4549,8 @@ class EventEdit(Screens):
 
         self.create_divider(self.new_cat_editor["info"], "info")
 
-        if self.new_cat_list and not self.selected_new_cat:
-            selected = list(self.new_cat_list.keys())[0]
+        if self.new_cat_block_dict and not self.selected_new_cat:
+            selected = list(self.new_cat_block_dict.keys())[0]
             self.new_cat_editor["cat_list"].set_selected_list([selected])
             self.new_cat_select()
             self.display_new_cat_constraints()
@@ -4634,7 +4684,7 @@ class EventEdit(Screens):
         )
 
         chosen_gender = []
-        for tag in self.new_cat_list[self.selected_new_cat]:
+        for tag in self.new_cat_block_dict[self.selected_new_cat]:
             if tag in self.new_cat_genders:
                 chosen_gender = [tag]
 
@@ -4670,7 +4720,7 @@ class EventEdit(Screens):
         )
 
         chosen_age = []
-        for tag in self.new_cat_list[self.selected_new_cat]:
+        for tag in self.new_cat_block_dict[self.selected_new_cat]:
             if tag in self.new_cat_ages:
                 chosen_age = [tag]
                 break
@@ -4707,7 +4757,7 @@ class EventEdit(Screens):
             }
         )
         chosen_status = []
-        for tag in self.new_cat_list[self.selected_new_cat]:
+        for tag in self.new_cat_block_dict[self.selected_new_cat]:
             if tag in self.new_cat_ranks:
                 chosen_status = [tag]
         self.new_status_element["list"] = UIDropDown(
@@ -4740,7 +4790,7 @@ class EventEdit(Screens):
             }
         )
         chosen_type = []
-        for tag in self.new_cat_list[self.selected_new_cat]:
+        for tag in self.new_cat_block_dict[self.selected_new_cat]:
             if tag in self.new_cat_types:
                 chosen_type = [tag]
 
