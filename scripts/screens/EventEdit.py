@@ -579,6 +579,211 @@ class EventEdit(Screens):
         }
         """The info for the currently viewed supply block"""
 
+    # EVENT JSON PROCESSING
+    def unpack_existing_event(self, event):
+        self.open_event = event.copy()
+        biome = "general"
+        matching_biomes = []
+        for location in event.get("location"):
+            for biome in game.BIOME_TYPES:
+                if biome.casefold() in location:
+                    matching_biomes.append(biome)
+        if len(matching_biomes) <= 1:
+            biome = matching_biomes[0] if matching_biomes else "general"
+
+        self.old_event_path = f"resources/lang/en/events/{self.chosen_type}/{biome.casefold()}.json"
+
+        self.type_info = [self.chosen_type]
+        self.event_id_info = event["event_id"]
+        self.location_info = event["location"] if event.get("location") else []
+        if self.location_info == ["any"]:
+            self.location_info = []
+        self.season_info = event["season"] if event.get("season") else []
+        if self.season_info == ["any"]:
+            self.season_info = []
+        self.sub_info = event["sub_type"] if event.get("sub_type") else []
+        self.tag_info = event["tags"] if event.get("tags") else []
+        self.weight_info = event["weight"]
+        self.event_text_info = event["event_text"]
+        self.acc_info = event["new_accessory"] if event.get("new_accessory") else []
+        if event.get("m_c"):
+            self.main_cat_info = {
+                "rank": event["m_c"]["status"] if event["m_c"].get("status") else [],
+                "age": event["m_c"]["age"] if event["m_c"].get("age") else [],
+                "rel_status": event["m_c"]["relationship_status"] if event["m_c"].get("relationship_status") else [],
+                "dies": event["m_c"]["dies"] if event["m_c"].get("dies") else False,
+                "skill": event["m_c"]["skill"] if event["m_c"].get("skill") else [],
+                "not_skill": event["m_c"]["not_skill"] if event["m_c"].get("not_skill") else [],
+                "trait": event["m_c"]["trait"] if event["m_c"].get("trait") else [],
+                "not_trait": event["m_c"]["not_trait"] if event["m_c"].get("not_trait") else [],
+                "backstory": event["m_c"]["backstory"] if event["m_c"].get("backstory") else []
+            }
+        if event.get("r_c"):
+            self.random_cat_info = {
+                "rank": event["r_c"]["status"] if event["r_c"].get("status") else [],
+                "age": event["r_c"]["age"] if event["r_c"].get("age") else [],
+                "rel_status": event["r_c"]["relationship_status"] if event["r_c"].get("relationship_status") else [],
+                "dies": event["r_c"]["dies"] if event["r_c"].get("dies") else False,
+                "skill": event["r_c"]["skill"] if event["r_c"].get("skill") else [],
+                "not_skill": event["r_c"]["not_skill"] if event["r_c"].get("not_skill") else [],
+                "trait": event["r_c"]["trait"] if event["r_c"].get("trait") else [],
+                "not_trait": event["r_c"]["not_trait"] if event["r_c"].get("not_trait") else [],
+                "backstory": event["r_c"]["backstory"] if event["r_c"].get("backstory") else []
+            }
+        if event.get("new_cat"):
+            names = [f"n_c:{index}" for index in range(len(event["new_cat"]))]
+            self.new_cat_block_dict = {k: v for (k, v) in zip(names, event["new_cat"])}
+        else:
+            self.new_cat_block_dict = {}
+        self.injury_block_list = event["injury"] if event.get("injury") else []
+        for block in self.injury_block_list:
+            if "injuries" not in block:
+                block["injuries"] = []
+            if "scars" not in block:
+                block["scars"] = []
+        self.excluded_cats = event["exclude_involved"] if event.get("exclude_involved") else []
+        self.history_block_list = event["history"] if event.get("history") else []
+        for block in self.history_block_list:
+            if "scar" not in block:
+                block["scar"] = ""
+            if "reg_death" not in block:
+                block["reg_death"] = ""
+            if "lead_death" not in block:
+                block["lead_death"] = ""
+        self.relationships_block_list = event["relationships"] if event.get("relationships") else []
+        for block in self.relationships_block_list:
+            if "mutual" not in block:
+                block["mutual"] = False
+        self.outsider_info = event["outsider"] if event.get("outsider") else self.outsider_info
+        self.other_clan_info = event["other_clan"] if event.get("other_clan") else self.other_clan_info
+        self.supply_block_list = event["supplies"] if event.get("supplies") else []
+
+    def compile_new_event(self):
+        new_event = {
+            "event_id": self.event_id_info
+        }
+        if self.location_info:
+            new_event["location"] = self.location_info
+        else:
+            new_event["location"] = ["any"]
+        if self.season_info:
+            new_event["season"] = self.season_info
+        else:
+            new_event["season"] = ["any"]
+        if self.sub_info:
+            new_event["sub_type"] = self.sub_info
+        if self.tag_info:
+            new_event["tags"] = self.tag_info
+
+        new_event["weight"] = self.weight_info
+        new_event["event_text"] = self.event_text_info
+
+        if self.acc_info:
+            new_event["new_accessory"] = self.acc_info
+
+        new_event["m_c"] = {}
+        if self.main_cat_info["age"]:
+            new_event["m_c"]["age"] = self.main_cat_info["age"]
+        if self.main_cat_info["rank"]:
+            new_event["m_c"]["status"] = self.main_cat_info["rank"]
+        if self.main_cat_info["rel_status"]:
+            new_event["m_c"]["relationship_status"] = self.main_cat_info["rel_status"]
+        if self.main_cat_info["skill"]:
+            new_event["m_c"]["skill"] = self.main_cat_info["skill"]
+        if self.main_cat_info["not_skill"]:
+            new_event["m_c"]["not_skill"] = self.main_cat_info["not_skill"]
+        if self.main_cat_info["trait"]:
+            new_event["m_c"]["trait"] = self.main_cat_info["trait"]
+        if self.main_cat_info["not_trait"]:
+            new_event["m_c"]["not_trait"] = self.main_cat_info["not_trait"]
+        if self.main_cat_info["backstory"]:
+            new_event["m_c"]["backstory"] = self.main_cat_info["backstory"]
+        if self.main_cat_info["dies"]:
+            new_event["m_c"]["dies"] = self.main_cat_info["dies"]
+
+        new_event["r_c"] = {}
+        if self.random_cat_info["age"]:
+            new_event["r_c"]["age"] = self.random_cat_info["age"]
+        if self.random_cat_info["rank"]:
+            new_event["r_c"]["status"] = self.random_cat_info["rank"]
+        if self.random_cat_info["rel_status"]:
+            new_event["r_c"]["relationship_status"] = self.random_cat_info["rel_status"]
+        if self.random_cat_info["skill"]:
+            new_event["r_c"]["skill"] = self.random_cat_info["skill"]
+        if self.random_cat_info["not_skill"]:
+            new_event["r_c"]["not_skill"] = self.random_cat_info["not_skill"]
+        if self.random_cat_info["trait"]:
+            new_event["r_c"]["trait"] = self.random_cat_info["trait"]
+        if self.random_cat_info["not_trait"]:
+            new_event["r_c"]["not_trait"] = self.random_cat_info["not_trait"]
+        if self.random_cat_info["backstory"]:
+            new_event["r_c"]["backstory"] = self.random_cat_info["backstory"]
+        if self.random_cat_info["dies"]:
+            new_event["r_c"]["dies"] = self.random_cat_info["dies"]
+
+        if self.new_cat_block_dict:
+            new_event["new_cat"] = self.new_cat_block_dict.values()
+
+        if self.injury_block_list:
+            new_event["injury"] = self.injury_block_list
+
+        if self.excluded_cats:
+            new_event["exclude_involved"] = self.excluded_cats
+
+        if self.history_block_list:
+            new_event["history"] = self.history_block_list
+
+        if self.relationships_block_list:
+            new_event["relationships"] = self.relationships_block_list
+
+        if self.outsider_info["current_rep"] or self.outsider_info["changed"]:
+            new_event["outsider"] = self.outsider_info
+
+        if self.other_clan_info["current_rep"] or self.outsider_info["changed"]:
+            new_event["other_clan"] = self.other_clan_info
+
+        if self.supply_block_list:
+            new_event["supplies"] = self.supply_block_list
+
+        return new_event
+
+    def find_event_path(self):
+
+        type = self.type_info[0]
+        biomes = []
+        biome_path = "general"
+        for locale in self.location_info:
+            biome = locale.split("_")[0]
+            if biome.capitalize() in game.BIOME_TYPES:
+                biomes.append(biome)
+        if len(biomes) == 1 and "any" not in biomes:
+            biome_path = biomes[0]
+
+        return f"resources/lang/en/events/{type}/{biome_path}.json"
+
+    def get_event_json(self, path):
+        event_list = []
+
+        try:
+            with open(path, "r", encoding="utf-8") as read_file:
+                events = read_file.read()
+                event_list = ujson.loads(events)
+        except:
+            print(f"Something went wrong with event loading. Is {path} valid?")
+
+        if not event_list and self.editor_element.get("intro_text"):
+            self.editor_element["intro_text"].set_text("screens.event_edit.empty_event_list")
+            return []
+
+        try:
+            if event_list and not isinstance(event_list[0], dict):
+                print(f"{path} isn't in the correct event format. Perhaps it isn't an event .json?")
+        except KeyError:
+            return []
+
+        return event_list
+
+    # USER EVENT HANDLING
     def handle_event(self, event):
 
         # HANDLE TEXT LINKS
@@ -791,6 +996,808 @@ class EventEdit(Screens):
                         selected_block["adjust"] = f"increase_{self.supply_element['increase_entry'].text}"
                         self.update_block_info()
 
+    def on_use(self):
+        """
+        We'll use this to check and update some of our custom ui_elements due to the order update() and handle_event()
+        funcs run in.
+        """
+
+        if self.current_editor_tab == "settings":
+            self.handle_settings_on_use()
+
+        elif self.current_editor_tab in ["main cat", "random cat"]:
+            self.handle_main_and_random_cat_on_use()
+
+        elif self.current_editor_tab == "new cats":
+            self.handle_new_cat_on_use()
+
+        elif self.current_editor_tab == "personal consequences":
+            self.handle_personal_on_use()
+
+        elif self.current_editor_tab == "outside consequences":
+            self.handle_outside_on_use()
+
+        super().on_use()
+
+    # OVERALL SCREEN CONTROLS
+    def exit_screen(self):
+        self.chosen_biome = None
+        self.chosen_type = None
+        self.location_info = []
+        self.season_info = []
+        self.type_info = []
+        self.sub_info = []
+        self.tag_info = []
+
+        self.main_menu_button.kill()
+        self.list_frame.kill()
+        self.event_text_container.kill()
+        if self.event_list_container:
+            self.event_list_container.kill()
+        if self.editor_container:
+            self.editor_container.kill()
+        if self.editor_element:
+            for ele in self.editor_element.values():
+                ele.kill()
+
+        self.add_button.kill()
+        self.kill_tabs()
+        self.kill_event_buttons()
+
+    def screen_switches(self):
+
+        super().screen_switches()
+        Screens.show_mute_buttons()
+
+        self.main_menu_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((25, 25), (152, 30))),
+            "buttons.main_menu",
+            get_button_dict(ButtonStyles.SQUOVAL, (152, 30)),
+            manager=MANAGER,
+            object_id="@buttonstyles_squoval",
+            starting_height=1,
+        )
+
+        self.list_frame = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((60, 80), (250, 560))),
+            get_box(BoxStyles.ROUNDED_BOX, (250, 560)),
+            starting_height=3,
+            manager=MANAGER,
+        )
+
+        self.select_type_tab_creation()
+        self.display_events()
+
+        self.event_text_container = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((290, 30), (0, 0))),
+            starting_height=1,
+            manager=MANAGER,
+        )
+        self.event_text_element["preview_button"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((-30, 10), (36, 36))),
+            Icon.MAGNIFY,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            container=self.event_text_container,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.preview_text"
+        )
+
+        self.event_text_element["box"] = UIModifiedImage(
+            ui_scale(pygame.Rect((0, 0), (460, 120))),
+            get_box(BoxStyles.ROUNDED_BOX, (460, 120)),
+            starting_height=1,
+            manager=MANAGER,
+            container=self.event_text_container
+        )
+        self.event_text_element["box"].disable()
+
+        self.editor_element["frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((300, 140), (470, 490))),
+            get_box(BoxStyles.FRAME, (470, 490)),
+            starting_height=2,
+            manager=MANAGER,
+        )
+        self.add_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 580), (36, 36))),
+            Icon.NOTEPAD,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.add_event"
+        )
+
+        self.display_editor()
+
+    def kill_tabs(self):
+        for tab in self.type_tab_buttons:
+            self.type_tab_buttons[tab].kill()
+        for tab in self.biome_tab_buttons:
+            self.biome_tab_buttons[tab].kill()
+
+    # EVENT DISPLAY
+
+    def select_type_tab_creation(self):
+        # clear all tabs first
+        self.kill_tabs()
+        # TODO: replace with a for loop
+        self.type_tab_buttons["death"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 136), (36, 36))),
+            Icon.STARCLAN,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_deaths"
+        )
+        self.type_tab_buttons["injury"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.SCRATCHES,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_injuries",
+            anchors={
+                "top_target": self.type_tab_buttons["death"]
+            }
+        )
+        self.type_tab_buttons["misc"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.CLAN_UNKNOWN,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_misc",
+            anchors={
+                "top_target": self.type_tab_buttons["injury"]
+            }
+        )
+        self.type_tab_buttons["new_cat"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.CAT_HEAD,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_new_cat",
+            anchors={
+                "top_target": self.type_tab_buttons["misc"]
+            }
+        )
+
+    def select_biome_tab_creation(self):
+        # clear all tabs first
+        self.kill_tabs()
+
+        self.biome_tab_buttons["back"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 90), (36, 36))),
+            Icon.ARROW_LEFT,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1
+        )
+        self.biome_tab_buttons["general"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.PAW,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_general",
+            anchors={
+                "top_target": self.biome_tab_buttons["back"]
+            }
+        )
+        self.biome_tab_buttons["forest"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.LEAFFALL,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_forest",
+            anchors={
+                "top_target": self.biome_tab_buttons["general"]
+            }
+        )
+        self.biome_tab_buttons["mountainous"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.LEAFBARE,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_mountain",
+            anchors={
+                "top_target": self.biome_tab_buttons["forest"]
+            }
+        )
+        self.biome_tab_buttons["plains"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.NEWLEAF,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_plains",
+            anchors={
+                "top_target": self.biome_tab_buttons["mountainous"]
+            }
+        )
+        self.biome_tab_buttons["beach"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.DARKFOREST,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_beach",
+            anchors={
+                "top_target": self.biome_tab_buttons["plains"]
+            }
+        )
+
+        self.biome_tab_buttons["desert"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.GREENLEAF,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_desert",
+            anchors={
+                "top_target": self.biome_tab_buttons["beach"]
+            }
+        )
+
+        self.biome_tab_buttons["wetlands"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((27, 10), (36, 36))),
+            Icon.HERB,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
+            manager=MANAGER,
+            object_id="@buttonstyles_icon_tab_right",
+            starting_height=1,
+            tool_tip_text="buttons.edit_wetlands",
+            anchors={
+                "top_target": self.biome_tab_buttons["desert"]
+            }
+        )
+
+    def display_events(self, event_type=None, biome=None):
+        self.kill_event_buttons()
+        event_list = []
+        if self.editor_element.get("intro_text"):
+            self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
+
+        path = "resources/lang/en/events"
+        type_list = list(self.event_types.keys())
+        all_biomes = game.BIOME_TYPES.copy()
+        all_biomes.append("general")
+
+        if not event_type:
+            for type_name in type_list:
+                for biome_name in all_biomes:
+                    event_list.extend(self.get_event_json(f"{path}/{type_name}/{biome_name.casefold()}.json"))
+        elif event_type and not biome:
+            for biome_name in all_biomes:
+                event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome_name.casefold()}.json"))
+        elif event_type and biome:
+            event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome.casefold()}.json"))
+
+        self.event_list_container = UIModifiedScrollingContainer(
+            ui_scale(pygame.Rect((68, 90), (236, 540))),
+            starting_height=3,
+            manager=MANAGER,
+            allow_scroll_y=True,
+        )
+
+        self.event_list = event_list
+
+        for index, event in enumerate(event_list):
+            if not event_type:
+                self.all_event_ids.append(event["event_id"])
+            else:
+                test_dict = {}
+                for abbr in self.test_cat_names:
+                    pronoun = choice(
+                        [pro for pro in self.test_pronouns if pro["conju"] == 2]
+                    )
+                    test_dict[abbr] = (
+                        self.test_cat_names[abbr], pronoun
+                    )
+                preview = process_text(event["event_text"], test_dict)
+                self.event_buttons[index] = UISurfaceImageButton(
+                    ui_scale(pygame.Rect((0, -2 if index > 0 else 0), (216, 36))),
+                    event["event_id"],
+                    get_button_dict(ButtonStyles.DROPDOWN, (216, 36)),
+                    manager=MANAGER,
+                    object_id="@buttonstyles_dropdown",
+                    starting_height=1,
+                    anchors={
+                        "top_target": self.event_buttons[index - 1]
+                    } if self.event_buttons.get(index - 1) else None,
+                    container=self.event_list_container,
+                    tool_tip_text=preview
+                )
+
+    def kill_event_buttons(self):
+        for event in self.event_buttons:
+            self.event_buttons[event].kill()
+
+    # EDITOR DISPLAY
+    def clear_editor_tab(self):
+
+        self.editor_container.kill()
+
+        self.display_editor()
+
+    def clear_event_info(self):
+        # resetting everything back to zero!
+        # Settings elements
+        self.event_text_info = ""
+        self.event_id_element = {}
+        self.event_id_info = ""
+        self.location_element = {}
+        self.location_info = []
+        self.season_element = {}
+        self.season_info = []
+        self.type_element = {}
+        self.type_info = ["death"]
+        self.sub_element = {}
+        self.sub_info = []
+        self.tag_element = {}
+        self.basic_tag_checkbox = {}
+        self.rank_tag_checkbox = {}
+        self.tag_info = []
+        self.weight_element = {}
+        self.weight_info = 20
+        self.acc_element = {}
+        self.acc_info = []
+        self.acc_categories = Pelt.acc_categories
+        self.open_category = None
+        self.acc_button = {}
+        self.main_cat_editor = {}
+        self.random_cat_editor = {}
+        self.death_element = {}
+        self.rank_element = {}
+        self.age_element = {}
+        self.rel_status_element = {}
+        self.rel_status_checkbox = {}
+        self.rel_value_element = {}
+        self.skill_element = {}
+        self.level_element = {}
+        self.skill_allowed = True
+        self.open_path = None
+        self.chosen_level = None
+        self.trait_element = {}
+        self.trait_allowed = True
+        self.backstory_element = {}
+        self.open_pool = None
+        self.main_cat_info = {
+            "rank": [],
+            "age": [],
+            "rel_status": [],
+            "dies": False,
+            "skill": [],
+            "not_skill": [],
+            "trait": [],
+            "not_trait": [],
+            "backstory": []
+        }
+        # TODO: add a checkbox somewhere that indicates if the event should have a random cat
+        self.r_c_needed = False
+        self.random_cat_info = {
+            "rank": [],
+            "age": [],
+            "rel_status": [],
+            "dies": False,
+            "skill": [],
+            "not_skill": [],
+            "trait": [],
+            "not_trait": [],
+            "backstory": []
+        }
+        self.selected_new_cat_info = {}
+        self.new_cat_template = {
+            "backstory": [],
+            "parent": [],
+            "adoptive": [],
+            "mate": []
+        }
+        self.current_cat_dict = self.main_cat_info
+        self.new_cat_editor = {}
+        self.new_cat_element = {}
+        self.new_cat_block_dict = {}
+        self.selected_new_cat = None
+        self.new_cat_checkbox = {}
+        self.cat_story_element = {}
+        self.new_status_element = {}
+        self.new_age_element = {}
+        self.new_gender_element = {}
+        self.connections_element = {}
+        self.open_connection = "parent"
+        self.exclusion_element = {}
+        self.excluded_cats = []
+        self.open_block = "injury"
+        self.injury_element = {}
+        self.injury_block_list = []
+        self.injury_template = {
+            "cats": [],
+            "injuries": [],
+            "scars": []
+        }
+        self.selected_injury_block: str = ""
+        self.history_element = {}
+        self.history_block_list = []
+        self.history_template = {
+            "cats": [],
+            "scar": "",
+            "reg_death": "",
+            "lead_death": ""
+        }
+        self.selected_history_block_index: str = ""
+        self.relationships_element = {}
+        self.relationships_block_list = []
+        self.relationships_template = {
+            "cats_from": [],
+            "cats_to": [],
+            "mutual": False,
+            "values": [],
+            "amount": 0
+        }
+        self.selected_relationships_block_index: str = ""
+        self.outsider_element = {}
+        self.outsider_info = {
+            "current_rep": [],
+            "changed": 0
+        }
+        self.other_clan_element = {}
+        self.other_clan_info = {
+            "current_rep": [],
+            "changed": 0
+        }
+        self.supply_element = {}
+        self.supply_block_list = []
+        self.selected_supply_block_index: str = ""
+        self.supply_info = {
+            "type": "",
+            "trigger": [],
+            "adjust": ""
+        }
+        self.current_preview_state = self.preview_states[0]
+
+    def display_editor(self):
+
+        self.editor_container = UIModifiedScrollingContainer(
+            ui_scale(pygame.Rect((314, 150), (470, 470))),
+            starting_height=4,
+            manager=MANAGER,
+            allow_scroll_y=True,
+        )
+        self.editor_container.scrollable_container.resize_top = False
+
+        if not self.current_editor_tab:
+            self.editor_element["intro_text"] = UITextBoxTweaked(
+                "screens.event_edit.intro_text",
+                ui_scale(pygame.Rect((0, 0), (450, -1))),
+                object_id="#text_box_26_horizleft_pad_10_14",
+                line_spacing=1,
+                manager=MANAGER,
+                container=self.editor_container
+            )
+            return
+        elif self.editor_element.get("intro_text"):
+            self.editor_element["intro_text"].kill()
+
+        # EVENT TEXT
+        # this one is special in that it has a separate container
+        if not self.event_text_element.get("preview_text"):
+            self.event_text_element["preview_text"] = UITextBoxTweaked(
+                "",
+                ui_scale(pygame.Rect((48, 10), (435, 100))),
+                object_id="#text_box_26_horizleft_pad_10_14",
+                manager=MANAGER,
+                container=self.event_text_container,
+                visible=False,
+            )
+            self.event_text_element["preview_text"].disable()
+            self.event_text_element["event_text"] = pygame_gui.elements.UITextEntryBox(
+                ui_scale(pygame.Rect((48, 10), (435, 100))),
+                object_id="#text_box_26_horizleft_pad_10_14",
+                manager=MANAGER,
+                container=self.event_text_container,
+            )
+        game.event_editing = True
+        if self.event_text_info:
+            self.event_text_element["event_text"].set_text(self.event_text_info)
+        else:
+            self.event_text_element["event_text"].set_text("screens.event_edit.event_text_initial")
+
+        # SECTION TABS
+        if not self.editor_element.get(list(self.section_tabs.keys())[0]):
+            prev_element = None
+            for name, icon in self.section_tabs.items():
+                self.editor_element[name] = UISurfaceImageButton(
+                    ui_scale(pygame.Rect((10, -6), (36, 36))),
+                    icon,
+                    get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
+                    manager=MANAGER,
+                    object_id="@buttonstyles_icon_tab_bottom",
+                    starting_height=1,
+                    tool_tip_text=name,
+                    anchors=(
+                        {
+                            "top_target": self.editor_element["frame"],
+                            "left_target": self.list_frame
+                        }
+                        if not prev_element
+                        else
+                        {
+                            "top_target": self.editor_element["frame"],
+                            "left_target": prev_element
+                        }
+                    )
+                )
+                prev_element = self.editor_element[name]
+
+        if not self.editor_element.get("save"):
+            self.editor_element["save"] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((320, -8), (80, 36))),
+                "buttons.save",
+                get_button_dict(ButtonStyles.HORIZONTAL_TAB_MIRRORED, (80, 36)),
+                manager=MANAGER,
+                object_id="@buttonstyles_horizontal_tab_mirrored",
+                starting_height=1,
+                tool_tip_text="Add this event to the event json.",
+                anchors=(
+                    {
+                        "top_target": self.editor_element["frame"],
+                        "left_target": self.list_frame
+                    }
+                )
+            )
+
+        if self.current_editor_tab == "settings":
+            self.generate_settings_tab()
+        elif self.current_editor_tab == "main cat":
+            self.current_cat_dict = self.main_cat_info
+            self.generate_main_cat_tab()
+        elif self.current_editor_tab == "random cat":
+            self.current_cat_dict = self.random_cat_info
+            self.generate_random_cat_tab()
+        elif self.current_editor_tab == "new cats":
+            self.generate_new_cats_tab()
+        elif self.current_editor_tab == "personal consequences":
+            self.generate_personal_tab()
+        elif self.current_editor_tab == "outside consequences":
+            self.generate_outside_tab()
+
+    def create_divider(self, top_anchor, name, off_set: int = -12, container=None):
+        if not container:
+            container = self.editor_container
+
+        self.editor_element[name] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((0, off_set), (524, 24))),
+            pygame.transform.scale(
+                image_cache.load_image(
+                    "resources/images/spacer.png"
+                ).convert_alpha(),
+                ui_scale_dimensions((524, 24)),
+            ),
+            container=container,
+            manager=MANAGER,
+            anchors={
+                "top_target": top_anchor
+            }
+        )
+
+    # HELPERS
+    def get_involved_cats(self, index_limit=None):
+        """
+        :param index_limit: indicate a maximum index for the new cat list.
+        """
+        # TODO: make sure this gets an option to indicate if r_c is in the event
+        involved_cats = ["m_c"]
+        if self.random_cat_info:
+            involved_cats.append("r_c")
+
+        new_cat_list = list(self.new_cat_block_dict.keys())
+        if isinstance(index_limit, int):
+            for index, item in enumerate(new_cat_list.copy()):
+                if index >= index_limit:
+                    new_cat_list.remove(item)
+
+        involved_cats.extend(new_cat_list)
+
+        return involved_cats
+
+    def add_block(self, event):
+        if event not in [self.injury_element.get("add"),
+                         self.history_element.get("add"),
+                         self.relationships_element.get("add"),
+                         self.supply_element.get("add")]:
+            return
+
+        attr = self.get_block_attributes()
+
+        added_block = int(attr["selected"]) + 1 if attr["selected"] else 0
+        attr["block_list"].insert(added_block, attr["info_dict"].copy())
+        attr["selected"] = str(added_block)
+        attr["view"].new_item_list([str(index) for index in range(len(attr["block_list"]))])
+        attr["view"].set_selected_list([attr["selected"]] if attr["selected"] else [])
+
+        if self.open_block == "injury":
+            self.selected_injury_block = attr["selected"]
+            self.update_injury_block_options()
+        elif self.open_block == "history":
+            self.selected_history_block_index = attr["selected"]
+            self.update_history_block_options()
+        elif self.open_block == "supply":
+            self.selected_supply_block_index = attr["selected"]
+            self.update_supply_block_options()
+        else:
+            self.selected_relationships_block_index = attr["selected"]
+            self.update_relationships_block_options()
+
+        self.update_block_info()
+
+    def delete_block(self, event):
+
+        if event not in [self.injury_element.get("delete"),
+                         self.history_element.get("delete"),
+                         self.relationships_element.get("delete"),
+                         self.supply_element.get("delete")]:
+            return
+
+        attr = self.get_block_attributes()
+
+        removed_block = int(attr["selected"])
+        attr["block_list"].remove(attr["block_list"][removed_block])
+        attr["selected"] = str(removed_block - 1) if len(attr["block_list"]) else ""
+        attr["view"].new_item_list([str(index) for index in range(len(attr["block_list"]))])
+        attr["view"].set_selected_list([attr["selected"]] if attr["selected"] else [])
+
+        if self.open_block == "injury":
+            self.selected_injury_block = attr["selected"]
+            if not attr["selected"]:
+                self.clear_injury_constraints()
+            self.update_injury_block_options()
+        elif self.open_block == "history":
+            self.selected_history_block_index = attr["selected"]
+            if not attr["selected"]:
+                self.clear_history_constraints()
+            self.update_history_block_options()
+        elif self.open_block == "supply":
+            self.selected_supply_block_index = attr["selected"]
+            if not attr["selected"]:
+                self.clear_supply_constraints()
+            self.update_supply_block_options()
+        else:
+            self.selected_relationships_block_index = attr["selected"]
+            if not attr["selected"]:
+                self.clear_relationships_constraints()
+            self.update_relationships_block_options()
+
+        self.update_block_info()
+        self.editor_container.on_contained_elements_changed(self.editor_element[f"{self.open_block}_start"])
+
+    def get_block_attributes(self) -> dict:
+
+        if self.open_block == "injury":
+            element = self.injury_element
+            view = self.injury_element["block_list"]
+            block_list = self.injury_block_list
+            info_dict = self.injury_template
+            selected = self.selected_injury_block if self.selected_injury_block else None
+            display = self.injury_element["info"]
+        elif self.open_block == "history":
+            element = self.history_element
+            view = self.history_element["block_list"]
+            block_list = self.history_block_list
+            info_dict = self.history_template
+            selected = self.selected_history_block_index if self.selected_history_block_index else None
+            display = self.history_element["info"]
+        elif self.open_block == "supply":
+            element = self.supply_element
+            view = self.supply_element["block_list"]
+            block_list = self.supply_block_list
+            info_dict = self.supply_info
+            selected = self.selected_supply_block_index if self.selected_supply_block_index else None
+            display = self.supply_element["info"]
+        else:
+            element = self.relationships_element
+            view = self.relationships_element["block_list"]
+            block_list = self.relationships_block_list
+            info_dict = self.relationships_template
+            selected = self.selected_relationships_block_index if self.selected_relationships_block_index else None
+            display = self.relationships_element["info"]
+
+        return {
+            "element": element,
+            "view": view,
+            "block_list": block_list,
+            "info_dict": info_dict,
+            "selected": selected,
+            "display": display
+        }
+
+    def get_selected_block_info(self):
+        if self.open_block == "injury":
+            return self.injury_block_list[
+                int(self.selected_injury_block)] if self.selected_injury_block else self.injury_template
+        elif self.open_block == "history":
+            return self.history_block_list[
+                int(self.selected_history_block_index)] if self.selected_history_block_index else self.history_template
+        elif self.open_block == "relationships":
+            return self.relationships_block_list[
+                int(self.selected_relationships_block_index)] if self.selected_relationships_block_index else self.relationships_template
+        elif self.open_block == "supply":
+            return self.supply_block_list[
+                int(self.selected_supply_block_index)] if self.selected_supply_block_index else self.supply_info
+
+    def new_cat_select(self):
+        new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
+                         if self.new_cat_editor["cat_list"].selected_list else None)
+        if self.selected_new_cat != new_selection:
+            self.selected_new_cat = new_selection
+            self.change_new_cat_info_dict()
+
+            if not self.connections_element.get("info"):
+                self.display_new_cat_constraints()
+
+            self.update_new_cat_options()
+            self.new_cat_editor["info"].set_text(
+                f"selected cat: "
+                f"{self.new_cat_block_dict.get(self.selected_new_cat) if self.new_cat_block_dict.get(self.selected_new_cat) else '[]'}")
+
+            # need to reset the cat connections info here or it'll be incorrect
+            new_selection = (self.connections_element["cat_list"].selected_list.copy()
+                             if self.connections_element["cat_list"].selected_list else [])
+            self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
+
+    def change_new_cat_info_dict(self):
+        if not self.selected_new_cat_info:
+            if self.new_cat_block_dict.get(self.selected_new_cat):
+                saved_info = self.new_cat_block_dict[self.selected_new_cat]
+                unpacked = {
+                    "backstory": [],
+                    "parent": [],
+                    "adoptive": [],
+                    "mate": []
+                }
+                for tag in saved_info:
+                    if "backstory" in tag:
+                        stories = tag.replace("backstory:", "")
+                        stories = stories.split(",")
+                        unpacked["backstory"] = stories
+                    elif "parent" in tag:
+                        parents = tag.replace("parent:", "")
+                        parents = parents.split(",")
+                        unpacked["parent"] = parents
+                    elif "adoptive" in tag:
+                        adoptive = tag.replace("adoptive:", "")
+                        adoptive = adoptive.split(",")
+                        unpacked["adoptive"] = adoptive
+                    elif "mate" in tag:
+                        mates = tag.replace("mate:", "")
+                        mates = mates.split(",")
+                        unpacked["mate"] = mates
+                self.selected_new_cat_info = unpacked
+            else:
+                self.selected_new_cat_info = {
+                    "backstory": [],
+                    "parent": [],
+                    "adoptive": [],
+                    "mate": []
+                }
+        self.current_cat_dict = self.selected_new_cat_info
+
+    # HANDLE EVENT FUNCS
     def handle_outside_events(self, event):
         # AMOUNT CHANGES
         amount = None
@@ -894,443 +1901,6 @@ class EventEdit(Screens):
         self.add_block(event.ui_element)
         # REMOVE BLOCK
         self.delete_block(event.ui_element)
-
-    def unpack_existing_event(self, event):
-        self.open_event = event.copy()
-        biome = "general"
-        matching_biomes = []
-        for location in event.get("location"):
-            for biome in game.BIOME_TYPES:
-                if biome.casefold() in location:
-                    matching_biomes.append(biome)
-        if len(matching_biomes) <= 1:
-            biome = matching_biomes[0] if matching_biomes else "general"
-
-        self.old_event_path = f"resources/lang/en/events/{self.chosen_type}/{biome.casefold()}.json"
-
-        self.type_info = [self.chosen_type]
-        self.event_id_info = event["event_id"]
-        self.location_info = event["location"] if event.get("location") else []
-        if self.location_info == ["any"]:
-            self.location_info = []
-        self.season_info = event["season"] if event.get("season") else []
-        if self.season_info == ["any"]:
-            self.season_info = []
-        self.sub_info = event["sub_type"] if event.get("sub_type") else []
-        self.tag_info = event["tags"] if event.get("tags") else []
-        self.weight_info = event["weight"]
-        self.event_text_info = event["event_text"]
-        self.acc_info = event["new_accessory"] if event.get("new_accessory") else []
-        if event.get("m_c"):
-            self.main_cat_info = {
-                "rank": event["m_c"]["status"] if event["m_c"].get("status") else [],
-                "age": event["m_c"]["age"] if event["m_c"].get("age") else [],
-                "rel_status": event["m_c"]["relationship_status"] if event["m_c"].get("relationship_status") else [],
-                "dies": event["m_c"]["dies"] if event["m_c"].get("dies") else False,
-                "skill": event["m_c"]["skill"] if event["m_c"].get("skill") else [],
-                "not_skill": event["m_c"]["not_skill"] if event["m_c"].get("not_skill") else [],
-                "trait": event["m_c"]["trait"] if event["m_c"].get("trait") else [],
-                "not_trait": event["m_c"]["not_trait"] if event["m_c"].get("not_trait") else [],
-                "backstory": event["m_c"]["backstory"] if event["m_c"].get("backstory") else []
-            }
-        if event.get("r_c"):
-            self.random_cat_info = {
-                "rank": event["r_c"]["status"] if event["r_c"].get("status") else [],
-                "age": event["r_c"]["age"] if event["r_c"].get("age") else [],
-                "rel_status": event["r_c"]["relationship_status"] if event["r_c"].get("relationship_status") else [],
-                "dies": event["r_c"]["dies"] if event["r_c"].get("dies") else False,
-                "skill": event["r_c"]["skill"] if event["r_c"].get("skill") else [],
-                "not_skill": event["r_c"]["not_skill"] if event["r_c"].get("not_skill") else [],
-                "trait": event["r_c"]["trait"] if event["r_c"].get("trait") else [],
-                "not_trait": event["r_c"]["not_trait"] if event["r_c"].get("not_trait") else [],
-                "backstory": event["r_c"]["backstory"] if event["r_c"].get("backstory") else []
-            }
-        if event.get("new_cat"):
-            names = [f"n_c:{index}" for index in range(len(event["new_cat"]))]
-            self.new_cat_block_dict = {k: v for (k, v) in zip(names, event["new_cat"])}
-        else:
-            self.new_cat_block_dict = {}
-        self.injury_block_list = event["injury"] if event.get("injury") else []
-        for block in self.injury_block_list:
-            if "injuries" not in block:
-                block["injuries"] = []
-            if "scars" not in block:
-                block["scars"] = []
-        self.excluded_cats = event["exclude_involved"] if event.get("exclude_involved") else []
-        self.history_block_list = event["history"] if event.get("history") else []
-        for block in self.history_block_list:
-            if "scar" not in block:
-                block["scar"] = ""
-            if "reg_death" not in block:
-                block["reg_death"] = ""
-            if "lead_death" not in block:
-                block["lead_death"] = ""
-        self.relationships_block_list = event["relationships"] if event.get("relationships") else []
-        for block in self.relationships_block_list:
-            if "mutual" not in block:
-                block["mutual"] = False
-        self.outsider_info = event["outsider"] if event.get("outsider") else self.outsider_info
-        self.other_clan_info = event["other_clan"] if event.get("other_clan") else self.other_clan_info
-        self.supply_block_list = event["supplies"] if event.get("supplies") else []
-
-    def compile_new_event(self):
-        new_event = {
-            "event_id": self.event_id_info
-        }
-        if self.location_info:
-            new_event["location"] = self.location_info
-        else:
-            new_event["location"] = ["any"]
-        if self.season_info:
-            new_event["season"] = self.season_info
-        else:
-            new_event["season"] = ["any"]
-        if self.sub_info:
-            new_event["sub_type"] = self.sub_info
-        if self.tag_info:
-            new_event["tags"] = self.tag_info
-
-        new_event["weight"] = self.weight_info
-        new_event["event_text"] = self.event_text_info
-
-        if self.acc_info:
-            new_event["new_accessory"] = self.acc_info
-
-        new_event["m_c"] = {}
-        if self.main_cat_info["age"]:
-            new_event["m_c"]["age"] = self.main_cat_info["age"]
-        if self.main_cat_info["rank"]:
-            new_event["m_c"]["status"] = self.main_cat_info["rank"]
-        if self.main_cat_info["rel_status"]:
-            new_event["m_c"]["relationship_status"] = self.main_cat_info["rel_status"]
-        if self.main_cat_info["skill"]:
-            new_event["m_c"]["skill"] = self.main_cat_info["skill"]
-        if self.main_cat_info["not_skill"]:
-            new_event["m_c"]["not_skill"] = self.main_cat_info["not_skill"]
-        if self.main_cat_info["trait"]:
-            new_event["m_c"]["trait"] = self.main_cat_info["trait"]
-        if self.main_cat_info["not_trait"]:
-            new_event["m_c"]["not_trait"] = self.main_cat_info["not_trait"]
-        if self.main_cat_info["backstory"]:
-            new_event["m_c"]["backstory"] = self.main_cat_info["backstory"]
-        if self.main_cat_info["dies"]:
-            new_event["m_c"]["dies"] = self.main_cat_info["dies"]
-
-        new_event["r_c"] = {}
-        if self.random_cat_info["age"]:
-            new_event["r_c"]["age"] = self.random_cat_info["age"]
-        if self.random_cat_info["rank"]:
-            new_event["r_c"]["status"] = self.random_cat_info["rank"]
-        if self.random_cat_info["rel_status"]:
-            new_event["r_c"]["relationship_status"] = self.random_cat_info["rel_status"]
-        if self.random_cat_info["skill"]:
-            new_event["r_c"]["skill"] = self.random_cat_info["skill"]
-        if self.random_cat_info["not_skill"]:
-            new_event["r_c"]["not_skill"] = self.random_cat_info["not_skill"]
-        if self.random_cat_info["trait"]:
-            new_event["r_c"]["trait"] = self.random_cat_info["trait"]
-        if self.random_cat_info["not_trait"]:
-            new_event["r_c"]["not_trait"] = self.random_cat_info["not_trait"]
-        if self.random_cat_info["backstory"]:
-            new_event["r_c"]["backstory"] = self.random_cat_info["backstory"]
-        if self.random_cat_info["dies"]:
-            new_event["r_c"]["dies"] = self.random_cat_info["dies"]
-
-        if self.new_cat_block_dict:
-            new_event["new_cat"] = self.new_cat_block_dict.values()
-
-        if self.injury_block_list:
-            new_event["injury"] = self.injury_block_list
-
-        if self.excluded_cats:
-            new_event["exclude_involved"] = self.excluded_cats
-
-        if self.history_block_list:
-            new_event["history"] = self.history_block_list
-
-        if self.relationships_block_list:
-            new_event["relationships"] = self.relationships_block_list
-
-        if self.outsider_info["current_rep"] or self.outsider_info["changed"]:
-            new_event["outsider"] = self.outsider_info
-
-        if self.other_clan_info["current_rep"] or self.outsider_info["changed"]:
-            new_event["other_clan"] = self.other_clan_info
-
-        if self.supply_block_list:
-            new_event["supplies"] = self.supply_block_list
-
-        return new_event
-
-    def find_event_path(self):
-
-        type = self.type_info[0]
-        biomes = []
-        biome_path = "general"
-        for locale in self.location_info:
-            biome = locale.split("_")[0]
-            if biome.capitalize() in game.BIOME_TYPES:
-                biomes.append(biome)
-        if len(biomes) == 1 and "any" not in biomes:
-            biome_path = biomes[0]
-
-        return f"resources/lang/en/events/{type}/{biome_path}.json"
-
-    def add_block(self, event):
-        if event not in [self.injury_element.get("add"),
-                         self.history_element.get("add"),
-                         self.relationships_element.get("add"),
-                         self.supply_element.get("add")]:
-            return
-
-        attr = self.get_block_attributes()
-
-        added_block = int(attr["selected"]) + 1 if attr["selected"] else 0
-        attr["block_list"].insert(added_block, attr["info_dict"].copy())
-        attr["selected"] = str(added_block)
-        attr["view"].new_item_list([str(index) for index in range(len(attr["block_list"]))])
-        attr["view"].set_selected_list([attr["selected"]] if attr["selected"] else [])
-
-        if self.open_block == "injury":
-            self.selected_injury_block = attr["selected"]
-            self.update_injury_block_options()
-        elif self.open_block == "history":
-            self.selected_history_block_index = attr["selected"]
-            self.update_history_block_options()
-        elif self.open_block == "supply":
-            self.selected_supply_block_index = attr["selected"]
-            self.update_supply_block_options()
-        else:
-            self.selected_relationships_block_index = attr["selected"]
-            self.update_relationships_block_options()
-
-        self.update_block_info()
-
-    def delete_block(self, event):
-
-        if event not in [self.injury_element.get("delete"),
-                         self.history_element.get("delete"),
-                         self.relationships_element.get("delete"),
-                         self.supply_element.get("delete")]:
-            return
-
-        attr = self.get_block_attributes()
-
-        removed_block = int(attr["selected"])
-        attr["block_list"].remove(attr["block_list"][removed_block])
-        attr["selected"] = str(removed_block - 1) if len(attr["block_list"]) else ""
-        attr["view"].new_item_list([str(index) for index in range(len(attr["block_list"]))])
-        attr["view"].set_selected_list([attr["selected"]] if attr["selected"] else [])
-
-        if self.open_block == "injury":
-            self.selected_injury_block = attr["selected"]
-            if not attr["selected"]:
-                self.clear_injury_constraints()
-            self.update_injury_block_options()
-        elif self.open_block == "history":
-            self.selected_history_block_index = attr["selected"]
-            if not attr["selected"]:
-                self.clear_history_constraints()
-            self.update_history_block_options()
-        elif self.open_block == "supply":
-            self.selected_supply_block_index = attr["selected"]
-            if not attr["selected"]:
-                self.clear_supply_constraints()
-            self.update_supply_block_options()
-        else:
-            self.selected_relationships_block_index = attr["selected"]
-            if not attr["selected"]:
-                self.clear_relationships_constraints()
-            self.update_relationships_block_options()
-
-        self.update_block_info()
-        self.editor_container.on_contained_elements_changed(self.editor_element[f"{self.open_block}_start"])
-
-    def update_supply_block_options(self):
-        if not self.supply_element.get("adjust_list"):
-            return
-
-        self.selected_supply_block_index = (self.supply_element["block_list"].selected_list.copy()[0]
-                                            if self.supply_element["block_list"].selected_list
-                                            else "")
-
-        if self.selected_supply_block_index:
-            selected_constraints = self.supply_block_list.copy()[int(self.selected_supply_block_index)]
-        else:
-            selected_constraints = self.supply_info.copy()
-
-        # TYPE
-        self.supply_element["type_list"].set_selected_list([selected_constraints["type"]])
-
-        # TRIGGER
-        self.supply_element["trigger_list"].set_selected_list(selected_constraints["trigger"].copy())
-
-        # ADJUST
-        self.supply_element["adjust_list"].set_selected_list([selected_constraints["adjust"]])
-        self.create_supply_increase_editor()
-        self.update_block_info()
-
-    def update_relationships_block_options(self):
-        if not self.relationships_element.get("amount_down_high_button"):
-            return
-
-        self.selected_relationships_block_index = (self.relationships_element["block_list"].selected_list.copy()[0]
-                                                   if self.relationships_element["block_list"].selected_list
-                                                   else "")
-        if self.selected_relationships_block_index:
-            selected_constraints = self.relationships_block_list.copy()[int(self.selected_relationships_block_index)]
-        else:
-            selected_constraints = self.relationships_template.copy()
-
-        # MUTUAL
-        if self.relationships_element["mutual"].checked and not selected_constraints["mutual"]:
-            self.relationships_element["mutual"].uncheck()
-            self.relationships_element["cat_bridge_info"].set_text("screens.event_edit.relationships_one_way")
-        elif not self.relationships_element["mutual"].checked and selected_constraints["mutual"]:
-            self.relationships_element["mutual"].check()
-            self.relationships_element["cat_bridge_info"].set_text("screens.event_edit.relationships_mutual")
-
-        # CATS
-        self.relationships_element["cats_from_list"].set_selected_list(selected_constraints["cats_from"].copy())
-        self.relationships_element["cats_from_info"].set_text(f"selected: {selected_constraints['cats_from']}")
-        for name, button in self.relationships_element["cats_from_list"].buttons.items():
-            if name in selected_constraints["cats_to"]:
-                button.disable()
-            else:
-                button.enable()
-
-        self.relationships_element["cats_to_list"].set_selected_list(selected_constraints["cats_to"].copy())
-        self.relationships_element["cats_to_info"].set_text(f"selected: {selected_constraints['cats_to']}")
-        for name, button in self.relationships_element["cats_to_list"].buttons.items():
-            if name in selected_constraints["cats_from"]:
-                button.disable()
-            else:
-                button.enable()
-
-        # VALUES
-        self.relationships_element["values_list"].set_selected_list(selected_constraints["values"].copy())
-        self.relationships_element["values_info"].set_text(f"values: {selected_constraints['values']}")
-
-        # AMOUNT
-        self.relationships_element["amount_entry"].set_text(str(selected_constraints["amount"]))
-
-        self.update_block_info()
-
-    def update_history_block_options(self):
-        if not self.history_element.get("lead_history_input"):
-            return
-
-        self.selected_history_block_index = (self.history_element["block_list"].selected_list.copy()[0]
-                                             if self.history_element["block_list"].selected_list
-                                             else "")
-        if self.selected_history_block_index:
-            selected_constraints = self.history_block_list.copy()[int(self.selected_history_block_index)]
-        else:
-            selected_constraints = self.history_template.copy()
-
-        # CATS
-        self.history_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
-        self.history_element["cats_info"].set_text(f"cats: {selected_constraints['cats']}")
-
-        # SCAR
-        self.history_element["scar_history_input"].set_text(selected_constraints["scar"])
-
-        # REG_DEATH
-        self.history_element["reg_history_input"].set_text(selected_constraints["reg_death"])
-
-        # LEAD_DEATH
-        self.history_element["lead_history_input"].set_text(selected_constraints["lead_death"])
-
-        self.update_block_info()
-
-    def update_injury_block_options(self):
-        if not self.injury_element.get("scar_info"):
-            return
-        self.selected_injury_block = (self.injury_element["block_list"].selected_list.copy()[0]
-                                      if self.injury_element["block_list"].selected_list
-                                      else "")
-        if self.selected_injury_block:
-            selected_constraints = self.injury_block_list.copy()[int(self.selected_injury_block)]
-        else:
-            selected_constraints = self.injury_template.copy()
-
-        # CATS
-        self.injury_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
-        self.injury_element["cats_info"].set_text(f"cats: {selected_constraints['cats']}")
-
-        # INJURIES
-        all_injuries = selected_constraints["injuries"]
-        pools = []
-        injuries = []
-        for inj in all_injuries:
-            if inj in self.all_injury_pools:
-                pools.append(inj)
-                continue
-            if inj in self.all_possible_injuries:
-                injuries.append(inj)
-
-        self.injury_element["injury_pools"].set_selected_list(pools)
-        self.injury_element["individual_injuries"].set_selected_list(injuries)
-        self.injury_element["injury_info"].set_text(f"injuries: {all_injuries}")
-
-        # SCARS
-        self.injury_element["scar_list"].set_selected_list(selected_constraints["scars"])
-        self.injury_element["scar_info"].set_text(f"scars: {selected_constraints['scars']}")
-
-        self.update_block_info()
-
-    def get_block_attributes(self) -> dict:
-
-        if self.open_block == "injury":
-            element = self.injury_element
-            view = self.injury_element["block_list"]
-            block_list = self.injury_block_list
-            info_dict = self.injury_template
-            selected = self.selected_injury_block if self.selected_injury_block else None
-            display = self.injury_element["info"]
-        elif self.open_block == "history":
-            element = self.history_element
-            view = self.history_element["block_list"]
-            block_list = self.history_block_list
-            info_dict = self.history_template
-            selected = self.selected_history_block_index if self.selected_history_block_index else None
-            display = self.history_element["info"]
-        elif self.open_block == "supply":
-            element = self.supply_element
-            view = self.supply_element["block_list"]
-            block_list = self.supply_block_list
-            info_dict = self.supply_info
-            selected = self.selected_supply_block_index if self.selected_supply_block_index else None
-            display = self.supply_element["info"]
-        else:
-            element = self.relationships_element
-            view = self.relationships_element["block_list"]
-            block_list = self.relationships_block_list
-            info_dict = self.relationships_template
-            selected = self.selected_relationships_block_index if self.selected_relationships_block_index else None
-            display = self.relationships_element["info"]
-
-        return {
-            "element": element,
-            "view": view,
-            "block_list": block_list,
-            "info_dict": info_dict,
-            "selected": selected,
-            "display": display
-        }
-
-    def update_block_info(self):
-        """
-        Update the block's full text display
-        """
-        attr = self.get_block_attributes()
-        if attr["selected"]:
-            text = '<br>'.join([f"{key}: {value}" for key, value in attr["block_list"][int(attr["selected"])].items()])
-        else:
-            text = "No block selected"
-        attr["display"].set_text(text)
-
-        self.editor_container.on_contained_elements_changed(self.editor_element[f"{self.open_block}_start"])
 
     def handle_new_cat_events(self, event):
         # ADD CAT
@@ -1666,29 +2236,6 @@ class EventEdit(Screens):
                 break
             self.update_acc_info()
 
-    def on_use(self):
-        """
-        We'll use this to check and update some of our custom ui_elements due to the order update() and handle_event()
-        funcs run in.
-        """
-
-        if self.current_editor_tab == "settings":
-            self.handle_settings_on_use()
-
-        elif self.current_editor_tab in ["main cat", "random cat"]:
-            self.handle_main_and_random_cat_on_use()
-
-        elif self.current_editor_tab == "new cats":
-            self.handle_new_cat_on_use()
-
-        elif self.current_editor_tab == "personal consequences":
-            self.handle_personal_on_use()
-
-        elif self.current_editor_tab == "outside consequences":
-            self.handle_outside_on_use()
-
-        super().on_use()
-
     def handle_outside_on_use(self):
         # SUPPLY CONSTRAINT DISPLAY
         if self.selected_supply_block_index and not self.supply_element.get("constraint_container"):
@@ -1900,20 +2447,6 @@ class EventEdit(Screens):
         if changed:
             self.update_block_info()
 
-    def get_selected_block_info(self):
-        if self.open_block == "injury":
-            return self.injury_block_list[
-                int(self.selected_injury_block)] if self.selected_injury_block else self.injury_template
-        elif self.open_block == "history":
-            return self.history_block_list[
-                int(self.selected_history_block_index)] if self.selected_history_block_index else self.history_template
-        elif self.open_block == "relationships":
-            return self.relationships_block_list[
-                int(self.selected_relationships_block_index)] if self.selected_relationships_block_index else self.relationships_template
-        elif self.open_block == "supply":
-            return self.supply_block_list[
-                int(self.selected_supply_block_index)] if self.selected_supply_block_index else self.supply_info
-
     def handle_new_cat_on_use(self):
         # NEW CAT CONSTRAINT DISPLAY
         if self.selected_new_cat and not self.new_cat_element.get("checkbox_container"):
@@ -1934,161 +2467,152 @@ class EventEdit(Screens):
         self.handle_main_and_random_cat_on_use()
         self.update_new_cat_tags()
 
-    def new_cat_select(self):
-        new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
-                         if self.new_cat_editor["cat_list"].selected_list else None)
-        if self.selected_new_cat != new_selection:
-            self.selected_new_cat = new_selection
-            self.change_new_cat_info_dict()
+    # INFO DISPLAY UPDATES
+    def update_block_info(self):
+        """
+        Update the block's full text display
+        """
+        attr = self.get_block_attributes()
+        if attr["selected"]:
+            text = '<br>'.join([f"{key}: {value}" for key, value in attr["block_list"][int(attr["selected"])].items()])
+        else:
+            text = "No block selected"
+        attr["display"].set_text(text)
 
-            if not self.connections_element.get("info"):
-                self.display_new_cat_constraints()
+        self.editor_container.on_contained_elements_changed(self.editor_element[f"{self.open_block}_start"])
 
-            self.update_new_cat_options()
-            self.new_cat_editor["info"].set_text(
-                f"selected cat: "
-                f"{self.new_cat_block_dict.get(self.selected_new_cat) if self.new_cat_block_dict.get(self.selected_new_cat) else '[]'}")
+    def update_supply_block_options(self):
+        if not self.supply_element.get("adjust_list"):
+            return
 
-            # need to reset the cat connections info here or it'll be incorrect
-            new_selection = (self.connections_element["cat_list"].selected_list.copy()
-                             if self.connections_element["cat_list"].selected_list else [])
-            self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
+        self.selected_supply_block_index = (self.supply_element["block_list"].selected_list.copy()[0]
+                                            if self.supply_element["block_list"].selected_list
+                                            else "")
 
-    def handle_main_and_random_cat_on_use(self):
-        # RANKS
-        if (self.rank_element.get("dropdown")
-                and self.rank_element["dropdown"].selected_list != self.current_cat_dict.get("rank")):
-            self.current_cat_dict["rank"] = self.rank_element["dropdown"].selected_list.copy()
-            if self.current_cat_dict["rank"]:
-                self.rank_element["info"].set_text(f"chosen rank: {self.current_cat_dict['rank']}")
+        if self.selected_supply_block_index:
+            selected_constraints = self.supply_block_list.copy()[int(self.selected_supply_block_index)]
+        else:
+            selected_constraints = self.supply_info.copy()
+
+        # TYPE
+        self.supply_element["type_list"].set_selected_list([selected_constraints["type"]])
+
+        # TRIGGER
+        self.supply_element["trigger_list"].set_selected_list(selected_constraints["trigger"].copy())
+
+        # ADJUST
+        self.supply_element["adjust_list"].set_selected_list([selected_constraints["adjust"]])
+        self.create_supply_increase_editor()
+        self.update_block_info()
+
+    def update_relationships_block_options(self):
+        if not self.relationships_element.get("amount_down_high_button"):
+            return
+
+        self.selected_relationships_block_index = (self.relationships_element["block_list"].selected_list.copy()[0]
+                                                   if self.relationships_element["block_list"].selected_list
+                                                   else "")
+        if self.selected_relationships_block_index:
+            selected_constraints = self.relationships_block_list.copy()[int(self.selected_relationships_block_index)]
+        else:
+            selected_constraints = self.relationships_template.copy()
+
+        # MUTUAL
+        if self.relationships_element["mutual"].checked and not selected_constraints["mutual"]:
+            self.relationships_element["mutual"].uncheck()
+            self.relationships_element["cat_bridge_info"].set_text("screens.event_edit.relationships_one_way")
+        elif not self.relationships_element["mutual"].checked and selected_constraints["mutual"]:
+            self.relationships_element["mutual"].check()
+            self.relationships_element["cat_bridge_info"].set_text("screens.event_edit.relationships_mutual")
+
+        # CATS
+        self.relationships_element["cats_from_list"].set_selected_list(selected_constraints["cats_from"].copy())
+        self.relationships_element["cats_from_info"].set_text(f"selected: {selected_constraints['cats_from']}")
+        for name, button in self.relationships_element["cats_from_list"].buttons.items():
+            if name in selected_constraints["cats_to"]:
+                button.disable()
             else:
-                self.rank_element["info"].set_text(f"chosen rank: ['any']")
-            self.editor_container.on_contained_elements_changed(self.rank_element["info"])
-        # AGES
-        if (self.age_element.get("dropdown")
-                and self.age_element["dropdown"].selected_list != self.current_cat_dict.get("age")):
-            self.current_cat_dict["age"] = self.age_element["dropdown"].selected_list.copy()
+                button.enable()
 
-            if self.current_cat_dict["age"]:
-                self.age_element["info"].set_text(f"chosen age: {self.current_cat_dict['age']}")
+        self.relationships_element["cats_to_list"].set_selected_list(selected_constraints["cats_to"].copy())
+        self.relationships_element["cats_to_info"].set_text(f"selected: {selected_constraints['cats_to']}")
+        for name, button in self.relationships_element["cats_to_list"].buttons.items():
+            if name in selected_constraints["cats_from"]:
+                button.disable()
             else:
-                self.age_element["info"].set_text(f"chosen age: ['any']")
-            self.editor_container.on_contained_elements_changed(self.age_element["info"])
-        # SKILLS
-        if self.skill_element.get("paths"):
-            # chosen path has changed
-            if (self.skill_element["paths"].selected_list
-                    and self.open_path not in self.skill_element["paths"].selected_list):
-                self.open_path = self.skill_element["paths"].selected_list[0]
-                self.update_level_list()
-            # there is no path selected
-            elif not self.skill_element["paths"].selected_list and self.open_path:
-                self.chosen_level = None
-                self.update_skill_info()
-                self.open_path = None
-                self.update_level_list()
-        # TRAITS
-        if self.trait_element.get("adult"):
-            combined_selection = self.trait_element["adult"].selected_list.copy()
-            combined_selection.extend(self.trait_element["kitten"].selected_list)
+                button.enable()
 
-            if not combined_selection:
-                combined_selection = []
+        # VALUES
+        self.relationships_element["values_list"].set_selected_list(selected_constraints["values"].copy())
+        self.relationships_element["values_info"].set_text(f"values: {selected_constraints['values']}")
 
-            saved_traits = "trait" if self.trait_allowed else "not_trait"
-            if combined_selection != self.current_cat_dict.get(saved_traits):
-                self.update_trait_info(self.kit_traits, self.trait_element["kitten"].selected_list)
-                self.update_trait_info(self.adult_traits, self.trait_element["adult"].selected_list)
-        # BACKSTORIES
-        if self.backstory_element.get("pools"):
-            selected_list = self.backstory_element["pools"].selected_list
+        # AMOUNT
+        self.relationships_element["amount_entry"].set_text(str(selected_constraints["amount"]))
 
-            if not self.open_pool and not selected_list:
-                self.backstory_element["list"].new_item_list([])
-                self.update_backstory_info()
+        self.update_block_info()
 
-            # pool has changed
-            elif selected_list and self.open_pool not in selected_list:
-                self.open_pool = selected_list[0]
-                self.backstory_element["list"].new_item_list(self.all_backstories[self.open_pool])
+    def update_history_block_options(self):
+        if not self.history_element.get("lead_history_input"):
+            return
 
-                for name, button in self.backstory_element["list"].buttons.items():
-                    button.set_tooltip(f"cat.backstories.{name}")
-                self.update_backstory_info()
+        self.selected_history_block_index = (self.history_element["block_list"].selected_list.copy()[0]
+                                             if self.history_element["block_list"].selected_list
+                                             else "")
+        if self.selected_history_block_index:
+            selected_constraints = self.history_block_list.copy()[int(self.selected_history_block_index)]
+        else:
+            selected_constraints = self.history_template.copy()
 
-            # there is no pool selected
-            elif not selected_list and self.open_pool:
-                if self.open_pool in self.current_cat_dict["backstory"]:
-                    self.current_cat_dict["backstory"].remove(self.open_pool)
+        # CATS
+        self.history_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
+        self.history_element["cats_info"].set_text(f"cats: {selected_constraints['cats']}")
 
-                singles_to_remove = set(self.current_cat_dict["backstory"]).intersection(
-                    set(self.all_backstories[self.open_pool]))
-                if singles_to_remove:
-                    for story in singles_to_remove:
-                        self.current_cat_dict["backstory"].remove(story)
+        # SCAR
+        self.history_element["scar_history_input"].set_text(selected_constraints["scar"])
 
-                self.open_pool = None
-                self.backstory_element["list"].new_item_list([])
-                self.update_backstory_info()
+        # REG_DEATH
+        self.history_element["reg_history_input"].set_text(selected_constraints["reg_death"])
 
-    def handle_settings_on_use(self):
-        # CHANGE TYPE
-        if (self.type_element.get("pick_type")
-                and self.type_element["pick_type"].selected_list != self.type_info):
-            new_type = self.type_element["pick_type"].selected_list[0]
-            self.type_element["pick_type"].parent_button.set_text(new_type)
-            self.type_info = [new_type]
-            self.sub_info.clear()
-            self.update_sub_info()
-            self.update_sub_buttons(self.event_types.get(new_type))
-            self.update_basic_checkboxes()
-        # CHANGE SUBTYPES
-        if (self.type_element.get("subtype_dropdown")
-                and self.type_element["subtype_dropdown"].selected_list != self.sub_info):
-            self.sub_info = self.type_element["subtype_dropdown"].selected_list.copy()
-            self.update_sub_info()
-        # CHANGE SEASONS
-        if (self.season_element.get("season_dropdown")
-                and self.season_element["season_dropdown"].selected_list != self.season_info):
-            self.season_info = self.season_element["season_dropdown"].selected_list.copy()
-            self.update_season_info()
+        # LEAD_DEATH
+        self.history_element["lead_history_input"].set_text(selected_constraints["lead_death"])
 
-    def change_new_cat_info_dict(self):
-        if not self.selected_new_cat_info:
-            if self.new_cat_block_dict.get(self.selected_new_cat):
-                saved_info = self.new_cat_block_dict[self.selected_new_cat]
-                unpacked = {
-                    "backstory": [],
-                    "parent": [],
-                    "adoptive": [],
-                    "mate": []
-                }
-                for tag in saved_info:
-                    if "backstory" in tag:
-                        stories = tag.replace("backstory:", "")
-                        stories = stories.split(",")
-                        unpacked["backstory"] = stories
-                    elif "parent" in tag:
-                        parents = tag.replace("parent:", "")
-                        parents = parents.split(",")
-                        unpacked["parent"] = parents
-                    elif "adoptive" in tag:
-                        adoptive = tag.replace("adoptive:", "")
-                        adoptive = adoptive.split(",")
-                        unpacked["adoptive"] = adoptive
-                    elif "mate" in tag:
-                        mates = tag.replace("mate:", "")
-                        mates = mates.split(",")
-                        unpacked["mate"] = mates
-                self.selected_new_cat_info = unpacked
-            else:
-                self.selected_new_cat_info = {
-                    "backstory": [],
-                    "parent": [],
-                    "adoptive": [],
-                    "mate": []
-                }
-        self.current_cat_dict = self.selected_new_cat_info
+        self.update_block_info()
+
+    def update_injury_block_options(self):
+        if not self.injury_element.get("scar_info"):
+            return
+        self.selected_injury_block = (self.injury_element["block_list"].selected_list.copy()[0]
+                                      if self.injury_element["block_list"].selected_list
+                                      else "")
+        if self.selected_injury_block:
+            selected_constraints = self.injury_block_list.copy()[int(self.selected_injury_block)]
+        else:
+            selected_constraints = self.injury_template.copy()
+
+        # CATS
+        self.injury_element["cats_list"].set_selected_list(selected_constraints["cats"].copy())
+        self.injury_element["cats_info"].set_text(f"cats: {selected_constraints['cats']}")
+
+        # INJURIES
+        all_injuries = selected_constraints["injuries"]
+        pools = []
+        injuries = []
+        for inj in all_injuries:
+            if inj in self.all_injury_pools:
+                pools.append(inj)
+                continue
+            if inj in self.all_possible_injuries:
+                injuries.append(inj)
+
+        self.injury_element["injury_pools"].set_selected_list(pools)
+        self.injury_element["individual_injuries"].set_selected_list(injuries)
+        self.injury_element["injury_info"].set_text(f"injuries: {all_injuries}")
+
+        # SCARS
+        self.injury_element["scar_list"].set_selected_list(selected_constraints["scars"])
+        self.injury_element["scar_info"].set_text(f"scars: {selected_constraints['scars']}")
+
+        self.update_block_info()
 
     def update_new_cat_options(self):
         if not self.selected_new_cat:
@@ -2292,7 +2816,6 @@ class EventEdit(Screens):
 
         self.editor_container.on_contained_elements_changed(self.new_cat_editor["info"])
 
-    # MAIN/RANDOM CAT UPDATES
     def update_backstory_info(self):
         chosen_stories = self.current_cat_dict["backstory"]
 
@@ -2366,7 +2889,6 @@ class EventEdit(Screens):
                 f"chosen relationship_status: {self.current_cat_dict['rel_status']}")
             self.editor_container.on_contained_elements_changed(self.rel_status_element["info"])
 
-    # SETTINGS UPDATES
     def replace_accs_with_group(self, group):
         for category_name, accs in self.acc_categories.items():
             if group == category_name:
@@ -2495,624 +3017,108 @@ class EventEdit(Screens):
         else:
             self.type_element["sub_display"].set_text("chosen subtypes: []")
 
-    # OVERALL SCREEN CONTROLS
-    def exit_screen(self):
-        self.chosen_biome = None
-        self.chosen_type = None
-        self.location_info = []
-        self.season_info = []
-        self.type_info = []
-        self.sub_info = []
-        self.tag_info = []
-
-        self.main_menu_button.kill()
-        self.list_frame.kill()
-        self.event_text_container.kill()
-        if self.event_list_container:
-            self.event_list_container.kill()
-        if self.editor_container:
-            self.editor_container.kill()
-        if self.editor_element:
-            for ele in self.editor_element.values():
-                ele.kill()
-
-        self.add_button.kill()
-        self.kill_tabs()
-        self.kill_event_buttons()
-
-    def clear_editor_tab(self):
-
-        self.editor_container.kill()
-
-        self.display_editor()
-
-    def clear_event_info(self):
-        # resetting everything back to zero!
-        # Settings elements
-        self.event_text_info = ""
-        self.event_id_element = {}
-        self.event_id_info = ""
-        self.location_element = {}
-        self.location_info = []
-        self.season_element = {}
-        self.season_info = []
-        self.type_element = {}
-        self.type_info = ["death"]
-        self.sub_element = {}
-        self.sub_info = []
-        self.tag_element = {}
-        self.basic_tag_checkbox = {}
-        self.rank_tag_checkbox = {}
-        self.tag_info = []
-        self.weight_element = {}
-        self.weight_info = 20
-        self.acc_element = {}
-        self.acc_info = []
-        self.acc_categories = Pelt.acc_categories
-        self.open_category = None
-        self.acc_button = {}
-        self.main_cat_editor = {}
-        self.random_cat_editor = {}
-        self.death_element = {}
-        self.rank_element = {}
-        self.age_element = {}
-        self.rel_status_element = {}
-        self.rel_status_checkbox = {}
-        self.rel_value_element = {}
-        self.skill_element = {}
-        self.level_element = {}
-        self.skill_allowed = True
-        self.open_path = None
-        self.chosen_level = None
-        self.trait_element = {}
-        self.trait_allowed = True
-        self.backstory_element = {}
-        self.open_pool = None
-        self.main_cat_info = {
-            "rank": [],
-            "age": [],
-            "rel_status": [],
-            "dies": False,
-            "skill": [],
-            "not_skill": [],
-            "trait": [],
-            "not_trait": [],
-            "backstory": []
-        }
-        # TODO: add a checkbox somewhere that indicates if the event should have a random cat
-        self.r_c_needed = False
-        self.random_cat_info = {
-            "rank": [],
-            "age": [],
-            "rel_status": [],
-            "dies": False,
-            "skill": [],
-            "not_skill": [],
-            "trait": [],
-            "not_trait": [],
-            "backstory": []
-        }
-        self.selected_new_cat_info = {}
-        self.new_cat_template = {
-            "backstory": [],
-            "parent": [],
-            "adoptive": [],
-            "mate": []
-        }
-        self.current_cat_dict = self.main_cat_info
-        self.new_cat_editor = {}
-        self.new_cat_element = {}
-        self.new_cat_block_dict = {}
-        self.selected_new_cat = None
-        self.new_cat_checkbox = {}
-        self.cat_story_element = {}
-        self.new_status_element = {}
-        self.new_age_element = {}
-        self.new_gender_element = {}
-        self.connections_element = {}
-        self.open_connection = "parent"
-        self.exclusion_element = {}
-        self.excluded_cats = []
-        self.open_block = "injury"
-        self.injury_element = {}
-        self.injury_block_list = []
-        self.injury_template = {
-            "cats": [],
-            "injuries": [],
-            "scars": []
-        }
-        self.selected_injury_block: str = ""
-        self.history_element = {}
-        self.history_block_list = []
-        self.history_template = {
-            "cats": [],
-            "scar": "",
-            "reg_death": "",
-            "lead_death": ""
-        }
-        self.selected_history_block_index: str = ""
-        self.relationships_element = {}
-        self.relationships_block_list = []
-        self.relationships_template = {
-            "cats_from": [],
-            "cats_to": [],
-            "mutual": False,
-            "values": [],
-            "amount": 0
-        }
-        self.selected_relationships_block_index: str = ""
-        self.outsider_element = {}
-        self.outsider_info = {
-            "current_rep": [],
-            "changed": 0
-        }
-        self.other_clan_element = {}
-        self.other_clan_info = {
-            "current_rep": [],
-            "changed": 0
-        }
-        self.supply_element = {}
-        self.supply_block_list = []
-        self.selected_supply_block_index: str = ""
-        self.supply_info = {
-            "type": "",
-            "trigger": [],
-            "adjust": ""
-        }
-        self.current_preview_state = self.preview_states[0]
-
-    def screen_switches(self):
-
-        super().screen_switches()
-        Screens.show_mute_buttons()
-
-        self.main_menu_button = UISurfaceImageButton(
-            ui_scale(pygame.Rect((25, 25), (152, 30))),
-            "buttons.main_menu",
-            get_button_dict(ButtonStyles.SQUOVAL, (152, 30)),
-            manager=MANAGER,
-            object_id="@buttonstyles_squoval",
-            starting_height=1,
-        )
-
-        self.list_frame = pygame_gui.elements.UIImage(
-            ui_scale(pygame.Rect((60, 80), (250, 560))),
-            get_box(BoxStyles.ROUNDED_BOX, (250, 560)),
-            starting_height=3,
-            manager=MANAGER,
-        )
-
-        self.select_type_tab_creation()
-        self.display_events()
-
-        self.event_text_container = pygame_gui.elements.UIAutoResizingContainer(
-            ui_scale(pygame.Rect((290, 30), (0, 0))),
-            starting_height=1,
-            manager=MANAGER,
-        )
-        self.event_text_element["preview_button"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((-30, 10), (36, 36))),
-            Icon.MAGNIFY,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            container=self.event_text_container,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.preview_text"
-        )
-
-        self.event_text_element["box"] = UIModifiedImage(
-            ui_scale(pygame.Rect((0, 0), (460, 120))),
-            get_box(BoxStyles.ROUNDED_BOX, (460, 120)),
-            starting_height=1,
-            manager=MANAGER,
-            container=self.event_text_container
-        )
-        self.event_text_element["box"].disable()
-
-        self.editor_element["frame"] = pygame_gui.elements.UIImage(
-            ui_scale(pygame.Rect((300, 140), (470, 490))),
-            get_box(BoxStyles.FRAME, (470, 490)),
-            starting_height=2,
-            manager=MANAGER,
-        )
-        self.add_button = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 580), (36, 36))),
-            Icon.NOTEPAD,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.add_event"
-        )
-
-        self.display_editor()
-
-    # EVENT DISPLAY
-    def kill_tabs(self):
-        for tab in self.type_tab_buttons:
-            self.type_tab_buttons[tab].kill()
-        for tab in self.biome_tab_buttons:
-            self.biome_tab_buttons[tab].kill()
-
-    def select_type_tab_creation(self):
-        # clear all tabs first
-        self.kill_tabs()
-        # TODO: replace with a for loop
-        self.type_tab_buttons["death"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 136), (36, 36))),
-            Icon.STARCLAN,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_deaths"
-        )
-        self.type_tab_buttons["injury"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.SCRATCHES,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_injuries",
-            anchors={
-                "top_target": self.type_tab_buttons["death"]
-            }
-        )
-        self.type_tab_buttons["misc"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.CLAN_UNKNOWN,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_misc",
-            anchors={
-                "top_target": self.type_tab_buttons["injury"]
-            }
-        )
-        self.type_tab_buttons["new_cat"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.CAT_HEAD,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_new_cat",
-            anchors={
-                "top_target": self.type_tab_buttons["misc"]
-            }
-        )
-
-    def select_biome_tab_creation(self):
-        # clear all tabs first
-        self.kill_tabs()
-
-        self.biome_tab_buttons["back"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 90), (36, 36))),
-            Icon.ARROW_LEFT,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1
-        )
-        self.biome_tab_buttons["general"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.PAW,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_general",
-            anchors={
-                "top_target": self.biome_tab_buttons["back"]
-            }
-        )
-        self.biome_tab_buttons["forest"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.LEAFFALL,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_forest",
-            anchors={
-                "top_target": self.biome_tab_buttons["general"]
-            }
-        )
-        self.biome_tab_buttons["mountainous"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.LEAFBARE,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_mountain",
-            anchors={
-                "top_target": self.biome_tab_buttons["forest"]
-            }
-        )
-        self.biome_tab_buttons["plains"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.NEWLEAF,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_plains",
-            anchors={
-                "top_target": self.biome_tab_buttons["mountainous"]
-            }
-        )
-        self.biome_tab_buttons["beach"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.DARKFOREST,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_beach",
-            anchors={
-                "top_target": self.biome_tab_buttons["plains"]
-            }
-        )
-
-        self.biome_tab_buttons["desert"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.GREENLEAF,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_desert",
-            anchors={
-                "top_target": self.biome_tab_buttons["beach"]
-            }
-        )
-
-        self.biome_tab_buttons["wetlands"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((27, 10), (36, 36))),
-            Icon.HERB,
-            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (36, 36)),
-            manager=MANAGER,
-            object_id="@buttonstyles_icon_tab_right",
-            starting_height=1,
-            tool_tip_text="buttons.edit_wetlands",
-            anchors={
-                "top_target": self.biome_tab_buttons["desert"]
-            }
-        )
-
-    def get_event_json(self, path):
-        event_list = []
-
-        try:
-            with open(path, "r", encoding="utf-8") as read_file:
-                events = read_file.read()
-                event_list = ujson.loads(events)
-        except:
-            print(f"Something went wrong with event loading. Is {path} valid?")
-
-        if not event_list and self.editor_element.get("intro_text"):
-            self.editor_element["intro_text"].set_text("screens.event_edit.empty_event_list")
-            return []
-
-        try:
-            if event_list and not isinstance(event_list[0], dict):
-                print(f"{path} isn't in the correct event format. Perhaps it isn't an event .json?")
-        except KeyError:
-            return []
-
-        return event_list
-
-    def display_events(self, event_type=None, biome=None):
-        self.kill_event_buttons()
-        event_list = []
-        if self.editor_element.get("intro_text"):
-            self.editor_element["intro_text"].set_text("screens.event_edit.intro_text")
-
-        path = "resources/lang/en/events"
-        type_list = list(self.event_types.keys())
-        all_biomes = game.BIOME_TYPES.copy()
-        all_biomes.append("general")
-
-        if not event_type:
-            for type_name in type_list:
-                for biome_name in all_biomes:
-                    event_list.extend(self.get_event_json(f"{path}/{type_name}/{biome_name.casefold()}.json"))
-        elif event_type and not biome:
-            for biome_name in all_biomes:
-                event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome_name.casefold()}.json"))
-        elif event_type and biome:
-            event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome.casefold()}.json"))
-
-        self.event_list_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((68, 90), (236, 540))),
-            starting_height=3,
-            manager=MANAGER,
-            allow_scroll_y=True,
-        )
-
-        self.event_list = event_list
-
-        for index, event in enumerate(event_list):
-            if not event_type:
-                self.all_event_ids.append(event["event_id"])
+    # ON USE FUNCS
+    def handle_main_and_random_cat_on_use(self):
+        # RANKS
+        if (self.rank_element.get("dropdown")
+                and self.rank_element["dropdown"].selected_list != self.current_cat_dict.get("rank")):
+            self.current_cat_dict["rank"] = self.rank_element["dropdown"].selected_list.copy()
+            if self.current_cat_dict["rank"]:
+                self.rank_element["info"].set_text(f"chosen rank: {self.current_cat_dict['rank']}")
             else:
-                test_dict = {}
-                for abbr in self.test_cat_names:
-                    pronoun = choice(
-                        [pro for pro in self.test_pronouns if pro["conju"] == 2]
-                    )
-                    test_dict[abbr] = (
-                        self.test_cat_names[abbr], pronoun
-                    )
-                preview = process_text(event["event_text"], test_dict)
-                self.event_buttons[index] = UISurfaceImageButton(
-                    ui_scale(pygame.Rect((0, -2 if index > 0 else 0), (216, 36))),
-                    event["event_id"],
-                    get_button_dict(ButtonStyles.DROPDOWN, (216, 36)),
-                    manager=MANAGER,
-                    object_id="@buttonstyles_dropdown",
-                    starting_height=1,
-                    anchors={
-                        "top_target": self.event_buttons[index - 1]
-                    } if self.event_buttons.get(index - 1) else None,
-                    container=self.event_list_container,
-                    tool_tip_text=preview
-                )
+                self.rank_element["info"].set_text(f"chosen rank: ['any']")
+            self.editor_container.on_contained_elements_changed(self.rank_element["info"])
+        # AGES
+        if (self.age_element.get("dropdown")
+                and self.age_element["dropdown"].selected_list != self.current_cat_dict.get("age")):
+            self.current_cat_dict["age"] = self.age_element["dropdown"].selected_list.copy()
 
-    def kill_event_buttons(self):
-        for event in self.event_buttons:
-            self.event_buttons[event].kill()
+            if self.current_cat_dict["age"]:
+                self.age_element["info"].set_text(f"chosen age: {self.current_cat_dict['age']}")
+            else:
+                self.age_element["info"].set_text(f"chosen age: ['any']")
+            self.editor_container.on_contained_elements_changed(self.age_element["info"])
+        # SKILLS
+        if self.skill_element.get("paths"):
+            # chosen path has changed
+            if (self.skill_element["paths"].selected_list
+                    and self.open_path not in self.skill_element["paths"].selected_list):
+                self.open_path = self.skill_element["paths"].selected_list[0]
+                self.update_level_list()
+            # there is no path selected
+            elif not self.skill_element["paths"].selected_list and self.open_path:
+                self.chosen_level = None
+                self.update_skill_info()
+                self.open_path = None
+                self.update_level_list()
+        # TRAITS
+        if self.trait_element.get("adult"):
+            combined_selection = self.trait_element["adult"].selected_list.copy()
+            combined_selection.extend(self.trait_element["kitten"].selected_list)
 
-    # EDITOR DISPLAY
-    def display_editor(self):
+            if not combined_selection:
+                combined_selection = []
 
-        self.editor_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((314, 150), (470, 470))),
-            starting_height=4,
-            manager=MANAGER,
-            allow_scroll_y=True,
-        )
-        self.editor_container.scrollable_container.resize_top = False
+            saved_traits = "trait" if self.trait_allowed else "not_trait"
+            if combined_selection != self.current_cat_dict.get(saved_traits):
+                self.update_trait_info(self.kit_traits, self.trait_element["kitten"].selected_list)
+                self.update_trait_info(self.adult_traits, self.trait_element["adult"].selected_list)
+        # BACKSTORIES
+        if self.backstory_element.get("pools"):
+            selected_list = self.backstory_element["pools"].selected_list
 
-        if not self.current_editor_tab:
-            self.editor_element["intro_text"] = UITextBoxTweaked(
-                "screens.event_edit.intro_text",
-                ui_scale(pygame.Rect((0, 0), (450, -1))),
-                object_id="#text_box_26_horizleft_pad_10_14",
-                line_spacing=1,
-                manager=MANAGER,
-                container=self.editor_container
-            )
-            return
-        elif self.editor_element.get("intro_text"):
-            self.editor_element["intro_text"].kill()
+            if not self.open_pool and not selected_list:
+                self.backstory_element["list"].new_item_list([])
+                self.update_backstory_info()
 
-        # EVENT TEXT
-        # this one is special in that it has a separate container
-        if not self.event_text_element.get("preview_text"):
-            self.event_text_element["preview_text"] = UITextBoxTweaked(
-                "",
-                ui_scale(pygame.Rect((48, 10), (435, 100))),
-                object_id="#text_box_26_horizleft_pad_10_14",
-                manager=MANAGER,
-                container=self.event_text_container,
-                visible=False,
-            )
-            self.event_text_element["preview_text"].disable()
-            self.event_text_element["event_text"] = pygame_gui.elements.UITextEntryBox(
-                ui_scale(pygame.Rect((48, 10), (435, 100))),
-                object_id="#text_box_26_horizleft_pad_10_14",
-                manager=MANAGER,
-                container=self.event_text_container,
-            )
-        game.event_editing = True
-        if self.event_text_info:
-            self.event_text_element["event_text"].set_text(self.event_text_info)
-        else:
-            self.event_text_element["event_text"].set_text("screens.event_edit.event_text_initial")
+            # pool has changed
+            elif selected_list and self.open_pool not in selected_list:
+                self.open_pool = selected_list[0]
+                self.backstory_element["list"].new_item_list(self.all_backstories[self.open_pool])
 
-        # SECTION TABS
-        if not self.editor_element.get(list(self.section_tabs.keys())[0]):
-            prev_element = None
-            for name, icon in self.section_tabs.items():
-                self.editor_element[name] = UISurfaceImageButton(
-                    ui_scale(pygame.Rect((10, -6), (36, 36))),
-                    icon,
-                    get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
-                    manager=MANAGER,
-                    object_id="@buttonstyles_icon_tab_bottom",
-                    starting_height=1,
-                    tool_tip_text=name,
-                    anchors=(
-                        {
-                            "top_target": self.editor_element["frame"],
-                            "left_target": self.list_frame
-                        }
-                        if not prev_element
-                        else
-                        {
-                            "top_target": self.editor_element["frame"],
-                            "left_target": prev_element
-                        }
-                    )
-                )
-                prev_element = self.editor_element[name]
+                for name, button in self.backstory_element["list"].buttons.items():
+                    button.set_tooltip(f"cat.backstories.{name}")
+                self.update_backstory_info()
 
-        if not self.editor_element.get("save"):
-            self.editor_element["save"] = UISurfaceImageButton(
-                ui_scale(pygame.Rect((320, -8), (80, 36))),
-                "buttons.save",
-                get_button_dict(ButtonStyles.HORIZONTAL_TAB_MIRRORED, (80, 36)),
-                manager=MANAGER,
-                object_id="@buttonstyles_horizontal_tab_mirrored",
-                starting_height=1,
-                tool_tip_text="Add this event to the event json.",
-                anchors=(
-                    {
-                        "top_target": self.editor_element["frame"],
-                        "left_target": self.list_frame
-                    }
-                )
-            )
+            # there is no pool selected
+            elif not selected_list and self.open_pool:
+                if self.open_pool in self.current_cat_dict["backstory"]:
+                    self.current_cat_dict["backstory"].remove(self.open_pool)
 
-        if self.current_editor_tab == "settings":
-            self.generate_settings_tab()
-        elif self.current_editor_tab == "main cat":
-            self.current_cat_dict = self.main_cat_info
-            self.generate_main_cat_tab()
-        elif self.current_editor_tab == "random cat":
-            self.current_cat_dict = self.random_cat_info
-            self.generate_random_cat_tab()
-        elif self.current_editor_tab == "new cats":
-            self.generate_new_cats_tab()
-        elif self.current_editor_tab == "personal consequences":
-            self.generate_personal_tab()
-        elif self.current_editor_tab == "outside consequences":
-            self.generate_outside_tab()
+                singles_to_remove = set(self.current_cat_dict["backstory"]).intersection(
+                    set(self.all_backstories[self.open_pool]))
+                if singles_to_remove:
+                    for story in singles_to_remove:
+                        self.current_cat_dict["backstory"].remove(story)
 
-    def create_divider(self, top_anchor, name, off_set: int = -12, container=None):
-        if not container:
-            container = self.editor_container
+                self.open_pool = None
+                self.backstory_element["list"].new_item_list([])
+                self.update_backstory_info()
 
-        self.editor_element[name] = pygame_gui.elements.UIImage(
-            ui_scale(pygame.Rect((0, off_set), (524, 24))),
-            pygame.transform.scale(
-                image_cache.load_image(
-                    "resources/images/spacer.png"
-                ).convert_alpha(),
-                ui_scale_dimensions((524, 24)),
-            ),
-            container=container,
-            manager=MANAGER,
-            anchors={
-                "top_target": top_anchor
-            }
-        )
+    def handle_settings_on_use(self):
+        # CHANGE TYPE
+        if (self.type_element.get("pick_type")
+                and self.type_element["pick_type"].selected_list != self.type_info):
+            new_type = self.type_element["pick_type"].selected_list[0]
+            self.type_element["pick_type"].parent_button.set_text(new_type)
+            self.type_info = [new_type]
+            self.sub_info.clear()
+            self.update_sub_info()
+            self.update_sub_buttons(self.event_types.get(new_type))
+            self.update_basic_checkboxes()
+        # CHANGE SUBTYPES
+        if (self.type_element.get("subtype_dropdown")
+                and self.type_element["subtype_dropdown"].selected_list != self.sub_info):
+            self.sub_info = self.type_element["subtype_dropdown"].selected_list.copy()
+            self.update_sub_info()
+        # CHANGE SEASONS
+        if (self.season_element.get("season_dropdown")
+                and self.season_element["season_dropdown"].selected_list != self.season_info):
+            self.season_info = self.season_element["season_dropdown"].selected_list.copy()
+            self.update_season_info()
 
-    def get_involved_cats(self, index_limit=None):
-        """
-        :param index_limit: indicate a maximum index for the new cat list.
-        """
-        # TODO: make sure this gets an option to indicate if r_c is in the event
-        involved_cats = ["m_c"]
-        if self.random_cat_info:
-            involved_cats.append("r_c")
-
-        new_cat_list = list(self.new_cat_block_dict.keys())
-        if isinstance(index_limit, int):
-            for index, item in enumerate(new_cat_list.copy()):
-                if index >= index_limit:
-                    new_cat_list.remove(item)
-
-        involved_cats.extend(new_cat_list)
-
-        return involved_cats
-
-    # OUTSIDE CONSEQUENCES TAB
+    # EDITOR GENERATION
+    # OUTSIDE CONSEQUENCES EDITOR
     def generate_outside_tab(self):
 
         # OUTSIDER
@@ -3788,7 +3794,7 @@ class EventEdit(Screens):
             ui_scale(pygame.Rect((10, 10), (150, 30))),
             manager=MANAGER,
             parent_text="injury pools",
-            item_list=self.all_injury_pools,
+            item_list=list(self.all_injury_pools.keys()),
             dropdown_dimensions=(150, 300),
             container=self.injury_element["constraint_container"],
             anchors={
@@ -3867,7 +3873,7 @@ class EventEdit(Screens):
         )
         self.injury_element["scar_info"] = UITextBoxTweaked(
             f"scars: {selected_constraints['scars']}",
-            ui_scale(pygame.Rect((10, 20), (440, -1))),
+            ui_scale(pygame.Rect((10, 20), (200, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,
