@@ -57,6 +57,7 @@ class StartScreen(Screens):
         self.social_buttons = {}
 
         self.error_open = False
+        self.event_edit = None
 
     def handle_event(self, event):
         """This is where events that occur on this page are handled.
@@ -155,7 +156,8 @@ class StartScreen(Screens):
         self.warning_label.kill()
         self.update_button.kill()
         self.quit.kill()
-        self.event_edit.kill()
+        if self.event_edit:
+            self.event_edit.kill()
         self.closebtn.kill()
         for btn in self.social_buttons:
             self.social_buttons[btn].kill()
@@ -228,14 +230,15 @@ class StartScreen(Screens):
             manager=MANAGER,
             anchors={"top_target": self.settings_button},
         )
-        self.event_edit = UISurfaceImageButton(
-            ui_scale(pygame.Rect((70, 15), (200, 30))),
-            "buttons.event_edit",
-            image_dict=get_button_dict(ButtonStyles.MAINMENU, (200, 30)),
-            object_id="@buttonstyles_mainmenu",
-            manager=MANAGER,
-            anchors={"top_target": self.quit},
-        )
+        if game.config["dev_tools"]:
+            self.event_edit = UISurfaceImageButton(
+                ui_scale(pygame.Rect((70, 15), (200, 30))),
+                "buttons.event_edit",
+                image_dict=get_button_dict(ButtonStyles.MAINMENU, (200, 30)),
+                object_id="@buttonstyles_mainmenu",
+                manager=MANAGER,
+                anchors={"top_target": self.quit},
+            )
 
         self.social_buttons["twitter_button"] = UIImageButton(
             ui_scale(pygame.Rect((12, 647), (40, 40))),
