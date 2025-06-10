@@ -32,10 +32,10 @@ class EventEdit(Screens):
     This screen provides an interface to allow devs to edit and create events.
     """
 
-    # state 1 is plural pronouns, state 2 is singular pronouns
-    preview_states = (0, 1, 2)
-    # placeholder names for each cat abbr
-    test_cat_names = {
+    preview_states: tuple = (0, 1, 2)
+    """Possible preview states, 0 (no preview), 1 (plural), 2 (singular)."""
+
+    test_cat_names: dict = {
         "m_c": "MainCat",
         "r_c": "RandomCat",
         "mur_c": "MurderedCat",
@@ -44,11 +44,12 @@ class EventEdit(Screens):
         "med_name": "MedCat",
         "multi_cat": "DeadCat, PerishedCat, and RipCat"
     }
+    """Placeholder names for each possible cat abbreviation."""
     # it's possible to have more than 6 new cats, but doubtful that we'll ever refer to more than 2 within event text
+    # either way, this adds 6 new cat abbreviations to our test name dict
     for index in range(5):
         test_cat_names[f"n_c:{index}"] = f"NewCat{index}"
 
-    # pronoun dicts to pull from
     test_pronouns = [
         {
             "subject": "they",
@@ -75,6 +76,7 @@ class EventEdit(Screens):
             "conju": 2
         }
     ]
+    """Pronoun dicts to assign to our test cats."""
 
     all_camps: dict = {
         "Forest": ["Classic", "Gully", "Grotto", "Lakeside"],
@@ -82,17 +84,20 @@ class EventEdit(Screens):
         "Plains": ["Grasslands", "Tunnels", "Wastelands"],
         "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
     }
-    all_seasons = ("newleaf", "greenleaf", "leaf-fall", "leaf-bare")
+    """Dict with key as biome and value as camp name."""
+    all_seasons: tuple = ("newleaf", "greenleaf", "leaf-fall", "leaf-bare")
+    """Tuple of all seasons possible."""
 
-    event_types = {
+    event_types: dict = {
         "death": ["murder", "old_age", "mass_death", "war"],
         "injury": ["war"],
         "misc": ["murder_reveal", "accessory", "ceremony", "war"],
         "new_cat": ["war"]
     }
+    """Dict with key as event type and value as allowed subtypes for that type."""
 
     # TODO: consider moving some of these into a file that better facilitates new additions
-    basic_tag_list = [
+    basic_tag_list: list = [
         {
             "tag": "classic",
             "setting": False,
@@ -166,8 +171,9 @@ class EventEdit(Screens):
             "conflict": ["mid_lives", "high_lives"]
         }
     ]
+    """List of dicts for all basic event tags. Each dict holds tag name, conflicts, setting, and type required."""
 
-    rel_tag_list = [
+    rel_tag_list: list = [
         {
             "tag": "siblings",
             "setting": False,
@@ -231,27 +237,39 @@ class EventEdit(Screens):
                          "app/mentor"]
         }
     ]
-    rel_value_types = RelationshipScreen.rel_value_names
+    """List of dicts for relationship_values. Each dict holds tag name, conflicts, and setting."""
+    rel_value_types: list = RelationshipScreen.rel_value_names
+    """List of all relationship values."""
 
-    all_ranks = Cat.rank_sort_order.copy()
+    all_ranks: list = Cat.rank_sort_order.copy()
+    """List of all possible ranks from highest to lowest."""
     all_ranks.reverse()
 
-    all_ages = [age.value for age in Cat.age_moons.keys()]
+    all_ages: list = [age.value for age in Cat.age_moons.keys()]
+    """List of all possible ages from oldest to youngest."""
     all_ages.reverse()
 
-    all_skills = {k: v for (k, v) in zip([path.name for path in SkillPath], [path.value for path in SkillPath])}
+    all_skills: dict = {k: v for (k, v) in zip([path.name for path in SkillPath], [path.value for path in SkillPath])}
+    """Dict holding all skill info. Key is skill path, value is list of skill levels."""
 
-    adult_traits = Personality.trait_ranges["normal_traits"].keys()
-    kit_traits = Personality.trait_ranges["kit_traits"].keys()
+    adult_traits: list = Personality.trait_ranges["normal_traits"].keys()
+    """List of all adult traits."""
+    kit_traits: list = Personality.trait_ranges["kit_traits"].keys()
+    """List of all kit traits."""
 
-    all_backstories = BACKSTORIES["backstory_categories"]
-    individual_stories = []
+    all_backstories: dict = BACKSTORIES["backstory_categories"]
+    """Dict of all backstory categories. Key is the backstory category and value is the backstories within that 
+    category."""
+    individual_stories: list = []
+    """List of all possible backstories"""
+
     for pool in all_backstories:
         individual_stories.extend(all_backstories[pool])
 
-    new_cat_types = ["kittypet", "loner", "rogue", "clancat"]
+    new_cat_types: list = ["kittypet", "loner", "rogue", "clancat"]
+    """All possible cat types."""
 
-    new_cat_bools = [
+    new_cat_bools: list = [
         {
             "tag": "litter",
             "setting": False,
@@ -278,27 +296,37 @@ class EventEdit(Screens):
             "conflict": ["new_name", "litter", "meeting"]
         },
     ]
+    """New cat tag list. Holds tag name, setting, and conflicts."""
 
-    new_cat_ranks = all_ranks.copy()
+    new_cat_ranks: list = all_ranks.copy()
+    """All ranks available to new cats."""
+
     new_cat_ranks.remove("leader")
     new_cat_ranks.remove("deputy")
 
-    new_cat_ages = all_ages.copy()
+    new_cat_ages: list = all_ages.copy()
+    """List of all age tags available to new cats."""
     new_cat_ages.extend(["has_kits", "mate"])
 
-    new_cat_genders = ["male", "female", "can_birth"]
+    new_cat_genders: list = ["male", "female", "can_birth"]
+    """List of all gender tags available to new cats"""
 
-    all_injury_pools = INJURY_GROUPS
-    all_possible_injuries = EVENT_ALLOWED_CONDITIONS
+    all_injury_pools: dict = INJURY_GROUPS
+    """Dict of all injury pools. Key is pool name, value is the injuries within the pool."""
+    all_possible_injuries: list = EVENT_ALLOWED_CONDITIONS
+    """List of all possible injuries/conditions."""
 
-    all_scars = Pelt.scars1 + Pelt.scars2 + Pelt.scars3
+    all_scars: list = Pelt.scars1 + Pelt.scars2 + Pelt.scars3
+    """List of all possible scars"""
 
-    all_outsider_reps = game.outsider_reps.copy()
+    all_outsider_reps: list = game.outsider_reps.copy()
+    """List of all possible outsider reputation levels."""
     all_outsider_reps.append("any")
-    all_other_clan_reps = game.other_clan_reps.copy()
+    all_other_clan_reps: list = game.other_clan_reps.copy()
+    """List of all possible other clan relationship levels."""
     all_other_clan_reps.append("any")
 
-    section_tabs = {
+    section_tabs: dict = {
         "settings": Icon.PAW,
         "main cat": Icon.CAT_HEAD,
         "random cat": Icon.CAT_HEAD,
@@ -306,8 +334,9 @@ class EventEdit(Screens):
         "personal consequences": Icon.SCRATCHES,
         "outside consequences": Icon.CLAN_UNKNOWN
     }
+    """Dict for section tab info. Key is the name of the tab, value is the icon assigned."""
 
-    amount_buttons = {
+    amount_buttons: dict = {
         "amount_up_low_button": Icon.ARROW_RIGHT,
         "amount_up_mid_button": Icon.ARROW_RIGHT,
         "amount_up_high_button": Icon.ARROW_RIGHT,
@@ -315,6 +344,7 @@ class EventEdit(Screens):
         "amount_down_mid_button": Icon.ARROW_LEFT,
         "amount_down_high_button": Icon.ARROW_LEFT
     }
+    """Dict for amount button names and icons. Key is the name, value is the icon assigned."""
 
     def __init__(self, name=None):
         super().__init__(name)
@@ -420,7 +450,6 @@ class EventEdit(Screens):
         self.open_pool: str = ""
         """The backstory category that is determining the backstories that display"""
 
-
         self.main_cat_info: dict = {
             "rank": [],
             "age": [],
@@ -449,7 +478,7 @@ class EventEdit(Screens):
 
         self.selected_new_cat_info: dict = {}
         """The loaded backstory/parent/adoptive/mate information for the currently open new_cat block"""
-        
+
         self.current_cat_dict: dict = self.main_cat_info
         """The info dict for the currently loaded cat, this changes depending on the currently open tab"""
 
