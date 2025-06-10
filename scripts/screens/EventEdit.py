@@ -364,10 +364,15 @@ class EventEdit(Screens):
         """List of loaded existing events"""
         self.all_event_ids: list = []
         """List of all event_ids currently in use. Used to check if newly entered event_id is a duplicate."""
-        self.open_event = None
+        self.open_event: str = ""
         """event_id of the currently open existing event"""
+        self.old_event_path: str = ""
+        """If currently open event is an existing event, this holds its original file path."""
+        self.old_event_index: int = 0
+        """If currently open event is an existing event, this holds its original index within its file"""
 
-        self.current_editor_tab = None
+        self.current_editor_tab: str = ""
+        """The currenlty viewed editor tab."""
 
         self.type_tab_buttons = {}
         self.biome_tab_buttons = {}
@@ -580,7 +585,11 @@ class EventEdit(Screens):
         """The info for the currently viewed supply block"""
 
     # EVENT JSON PROCESSING
-    def unpack_existing_event(self, event):
+    def unpack_existing_event(self, event: dict):
+        """
+        Takes the dict of an existing event and assigns its information to necessary attributes. Also finds the old
+        file path for that event and saves it for later.
+        """
         self.open_event = event.copy()
         biome = "general"
         matching_biomes = []
@@ -658,7 +667,10 @@ class EventEdit(Screens):
         self.other_clan_info = event["other_clan"] if event.get("other_clan") else self.other_clan_info
         self.supply_block_list = event["supplies"] if event.get("supplies") else []
 
-    def compile_new_event(self):
+    def compile_new_event(self) -> dict:
+        """
+        Compiles all information for created/edited event into an event dict to return.
+        """
         new_event = {
             "event_id": self.event_id_info
         }
@@ -747,7 +759,8 @@ class EventEdit(Screens):
 
         return new_event
 
-    def find_event_path(self):
+    def find_event_path(self) -> str:
+        """Finds and returns the best file path based off of current editor info."""
 
         type = self.type_info[0]
         biomes = []
@@ -761,7 +774,10 @@ class EventEdit(Screens):
 
         return f"resources/lang/en/events/{type}/{biome_path}.json"
 
-    def get_event_json(self, path):
+    def get_event_json(self, path: str) -> list:
+        """
+        Loads the event json information for the given file path and returns it as a list.
+        """
         event_list = []
 
         try:
@@ -1021,21 +1037,17 @@ class EventEdit(Screens):
 
     # OVERALL SCREEN CONTROLS
     def exit_screen(self):
-        self.chosen_biome = None
-        self.chosen_type = None
-        self.location_info = []
-        self.season_info = []
-        self.type_info = []
-        self.sub_info = []
-        self.tag_info = []
 
         self.main_menu_button.kill()
         self.list_frame.kill()
         self.event_text_container.kill()
+
         if self.event_list_container:
             self.event_list_container.kill()
+
         if self.editor_container:
             self.editor_container.kill()
+
         if self.editor_element:
             for ele in self.editor_element.values():
                 ele.kill()
@@ -1112,6 +1124,9 @@ class EventEdit(Screens):
         self.display_editor()
 
     def kill_tabs(self):
+        """
+        Kills the tab buttons.
+        """
         for tab in self.type_tab_buttons:
             self.type_tab_buttons[tab].kill()
         for tab in self.biome_tab_buttons:
@@ -1289,12 +1304,13 @@ class EventEdit(Screens):
         elif event_type and biome:
             event_list.extend(self.get_event_json(f"{path}/{event_type}/{biome.casefold()}.json"))
 
-        self.event_list_container = UIModifiedScrollingContainer(
-            ui_scale(pygame.Rect((68, 90), (236, 540))),
-            starting_height=3,
-            manager=MANAGER,
-            allow_scroll_y=True,
-        )
+        if not self.event_list_container:
+            self.event_list_container = UIModifiedScrollingContainer(
+                ui_scale(pygame.Rect((68, 90), (236, 540))),
+                starting_height=3,
+                manager=MANAGER,
+                allow_scroll_y=True,
+            )
 
         self.event_list = event_list
 
