@@ -15,6 +15,7 @@ pygame.init()
 
 # G A M E
 class Game:
+    event_editing = False
     max_name_length = 10
     # max_events_displayed = 10
     # event_scroll_ct = 0

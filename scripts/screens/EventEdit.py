@@ -552,6 +552,7 @@ class EventEdit(Screens):
                         self.old_event_index = self.event_list.index(opened_event)
                         self.unpack_existing_event(opened_event)
                         self.current_editor_tab = "settings"
+                        game.event_editing = True
                         self.clear_editor_tab()
                         if self.editor_element.get("save"):
                             self.editor_element["save"].set_text("buttons.save")
@@ -613,9 +614,11 @@ class EventEdit(Screens):
 
                 # switches states
                 if new_index == 0:
+                    game.event_editing = True
                     self.event_text_element["event_text"].show()
                     self.event_text_element["preview_text"].hide()
                 else:
+                    game.event_editing = False
                     self.event_text_element["event_text"].hide()
                     text = self.event_text_element["event_text"].html_text
 
