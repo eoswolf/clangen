@@ -547,12 +547,12 @@ class EventEdit(Screens):
             elif event.ui_element in self.event_buttons.values():
                 for name, button in self.event_buttons.items():
                     if button == event.ui_element:
+                        game.event_editing = True
                         self.clear_event_info()
                         opened_event = self.event_list[name]
                         self.old_event_index = self.event_list.index(opened_event)
                         self.unpack_existing_event(opened_event)
                         self.current_editor_tab = "settings"
-                        game.event_editing = True
                         self.clear_editor_tab()
                         if self.editor_element.get("save"):
                             self.editor_element["save"].set_text("buttons.save")
@@ -2926,11 +2926,11 @@ class EventEdit(Screens):
             self.event_text_element["preview_text"].disable()
             self.event_text_element["event_text"] = pygame_gui.elements.UITextEntryBox(
                 ui_scale(pygame.Rect((48, 10), (435, 100))),
-                placeholder_text="screens.event_edit.event_text_initial",
                 object_id="#text_box_26_horizleft_pad_10_14",
                 manager=MANAGER,
                 container=self.event_text_container,
             )
+        game.event_editing = True
         if self.event_text_info:
             self.event_text_element["event_text"].set_text(self.event_text_info)
 
