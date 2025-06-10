@@ -1880,9 +1880,12 @@ class UIDropDown(UIDropDownContainer):
             prev_element = self.child_button_dicts[child]
 
         self.child_buttons = self.child_button_dicts.values()
-        if starting_selection and disable_selection:
-            for button in starting_selection:
-                self.child_button_dicts[button].disable()
+        if starting_selection:
+            if disable_selection:
+                for button in starting_selection:
+                    self.child_button_dicts[button].disable()
+            if parent_reflect_selection:
+                self.parent_button.set_text(starting_selection[0])
         self.close()
 
     def new_item_list(self, item_list):
@@ -1921,6 +1924,8 @@ class UIDropDown(UIDropDownContainer):
         if self.disable_selection:
             for item in self.selected_list:
                 self.child_button_dicts[item].disable()
+        if self.parent_reflect_selection and new_list:
+            self.parent_button.set_text(new_list[0])
 
     def update(self, time_delta: float):
         # updates our selection list
