@@ -2933,6 +2933,8 @@ class EventEdit(Screens):
         game.event_editing = True
         if self.event_text_info:
             self.event_text_element["event_text"].set_text(self.event_text_info)
+        else:
+            self.event_text_element["event_text"].set_text("screens.event_edit.event_text_initial")
 
         # SECTION TABS
         if not self.editor_element.get(list(self.section_tabs.keys())[0]):
