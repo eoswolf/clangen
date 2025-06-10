@@ -825,7 +825,7 @@ class EventEdit(Screens):
                     if event.ui_element == self.type_tab_buttons[tab]:
                         self.chosen_type = tab
                         break
-                self.display_events(event_type=self.chosen_type)
+                self.create_event_display(event_type=self.chosen_type)
 
                 self.select_biome_tab_creation()
 
@@ -833,7 +833,7 @@ class EventEdit(Screens):
             elif event.ui_element in self.biome_tab_buttons.values():
                 if event.ui_element == self.biome_tab_buttons["back"]:
                     self.select_type_tab_creation()
-                    self.display_events(event_type=self.chosen_type)
+                    self.create_event_display(event_type=self.chosen_type)
 
                 else:
                     for tab in self.biome_tab_buttons:
@@ -841,7 +841,7 @@ class EventEdit(Screens):
                             self.chosen_biome = tab.capitalize() if tab != "general" else tab
                             break
 
-                    self.display_events(event_type=self.chosen_type, biome=self.chosen_biome)
+                    self.create_event_display(event_type=self.chosen_type, biome=self.chosen_biome)
 
             # SELECT EVENT
             elif event.ui_element in self.event_buttons.values():
@@ -1078,7 +1078,7 @@ class EventEdit(Screens):
         )
 
         self.select_type_tab_creation()
-        self.display_events()
+        self.create_event_display()
 
         self.event_text_container = pygame_gui.elements.UIAutoResizingContainer(
             ui_scale(pygame.Rect((290, 30), (0, 0))),
@@ -1121,7 +1121,7 @@ class EventEdit(Screens):
             tool_tip_text="buttons.add_event"
         )
 
-        self.display_editor()
+        self.create_editor_display()
 
     def kill_tabs(self):
         """
@@ -1283,7 +1283,8 @@ class EventEdit(Screens):
             }
         )
 
-    def display_events(self, event_type=None, biome=None):
+    def create_event_display(self, event_type=None, biome=None):
+
         self.kill_event_buttons()
         event_list = []
         if self.editor_element.get("intro_text"):
@@ -1350,10 +1351,12 @@ class EventEdit(Screens):
 
         self.editor_container.kill()
 
-        self.display_editor()
+        self.create_editor_display()
 
     def clear_event_info(self):
-        # resetting everything back to zero!
+        """
+        Clears all of the saved event info so we can start fresh.
+        """
         # Settings elements
         self.event_text_info = ""
         self.event_id_element = {}
@@ -1487,7 +1490,7 @@ class EventEdit(Screens):
         }
         self.current_preview_state = self.preview_states[0]
 
-    def display_editor(self):
+    def create_editor_display(self):
 
         self.editor_container = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((314, 150), (470, 470))),
@@ -1594,6 +1597,14 @@ class EventEdit(Screens):
             self.generate_outside_tab()
 
     def create_divider(self, top_anchor, name, off_set: int = -12, container=None):
+        """
+        Creates a divider element based on parameters.
+        :param top_anchor: The element the divider should anchor it's top coord to
+        :param name: The key the divider should use within the self.editor_element dict
+        :param off_set: Use to adjust how close the divider sits to it's top anchor, generally doesn't need to be
+        adjusted
+        :param container: As a default, it uses self.editor_container, but you can change that with this param
+        """
         if not container:
             container = self.editor_container
 
@@ -1613,8 +1624,9 @@ class EventEdit(Screens):
         )
 
     # HELPERS
-    def get_involved_cats(self, index_limit=None):
+    def get_involved_cats(self, index_limit=None) -> list:
         """
+        Returns a list of cats already involved in this event.
         :param index_limit: indicate a maximum index for the new cat list.
         """
         # TODO: make sure this gets an option to indicate if r_c is in the event
@@ -1633,6 +1645,10 @@ class EventEdit(Screens):
         return involved_cats
 
     def add_block(self, event):
+        """
+        Handles adding a block to a block list.
+        :param event: the event.ui_element that triggers this func
+        """
         if event not in [self.injury_element.get("add"),
                          self.history_element.get("add"),
                          self.relationships_element.get("add"),
@@ -1663,6 +1679,10 @@ class EventEdit(Screens):
         self.update_block_info()
 
     def delete_block(self, event):
+        """
+        Handles deleting a block from a block list.
+        :param event: the event.ui_element that triggers this func
+        """
 
         if event not in [self.injury_element.get("delete"),
                          self.history_element.get("delete"),
@@ -1703,6 +1723,9 @@ class EventEdit(Screens):
         self.editor_container.on_contained_elements_changed(self.editor_element[f"{self.open_block}_start"])
 
     def get_block_attributes(self) -> dict:
+        """
+        Returns the attributes for the currently opened block.
+        """
 
         if self.open_block == "injury":
             element = self.injury_element
@@ -1742,7 +1765,10 @@ class EventEdit(Screens):
             "display": display
         }
 
-    def get_selected_block_info(self):
+    def get_selected_block_info(self) -> dict:
+        """
+        Returns the loaded information dict for the currently viewed block.
+        """
         if self.open_block == "injury":
             return self.injury_block_list[
                 int(self.selected_injury_block)] if self.selected_injury_block else self.injury_template
@@ -1757,6 +1783,9 @@ class EventEdit(Screens):
                 int(self.selected_supply_block_index)] if self.selected_supply_block_index else self.supply_info
 
     def new_cat_select(self):
+        """
+        Handles selecting a new cat block from the button list.
+        """
         new_selection = (self.new_cat_editor["cat_list"].selected_list[0]
                          if self.new_cat_editor["cat_list"].selected_list else None)
         if self.selected_new_cat != new_selection:
@@ -1777,6 +1806,10 @@ class EventEdit(Screens):
             self.connections_element["info"].set_text(f"chosen cats: {new_selection}")
 
     def change_new_cat_info_dict(self):
+        """
+        Handles changes between new cat info dicts. If the newly selected cat has a tag list but not an info dict, then
+        this will handle compiling an info dict from the tag list.
+        """
         if not self.selected_new_cat_info:
             if self.new_cat_block_dict.get(self.selected_new_cat):
                 saved_info = self.new_cat_block_dict[self.selected_new_cat]
