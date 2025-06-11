@@ -1006,6 +1006,7 @@ class EventEdit(Screens):
 
                 # SUPPLY INCREASE
                 if event.ui_element == self.supply_element["increase_entry"]:
+                if event.ui_element == self.supply_element.get("increase_entry"):
                     selected_block = self.get_selected_block_info()
                     info = selected_block["adjust"].replace("increase_", "")
                     if info != self.supply_element["increase_entry"].text:
