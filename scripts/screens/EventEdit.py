@@ -3994,7 +3994,7 @@ class EventEdit(Screens):
         # INFO DISPLAY
         self.history_element["info"] = UITextBoxTweaked(
             "No block selected",
-            ui_scale(pygame.Rect((0, 50), (440, -1))),
+            ui_scale(pygame.Rect((0, 50), (380, -1))),
             object_id="#text_box_30_horizleft_pad_10_10",
             line_spacing=1,
             manager=MANAGER,

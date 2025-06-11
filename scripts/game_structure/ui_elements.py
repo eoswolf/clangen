@@ -372,7 +372,7 @@ class UIImageButton(pygame_gui.elements.UIButton):
         return self.sound_id
 
 
-class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
+class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer, IContainerLikeInterface):
     def __init__(
             self,
             relative_rect: pygame.Rect,
@@ -542,6 +542,22 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
     def _get_scroll_bar_height(self) -> int:
         return ui_scale_value(18) + 2
 
+    def are_contents_hovered(self) -> bool:
+        """
+        Are any of the elements in the container hovered? Used for handling mousewheel events.
+
+        :return: True if one of the elements is hovered, False otherwise.
+        """
+        any_hovered = False
+        for element in self:
+            if any(sub_element.hovered for sub_element in element.get_focus_set()):
+                any_hovered = True
+            elif isinstance(element, IContainerLikeInterface):
+                any_hovered = element.are_contents_hovered()
+            if any_hovered:
+                break
+        return any_hovered
+
 
 class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
     def __init__(
@@ -627,6 +643,62 @@ class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
         super().set_visible_percentage(percentage)
         self.scroll_wheel_speed = (1 / self.visible_percentage) * ui_scale_value(15)
 
+    def process_event(self, event: pygame.event.Event) -> bool:
+        """
+        Checks an event from pygame's event queue to see if the scroll bar needs to react to it.
+        In this case it is just mousewheel events, mainly because the buttons that make up
+        the scroll bar will handle the required mouse click events.
+
+        :param event: The event to process.
+
+        :return: Returns True if we've done something with the input event.
+
+        """
+        consumed_event = False
+
+        if (self.is_enabled and
+                self._check_should_handle_mousewheel_event() and
+                event.type == pygame.MOUSEWHEEL):
+            if event.y != 0:
+                self.scroll_wheel_moved = True
+                if (self.scroll_wheel_amount > 0 > event.y) or (self.scroll_wheel_amount < 0 < event.y):
+                    # changed direction, reset target position
+                    self.target_scroll_position = self.scroll_position
+                self.scroll_wheel_amount = event.y
+
+                consumed_event = True
+
+        return consumed_event
+
+    def _check_should_handle_mousewheel_event(self) -> bool:
+        should_handle = False
+        if self._container_to_scroll and self._container_to_scroll.are_contents_hovered():
+            should_handle = True
+        if self._check_is_focus_set_hovered():
+            should_handle = True
+        for element in self._container_to_scroll:
+            should_handle = self._check_for_scrolling_element(element, should_handle)
+            if not should_handle:
+                break
+            if should_handle:
+                if (isinstance(element, UIAutoResizingContainer)
+                        or isinstance(element, UIContainer)
+                        or isinstance(element, UIModifiedScrollingContainer)):
+                    for sub in element:
+                        should_handle = self._check_for_scrolling_element(sub, should_handle)
+                        if not should_handle:
+                            break
+        return should_handle
+
+    def _check_for_scrolling_element(self, element, should_handle):
+
+        if isinstance(element, UIScrollingButtonList) and element.are_contents_hovered():
+            should_handle = False
+        elif isinstance(element, UIScrollingDropDown) and element.are_contents_hovered():
+            should_handle = False
+        else:
+            should_handle = True
+        return should_handle
 
 class UIModifiedHorizScrollBar(pygame_gui.elements.UIHorizontalScrollBar):
     def __init__(
@@ -1618,7 +1690,7 @@ class UIModifiedImage(pygame_gui.elements.UIImage):
             return False
 
 
-class UIScrollingButtonList(UIModifiedScrollingContainer):
+class UIScrollingButtonList(UIModifiedScrollingContainer, IContainerLikeInterface):
 
     def __init__(self,
                  relative_rect,
@@ -1657,6 +1729,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             visible=visible,
             allow_scroll_y=True
         )
+        print(isinstance(self, IContainerLikeInterface))
         self.buttons = {}
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
@@ -1676,6 +1749,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
                     "top_target": prev_element
                 } if prev_element else None
             )
+            self.join_focus_sets(self.buttons[child])
             prev_element = self.buttons[child]
 
         if disable_selection and starting_selection:
@@ -1757,7 +1831,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer):
             prev_element = self.buttons[child]
 
 
-class UIDropDown(UIDropDownContainer):
+class UIDropDown(UIDropDownContainer, IContainerLikeInterface):
 
     def __init__(
             self,
@@ -1967,7 +2041,7 @@ class UIDropDown(UIDropDownContainer):
         super().update(time_delta)
 
 
-class UIScrollingDropDown(UIDropDownContainer):
+class UIScrollingDropDown(UIDropDownContainer, IContainerLikeInterface):
 
     def __init__(
             self,
@@ -2093,7 +2167,7 @@ class UIScrollingDropDown(UIDropDownContainer):
         self.child_button_dicts = self.child_button_container.buttons
 
 
-class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer):
+class UICollapsibleContainer(pygame_gui.elements.UIAutoResizingContainer, IContainerLikeInterface):
     def __init__(
             self,
             relative_rect: RectLike,
