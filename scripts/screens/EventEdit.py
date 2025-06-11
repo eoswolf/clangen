@@ -7,7 +7,7 @@ import platform
 import subprocess
 import ujson
 
-from scripts.cat.cats import Cat, BACKSTORIES
+from scripts.cat.cats import Cat, BACKSTORIES, create_option_preview_cat
 from scripts.cat.pelts import Pelt
 from scripts.cat.personality import Personality
 from scripts.cat.skills import SkillPath, Skill
@@ -24,7 +24,7 @@ from scripts.screens.Screens import Screens
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
 from scripts.ui.icon import Icon
-from scripts.utility import ui_scale, process_text, ui_scale_dimensions
+from scripts.utility import ui_scale, process_text, ui_scale_dimensions, generate_sprite
 
 
 class EventEdit(Screens):
@@ -811,6 +811,23 @@ class EventEdit(Screens):
             elif platform.system() == "Linux":
                 subprocess.Popen(["xdg-open", event.link_target])
 
+        # HOVER PREVIEWS
+        elif event.type == pygame_gui.UI_BUTTON_ON_HOVERED:
+            if self.injury_element.get("scar_list") and event.ui_element in self.injury_element["scar_list"].buttons.values():
+                for name, button in self.injury_element["scar_list"].buttons.items():
+                    if button == event.ui_element:
+                        self.injury_element["scar_preview"].set_image(
+                            self.get_scar_example(name)
+                        )
+                        break
+            if self.acc_element.get("acc_display") and event.ui_element in self.acc_element["acc_display"].buttons.values():
+                for name, button in self.acc_element["acc_display"].buttons.items():
+                    if button == event.ui_element:
+                        self.acc_element["preview"].set_image(
+                            self.get_acc_example(name)
+                        )
+                        break
+
         elif event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
 
@@ -1005,7 +1022,6 @@ class EventEdit(Screens):
                         self.other_clan_element["info"].set_text(f"{self.other_clan_info}")
 
                 # SUPPLY INCREASE
-                if event.ui_element == self.supply_element["increase_entry"]:
                 if event.ui_element == self.supply_element.get("increase_entry"):
                     selected_block = self.get_selected_block_info()
                     info = selected_block["adjust"].replace("increase_", "")
@@ -3921,6 +3937,17 @@ class EventEdit(Screens):
             starting_height=1,
             starting_selection=[scar for scar in self.all_scars if scar in selected_constraints["scars"]]
         )
+        self.injury_element["scar_preview"] = UIModifiedImage(
+            ui_scale(pygame.Rect((150, 0), (100, 100))),
+            image_surface=self.get_scar_example(selected_constraints["scars"][0]
+                                                          if selected_constraints["scars"]
+                                                          else self.all_scars[0]),
+            manager=MANAGER,
+            container=self.injury_element["constraint_container"],
+            anchors={
+                "top_target": self.injury_element["scar_text"]
+            }
+        )
         self.injury_element["scar_info"] = UITextBoxTweaked(
             f"scars: {selected_constraints['scars']}",
             ui_scale(pygame.Rect((10, 20), (200, -1))),
@@ -3929,11 +3956,15 @@ class EventEdit(Screens):
             manager=MANAGER,
             container=self.injury_element["constraint_container"],
             anchors={
-                "top_target": self.injury_element["scar_text"]
+                "top_target": self.injury_element["scar_preview"]
             }
         )
         self.create_divider(self.injury_element["scar_frame"], "injury_scars",
                             container=self.injury_element["constraint_container"])
+
+    def get_scar_example(self, scar):
+
+        return pygame.transform.scale(generate_sprite(create_option_preview_cat(scar=scar)), ui_scale_dimensions((100, 100)))
 
     def create_history_editor(self):
 
@@ -5659,6 +5690,21 @@ class EventEdit(Screens):
             },
             starting_selection=self.acc_info
         )
+        if not self.acc_element.get("preview"):
+            self.acc_element["preview"] = UIModifiedImage(
+                ui_scale(pygame.Rect((80, 0), (100, 100))),
+                image_surface=self.get_acc_example(self.acc_info[0] if self.acc_info
+                                                   else category[0]),
+                manager=MANAGER,
+                container=self.editor_container,
+                anchors={
+                    "top_target": self.acc_element[list(self.acc_categories.keys())[-1]]
+                }
+            )
+
+    def get_acc_example(self, acc):
+
+        return pygame.transform.scale(generate_sprite(create_option_preview_cat(acc=acc)), ui_scale_dimensions((100, 100)))
 
     def create_weight_editor(self):
         self.weight_element["weight_text"] = UITextBoxTweaked(
