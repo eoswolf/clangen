@@ -194,9 +194,24 @@ class HandleShortEvents:
         # create new cats (must happen here so that new cats can be included in further changes)
         self.handle_new_cats()
 
+        # remove cats from involved_cats if theyre supposed to be
+        if self.chosen_event.r_c and "r_c" in self.chosen_event.exclude_involved:
+            self.involved_cats.remove(self.random_cat.ID)
+        if "m_c" in self.chosen_event.exclude_involved:
+            self.involved_cats.remove(self.main_cat.ID)
+
+        for n_c in self.new_cats:
+            nc_index = self.new_cats.index(n_c)
+            n_c_string = f"n_c:{nc_index}"
+            if n_c_string in self.chosen_event.exclude_involved:
+                if n_c[0].ID in self.involved_cats:
+                    self.involved_cats.remove(str(n_c[0].ID))
+
         # give accessory
         if self.chosen_event.new_accessory:
-            self.handle_accessories()
+            if self.handle_accessories() is False:
+                return
+
 
         # change relationships before killing anyone
         if self.chosen_event.relationships:
@@ -334,7 +349,11 @@ class HandleShortEvents:
                         Cat, i18n.t("defaults.event_dead_outsider"), main_cat=cat
                     )
                 elif cat.outside:
-                    if "unknown" in attribute_list:
+                    n_c_index = self.new_cats.index([cat])
+                    if (
+                        f"n_c:{n_c_index}" in self.chosen_event.exclude_involved or
+                        "unknown" in attribute_list
+                    ):
                         extra_text = ""
                     else:
                         extra_text = event_text_adjust(
@@ -382,7 +401,7 @@ class HandleShortEvents:
             acc_list.extend(pelts.collars)
 
         for acc in possible_accs:
-            if acc not in ["WILD", "PLANT", "COLLAR"]:
+            if acc not in ("WILD", "PLANT", "COLLAR"):
                 acc_list.append(acc)
 
         if hasattr(self.main_cat.pelt, "scars"):
@@ -394,8 +413,24 @@ class HandleShortEvents:
                     if acc in acc_list:
                         acc_list.remove(acc)
 
-        if acc_list:
-            self.main_cat.pelt.accessory = random.choice(acc_list)
+        accessory_groups = [pelts.collars, pelts.head_accessories, pelts.tail_accessories, pelts.body_accessories]
+        if self.main_cat.pelt.accessory:
+            for acc in self.main_cat.pelt.accessory:
+                # find which accessory group it belongs to
+                for i, lst in enumerate(accessory_groups):
+                    if acc in lst:
+                        # remove that group from possible accessories
+                        acc_list = [a for a in acc_list if a not in accessory_groups[i]]
+                        break
+
+        if not acc_list:
+            return False
+
+        if self.main_cat.pelt.accessory:
+            self.main_cat.pelt.accessory.append(random.choice(acc_list))
+        else:
+            self.main_cat.pelt.accessory = [random.choice(acc_list)]
+
 
     def handle_transition(self):
         """
@@ -781,7 +816,7 @@ class HandleShortEvents:
 
         # adjust entire herb store
         if supply_type == "all_herb":
-            for herb, count in herb_supply.entire_supply.copy():
+            for (herb, count) in herb_supply.entire_supply.items():
                 herb_list.append(herb)
                 if adjustment == "reduce_full":
                     herb_supply.remove_herb(herb, count)

@@ -352,22 +352,22 @@ class PatrolOutcome:
         possible_stat_cats = []
         for kitty in patrol.patrol_cats:
             # First, the blanket requirements
-            if "app" in self.can_have_stat and kitty.status not in [
+            if "app" in self.can_have_stat and kitty.status not in (
                 "apprentice",
                 "medicine cat apprentice",
-            ]:
+            ):
                 continue
 
-            if "adult" in self.can_have_stat and kitty.status in [
+            if "adult" in self.can_have_stat and kitty.status in (
                 "apprentice",
                 "medicine cat apprentice",
-            ]:
+            ):
                 continue
 
-            if "healer" in self.can_have_stat and kitty.status not in [
+            if "healer" in self.can_have_stat and kitty.status not in (
                 "medicine cat",
                 "medicine cat apprentice",
-            ]:
+            ):
                 continue
 
             # Then, move on the specific requirements.
@@ -429,7 +429,7 @@ class PatrolOutcome:
             gm_modifier = 1
 
         base_exp = 0
-        if "master" in [x.experience_level for x in patrol.patrol_cats]:
+        if "master" in (x.experience_level for x in patrol.patrol_cats):
             max_boost = 10
         else:
             max_boost = 0
@@ -447,7 +447,7 @@ class PatrolOutcome:
 
         if gained_exp or app_exp:
             for cat in patrol.patrol_cats:
-                if cat.status in ["apprentice", "medicine cat apprentice"]:
+                if cat.status in ("apprentice", "medicine cat apprentice"):
                     cat.experience = cat.experience + app_exp
                 else:
                     cat.experience = cat.experience + gained_exp
@@ -687,15 +687,15 @@ class PatrolOutcome:
         else:
             patrol_size_modifier = 1
 
-        full_amount_count = 0
-
         if "random_herbs" in self.herbs:
+            # get random herbs, add to storage, and get patrol outcome msg
             list_of_herb_strs, found_herbs = game.clan.herb_supply.get_found_herbs(
                 med_cat=patrol.patrol_leader,
                 general_amount_bonus=large_bonus,
                 specific_quantity_bonus=patrol_size_modifier,
             )
         else:
+            # get the correct herbs for this patrol
             found_herbs = {}
             for herb in [
                 x for x in self.herbs if x not in ["many_herbs", "random_herbs"]
@@ -707,19 +707,12 @@ class PatrolOutcome:
 
                 found_herbs[herb] = amount
 
-            for herb, count in found_herbs.items():
-                game.clan.herb_supply.add_herb(herb, count)
-                full_amount_count += count
-                if count > 1:
-                    list_of_herb_strs.append(
-                        f"{count} {game.clan.herb_supply.herb[herb].plural_display}"
-                    )
-                else:
-                    list_of_herb_strs.append(
-                        f"{count} {game.clan.herb_supply.herb[herb].singular_display}"
-                    )
+            # add found_herbs to storage and get patrol outcome msg
+            list_of_herb_strs, found_herbs = game.clan.herb_supply.handle_found_herbs_outcomes(found_herbs)
 
         herb_string = adjust_list_text(list_of_herb_strs).capitalize()
+
+        full_amount_count = sum(found_herbs.values())
 
         game.herb_events_list.append(
             i18n.t(
