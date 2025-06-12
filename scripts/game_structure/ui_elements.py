@@ -558,7 +558,6 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer, ICo
                 break
         return any_hovered
 
-
 class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
     def __init__(
             self,
@@ -643,32 +642,6 @@ class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
         super().set_visible_percentage(percentage)
         self.scroll_wheel_speed = (1 / self.visible_percentage) * ui_scale_value(15)
 
-    def process_event(self, event: pygame.event.Event) -> bool:
-        """
-        Checks an event from pygame's event queue to see if the scroll bar needs to react to it.
-        In this case it is just mousewheel events, mainly because the buttons that make up
-        the scroll bar will handle the required mouse click events.
-
-        :param event: The event to process.
-
-        :return: Returns True if we've done something with the input event.
-
-        """
-        consumed_event = False
-
-        if (self.is_enabled and
-                self._check_should_handle_mousewheel_event() and
-                event.type == pygame.MOUSEWHEEL):
-            if event.y != 0:
-                self.scroll_wheel_moved = True
-                if (self.scroll_wheel_amount > 0 > event.y) or (self.scroll_wheel_amount < 0 < event.y):
-                    # changed direction, reset target position
-                    self.target_scroll_position = self.scroll_position
-                self.scroll_wheel_amount = event.y
-
-                consumed_event = True
-
-        return consumed_event
 
     def _check_should_handle_mousewheel_event(self) -> bool:
         should_handle = False
@@ -676,18 +649,24 @@ class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
             should_handle = True
         if self._check_is_focus_set_hovered():
             should_handle = True
-        for element in self._container_to_scroll:
-            should_handle = self._check_for_scrolling_element(element, should_handle)
-            if not should_handle:
-                break
-            if should_handle:
-                if (isinstance(element, UIAutoResizingContainer)
-                        or isinstance(element, UIContainer)
-                        or isinstance(element, UIModifiedScrollingContainer)):
-                    for sub in element:
-                        should_handle = self._check_for_scrolling_element(sub, should_handle)
-                        if not should_handle:
-                            break
+        for ele in self._container_to_scroll:
+            # this is gross, i know, but u can't be mean about it bc i am at the end of my rope and at least this works
+            if isinstance(ele, UIScrollingDropDown) and ele.are_contents_hovered():
+                should_handle = False
+            elif isinstance(ele, UIScrollingButtonList) and ele.are_contents_hovered():
+                should_handle = False
+            elif isinstance(ele, IContainerLikeInterface):
+                for sub_ele in ele:
+                    if isinstance(sub_ele, UIScrollingDropDown) and sub_ele.are_contents_hovered():
+                        should_handle = False
+                    elif isinstance(sub_ele, UIScrollingButtonList) and sub_ele.are_contents_hovered():
+                        should_handle = False
+                    elif isinstance(sub_ele, IContainerLikeInterface):
+                        for sub_sub in sub_ele:
+                            if isinstance(sub_sub, UIScrollingDropDown) and sub_sub.are_contents_hovered():
+                                should_handle = False
+                            elif isinstance(sub_sub, UIScrollingButtonList) and sub_sub.are_contents_hovered():
+                                should_handle = False
         return should_handle
 
     def _check_for_scrolling_element(self, element, should_handle):
@@ -1690,7 +1669,7 @@ class UIModifiedImage(pygame_gui.elements.UIImage):
             return False
 
 
-class UIScrollingButtonList(UIModifiedScrollingContainer, IContainerLikeInterface):
+class UIScrollingButtonList(UIModifiedScrollingContainer):
 
     def __init__(self,
                  relative_rect,
@@ -1729,7 +1708,6 @@ class UIScrollingButtonList(UIModifiedScrollingContainer, IContainerLikeInterfac
             visible=visible,
             allow_scroll_y=True
         )
-        print(isinstance(self, IContainerLikeInterface))
         self.buttons = {}
         self.multiple_choice = multiple_choice
         self.disable_selection = disable_selection
@@ -1749,7 +1727,6 @@ class UIScrollingButtonList(UIModifiedScrollingContainer, IContainerLikeInterfac
                     "top_target": prev_element
                 } if prev_element else None
             )
-            self.join_focus_sets(self.buttons[child])
             prev_element = self.buttons[child]
 
         if disable_selection and starting_selection:
@@ -1831,7 +1808,7 @@ class UIScrollingButtonList(UIModifiedScrollingContainer, IContainerLikeInterfac
             prev_element = self.buttons[child]
 
 
-class UIDropDown(UIDropDownContainer, IContainerLikeInterface):
+class UIDropDown(UIDropDownContainer):
 
     def __init__(
             self,
@@ -2041,7 +2018,7 @@ class UIDropDown(UIDropDownContainer, IContainerLikeInterface):
         super().update(time_delta)
 
 
-class UIScrollingDropDown(UIDropDownContainer, IContainerLikeInterface):
+class UIScrollingDropDown(UIDropDownContainer):
 
     def __init__(
             self,
