@@ -85,6 +85,7 @@
         "new_name": "This cat will take a new Clan-like name. If you wish to refer to their old name in the event text, use n_c_pre in the abbreviation instead of n_c.",
         "old_name": "This cat will keep their old name. This will not work with litters, kittens, or newborns.",
         "mate": "Cat will generate with the same age category as their first listed mate.",
-        "has_kits": "Cat will generate with an age within 14-120 moons."
+        "has_kits": "Cat will generate with an age within 14-120 moons.",
+        "can_birth": "If the same sex breeding setting is True, the cat will randomly choose between male and female. If it's False, this will generate a female."
     }
 }
