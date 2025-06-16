@@ -674,7 +674,7 @@
       "rank": ["warrior"],
       "life_giving": [
         {
-          "text": "Well aware of m_c's unwavering nature, r_c speaks with a calm yet purposeful tone as {PRONOUN/r_c/subject} {VERB/r_c/grant/grants} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/hope/hopes] it will soften the edges of m_c's judgement and help {PRONOUN/m_c/object} see beyond the boundaries of strict discipline.",
+          "text": "Well aware of m_c's unwavering nature, r_c speaks with a calm yet purposeful tone as {PRONOUN/r_c/subject} {VERB/r_c/grant/grants} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/hope/hopes} it will soften the edges of m_c's judgement and help {PRONOUN/m_c/object} see beyond the boundaries of strict discipline.",
           "virtue": ["acceptance", "flexibility", "understanding", "forgiveness", "trust", "fairness", "hope", "humility", "sympathy", "balance", "tolerance", "perspective", "joy", "leniency", "unity", "mercy", "grace", "gentleness"]
         }
       ]
