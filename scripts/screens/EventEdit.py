@@ -381,7 +381,7 @@ class EventEdit(Screens):
         self.editor_element = {}
 
         self.current_preview_state: int = self.preview_states[0]
-        """The currently used preview state. This can be 0 (preview off), 1 (plural), or 2 (singular"""
+        """The currently used preview state. This can be 0 (preview off), 1 (plural), or 2 (singular)"""
 
         # Event text display
         self.event_text_element = {}
@@ -926,7 +926,7 @@ class EventEdit(Screens):
             if event.ui_element == self.event_text_element["preview_button"]:
                 # finds what the new preview state should be
                 index = self.preview_states.index(self.current_preview_state)
-                new_index = index + 1 if index + 1 <= 2 else 0
+                new_index = (new_index + 1) % 3
                 self.current_preview_state = self.preview_states[new_index]
 
                 # switches states
