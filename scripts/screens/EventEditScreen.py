@@ -844,8 +844,17 @@ class EventEdit(Screens):
                         game.event_editing = True
                         self.clear_event_info()
                         opened_event = self.event_list[index]
-                        self.old_event_index = self.event_list.index(opened_event)
+
+                        # unpacking into class attr
                         self.unpack_existing_event(opened_event)
+
+                        # collecting old information to compare when saving
+                        self.old_event_path = self.find_event_path()
+                        old_json = self.get_event_json(self.old_event_path)
+                        for ev in old_json:
+                            if ev["event_id"] == opened_event["event_id"]:
+                                self.old_event_index = old_json.index(ev)
+                                
                         self.current_editor_tab = "settings"
                         self.clear_editor_tab()
                         if self.editor_element.get("save"):

@@ -360,7 +360,6 @@ class EditorSaveCheck(UIWindow):
         self.event_list = event_list
         self.old_event_list = old_event_list
         # adding a variable for starting_height to make sure that this menu is always on top
-        top_stack_menu_layer_height = 10000
 
         self.game_over_message = UITextBoxTweaked(
             "windows.editor_save_check_message",
@@ -390,7 +389,6 @@ class EditorSaveCheck(UIWindow):
             get_button_dict(ButtonStyles.SQUOVAL, (114, 30)),
             object_id="@buttonstyles_squoval",
             sound_id="save",
-            starting_height=top_stack_menu_layer_height,
             container=self,
             anchors={"centerx": "centerx"},
         )
@@ -399,7 +397,6 @@ class EditorSaveCheck(UIWindow):
             ui_scale(pygame.Rect((370, 5), (22, 22))),
             "",
             object_id="#exit_window_button",
-            starting_height=top_stack_menu_layer_height,
             container=self,
         )
 
@@ -445,9 +442,6 @@ class EditorMissingInfo(UIWindow):
             always_on_top=True,
         )
 
-        # adding a variable for starting_height to make sure that this menu is always on top
-        top_stack_menu_layer_height = 10000
-
         self.missing_info = UITextBoxTweaked(
             "windows.editor_missing_info",
             ui_scale(pygame.Rect((0, -30), (360, -1))),
@@ -464,7 +458,6 @@ class EditorMissingInfo(UIWindow):
             ui_scale(pygame.Rect((370, 5), (22, 22))),
             "",
             object_id="#exit_window_button",
-            starting_height=top_stack_menu_layer_height,
             container=self,
         )
 
