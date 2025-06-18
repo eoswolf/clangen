@@ -843,7 +843,7 @@ class EventEdit(Screens):
                     if button == event.ui_element:
                         game.event_editing = True
                         self.clear_event_info()
-                        opened_event = self.event_list[index]
+                        opened_event: dict = self.event_list[index]
 
                         # unpacking into class attr
                         self.unpack_existing_event(opened_event)
