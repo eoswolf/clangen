@@ -548,15 +548,12 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer, ICo
 
         :return: True if one of the elements is hovered, False otherwise.
         """
-        any_hovered = False
         for element in self:
             if any(sub_element.hovered for sub_element in element.get_focus_set()):
-                any_hovered = True
-            elif isinstance(element, IContainerLikeInterface):
-                any_hovered = element.are_contents_hovered()
-            if any_hovered:
-                break
-        return any_hovered
+                return True
+            elif isinstance(element, IContainerLikeInterface) and element.are_contents_hovered():
+                return True
+        return False
 
 class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
     def __init__(
@@ -644,40 +641,31 @@ class UIImageVerticalScrollBar(pygame_gui.elements.UIVerticalScrollBar):
 
 
     def _check_should_handle_mousewheel_event(self) -> bool:
-        should_handle = False
-        if self._container_to_scroll and self._container_to_scroll.are_contents_hovered():
-            should_handle = True
-        if self._check_is_focus_set_hovered():
-            should_handle = True
-        for ele in self._container_to_scroll:
-            # this is gross, i know, but u can't be mean about it bc i am at the end of my rope and at least this works
-            if isinstance(ele, UIScrollingDropDown) and ele.are_contents_hovered():
-                should_handle = False
-            elif isinstance(ele, UIScrollingButtonList) and ele.are_contents_hovered():
-                should_handle = False
-            elif isinstance(ele, IContainerLikeInterface):
-                for sub_ele in ele:
-                    if isinstance(sub_ele, UIScrollingDropDown) and sub_ele.are_contents_hovered():
-                        should_handle = False
-                    elif isinstance(sub_ele, UIScrollingButtonList) and sub_ele.are_contents_hovered():
-                        should_handle = False
-                    elif isinstance(sub_ele, IContainerLikeInterface):
-                        for sub_sub in sub_ele:
-                            if isinstance(sub_sub, UIScrollingDropDown) and sub_sub.are_contents_hovered():
-                                should_handle = False
-                            elif isinstance(sub_sub, UIScrollingButtonList) and sub_sub.are_contents_hovered():
-                                should_handle = False
-        return should_handle
+        def recursive_check_if_ignore(element):
+            """
+            If this is TRUE, we should ignore the scroll. This just helps with shortcutting
+            :param element: The UIElement to check
+            :return: True to ignore, False if we should care
+            """
+            if (
+                isinstance(element, (UIScrollingDropDown, UIScrollingButtonList))
+                and element.are_contents_hovered()
+            ):
+                return True
+            elif isinstance(element, IContainerLikeInterface):
+                for sub_element in element:
+                    if recursive_check_if_ignore(sub_element):
+                        return True
+            return False
 
-    def _check_for_scrolling_element(self, element, should_handle):
-
-        if isinstance(element, UIScrollingButtonList) and element.are_contents_hovered():
-            should_handle = False
-        elif isinstance(element, UIScrollingDropDown) and element.are_contents_hovered():
-            should_handle = False
+        # inverting the outcome of that
+        if any(recursive_check_if_ignore(ele) for ele in self._container_to_scroll):
+            return False
         else:
-            should_handle = True
-        return should_handle
+            return (
+                self._container_to_scroll
+                and self._container_to_scroll.are_contents_hovered()
+            ) or self._check_is_focus_set_hovered()
 
 class UIModifiedHorizScrollBar(pygame_gui.elements.UIHorizontalScrollBar):
     def __init__(
