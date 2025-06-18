@@ -7,7 +7,7 @@ from .ChooseMentorScreen import ChooseMentorScreen
 from .ClanScreen import ClanScreen
 from .ClanSettingsScreen import ClanSettingsScreen
 from .ClearingScreen import ClearingScreen
-from .EventEdit import EventEdit
+from .EventEditScreen import EventEdit
 from .EventsScreen import EventsScreen
 from .FamilyTreeScreen import FamilyTreeScreen
 from .LeaderDenScreen import LeaderDenScreen
