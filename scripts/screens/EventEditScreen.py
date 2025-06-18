@@ -33,6 +33,11 @@ class EventEdit(Screens):
     This screen provides an interface to allow devs to edit and create events.
     """
 
+    with open("resources/dicts/events/tags.json", "r", encoding="utf-8") as read_file:
+        TAGS = ujson.loads(read_file.read())
+
+    with open("resources/dicts/events/types.json", "r", encoding="utf-8") as read_file:
+        TYPES = ujson.loads(read_file.read())
 
     test_cat_names: dict = {
         "m_c": "MainCat",
@@ -62,158 +67,18 @@ class EventEdit(Screens):
         "Beach": ["Tidepools", "Tidal Cave", "Shipwreck", "Fjord"]
     }
     """Dict with key as biome and value as camp name."""
+    # TODO: when possible, change this to pull this from a global attr
     all_seasons: tuple = ("newleaf", "greenleaf", "leaf-fall", "leaf-bare")
     """Tuple of all seasons possible."""
 
-    event_types: dict = {
-        "death": ["murder", "old_age", "mass_death", "war"],
-        "injury": ["war"],
-        "misc": ["murder_reveal", "accessory", "ceremony", "war"],
-        "new_cat": ["war"]
-    }
+    event_types: dict = TYPES
     """Dict with key as event type and value as allowed subtypes for that type."""
 
     # TODO: consider moving some of these into a file that better facilitates new additions
-    basic_tag_list: list = [
-        {
-            "tag": "classic",
-            "setting": False,
-            "required_type": None,
-            "conflict": None
-        },
-        {
-            "tag": "cruel_season",
-            "setting": False,
-            "required_type": None,
-            "conflict": None
-        },
-        {
-            "tag": "no_body",
-            "setting": False,
-            "required_type": "death",
-            "conflict": None
-        },
-        {
-            "tag": "clan_wide",
-            "setting": False,
-            "required_type": None,
-            "conflict": None
-        },
-        {
-            "tag": "romance",
-            "setting": False,
-            "required_type": None,
-            "conflict": None
-        },
-        {
-            "tag": "adoption",
-            "setting": False,
-            "required_type": None,
-            "conflict": None
-        },
-        {
-            "tag": "all_lives",
-            "setting": False,
-            "required_type": "death",
-            "conflict": ["some_lives", "lives_remain"]
-        },
-        {
-            "tag": "some_lives",
-            "setting": False,
-            "required_type": "death",
-            "conflict": ["all_lives"]
-        },
-        {
-            "tag": "lives_remain",
-            "setting": False,
-            "required_type": "death",
-            "conflict": ["all_lives"]
-        },
-        {
-            "tag": "high_lives",
-            "setting": False,
-            "required_type": None,
-            "conflict": ["mid_lives", "low_lives"]
-        },
-        {
-            "tag": "mid_lives",
-            "setting": False,
-            "required_type": None,
-            "conflict": ["high_lives", "low_lives"]
-        },
-        {
-            "tag": "low_lives",
-            "setting": False,
-            "required_type": None,
-            "conflict": ["mid_lives", "high_lives"]
-        }
-    ]
+    basic_tag_list: list = TAGS["settings"]
     """List of dicts for all basic event tags. Each dict holds tag name, conflicts, setting, and type required."""
 
-    rel_tag_list: list = [
-        {
-            "tag": "siblings",
-            "setting": False,
-            "conflict": ["mates",
-                         "not_mates",
-                         "parent/child",
-                         "child/parent"]
-        },
-        {
-            "tag": "mates",
-            "setting": False,
-            "conflict": ["siblings",
-                         "parent/child",
-                         "child/parent",
-                         "app/mentor",
-                         "mentor/app",
-                         "not_mates"]
-        },
-        {
-            "tag": "not_mates",
-            "setting": False,
-            "conflict": ["siblings",
-                         "mates",
-                         "parent/child",
-                         "child/parent",
-                         "app/mentor",
-                         "mentor/app"]
-        },
-        {
-            "tag": "parent/child",
-            "setting": False,
-            "conflict": ["siblings",
-                         "mates",
-                         "not_mates",
-                         "child/parent",
-                         "app/mentor"]
-        },
-        {
-            "tag": "child/parent",
-            "setting": False,
-            "conflict": ["siblings",
-                         "mates",
-                         "not_mates",
-                         "parent/child",
-                         "mentor/app"]
-        },
-        {
-            "tag": "app/mentor",
-            "setting": False,
-            "conflict": ["mates",
-                         "not_mates",
-                         "parent/child",
-                         "mentor/app"]
-        },
-        {
-            "tag": "mentor/app",
-            "setting": False,
-            "conflict": ["mates",
-                         "not_mates",
-                         "child/parent",
-                         "app/mentor"]
-        }
-    ]
+    rel_tag_list: list = TAGS["relationship"]
     """List of dicts for relationship_values. Each dict holds tag name, conflicts, and setting."""
     rel_value_types: list = RelationshipScreen.rel_value_names
     """List of all relationship values."""
@@ -243,49 +108,22 @@ class EventEdit(Screens):
     for pool in all_backstories:
         individual_stories.extend(all_backstories[pool])
 
-    new_cat_types: list = ["kittypet", "loner", "rogue", "clancat"]
+    new_cat_types: list = TAGS["new_cat"]["types"]
     """All possible cat types."""
 
-    new_cat_bools: list = [
-        {
-            "tag": "litter",
-            "setting": False,
-            "conflict": ["exists", "new_name", "old_name"]
-        },
-        {
-            "tag": "meeting",
-            "setting": False,
-            "conflict": ["old_name", "new_name"]
-        },
-        {
-            "tag": "exists",
-            "setting": False,
-            "conflict": ["litter"]
-        },
-        {
-            "tag": "new_name",
-            "setting": False,
-            "conflict": ["old_name", "litter", "meeting"]
-        },
-        {
-            "tag": "old_name",
-            "setting": False,
-            "conflict": ["new_name", "litter", "meeting"]
-        },
-    ]
+    new_cat_bools: list = TAGS["new_cat"]["bool_settings"]
     """New cat tag list. Holds tag name, setting, and conflicts."""
 
     new_cat_ranks: list = all_ranks.copy()
     """All ranks available to new cats."""
-
-    new_cat_ranks.remove("leader")
-    new_cat_ranks.remove("deputy")
+    for rank in TAGS["new_cat"]["disallowed_ranks"]:
+        new_cat_ranks.remove(rank)
 
     new_cat_ages: list = all_ages.copy()
     """List of all age tags available to new cats."""
-    new_cat_ages.extend(["has_kits", "mate"])
+    new_cat_ages.extend(TAGS["new_cat"]["special_ages"])
 
-    new_cat_genders: list = ["male", "female", "can_birth"]
+    new_cat_genders: list = TAGS["new_cat"]["genders"]
     """List of all gender tags available to new cats"""
 
     all_injury_pools: dict = INJURY_GROUPS
@@ -6105,3 +5943,7 @@ class EventEdit(Screens):
             text = "screens.event_edit.valid_id"
 
         self.event_id_element["check_text"].set_text(text)
+
+
+
+
