@@ -14,6 +14,7 @@ from scripts.cat.skills import SkillPath, Skill
 from scripts.events_module.short.handle_short_events import INJURY_GROUPS, EVENT_ALLOWED_CONDITIONS, HandleShortEvents
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
+from scripts.game_structure.localization import load_lang_resource, get_default_pronouns
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIModifiedScrollingContainer, UITextBoxTweaked, \
     UICheckbox, UIModifiedImage, UIScrollingButtonList, UIDropDown, \
@@ -32,8 +33,6 @@ class EventEdit(Screens):
     This screen provides an interface to allow devs to edit and create events.
     """
 
-    preview_states: tuple = (0, 1, 2)
-    """Possible preview states, 0 (no preview), 1 (plural), 2 (singular)."""
 
     test_cat_names: dict = {
         "m_c": "MainCat",
@@ -50,32 +49,10 @@ class EventEdit(Screens):
     for index in range(5):
         test_cat_names[f"n_c:{index}"] = f"NewCat{index}"
 
-    test_pronouns = [
-        {
-            "subject": "they",
-            "object": "them",
-            "poss": "their",
-            "inposs": "theirs",
-            "self": "themself",
-            "conju": 1
-        },
-        {
-            "subject": "she",
-            "object": "her",
-            "poss": "her",
-            "inposs": "hers",
-            "self": "herself",
-            "conju": 2
-        },
-        {
-            "subject": "he",
-            "object": "him",
-            "poss": "his",
-            "inposs": "his",
-            "self": "himself",
-            "conju": 2
-        }
-    ]
+    preview_states: tuple = (0, 1, 2)
+    """Possible preview states, 0 (no preview), 1 (plural), 2 (singular)."""
+
+    test_pronouns: list = list(get_default_pronouns().values())
     """Pronoun dicts to assign to our test cats."""
 
     all_camps: dict = {
@@ -926,7 +903,7 @@ class EventEdit(Screens):
             if event.ui_element == self.event_text_element["preview_button"]:
                 # finds what the new preview state should be
                 index = self.preview_states.index(self.current_preview_state)
-                new_index = (new_index + 1) % 3
+                new_index = (index + 1) % 3
                 self.current_preview_state = self.preview_states[new_index]
 
                 # switches states
@@ -1548,6 +1525,9 @@ class EventEdit(Screens):
                 manager=MANAGER,
                 container=self.event_text_container,
             )
+        else:
+            self.event_text_element["event_text"].show()
+            self.event_text_element["preview_text"].hide()
         game.event_editing = True
         if self.event_text_info:
             self.event_text_element["event_text"].set_text(self.event_text_info)
