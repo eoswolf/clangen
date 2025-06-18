@@ -24,7 +24,7 @@ To help organise the dictionary into relevant groups, `i18n` works on a folder s
 
 Example: If I want to reference the string "general settings", used in the settings screen. It currently lives in `screens/settings.en.json` (again, ignoring all the bits before and including the `en` folder). To make this readable to `i18n`, remove the `.en.json` part. We now have `screens/settings`, which references the entire file. To get the specific item we want, add the relevant key afterward: `screens/settings/general`, in this case.
 
-`i18n` uses dot notation to indicate file hierarchy. Therefore, replace all the slashes wih dots: `screens.settings.general` is the final key that `i18n` needs to translate that string.
+`i18n` uses dot notation to indicate file hierarchy. Therefore, replace all the slashes with dots: `screens.settings.general` is the final key that `i18n` needs to translate that string.
 
 You **must** include the full file location, starting from the ISO code. Failing to do so means that i18n will return the key rather than your shiny value.
 
