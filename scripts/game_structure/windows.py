@@ -1679,7 +1679,7 @@ class RelationshipLog(UIWindow):
             )
             self.opp_heading = pygame_gui.elements.UITextBox(
                 "windows.other_perspective",
-                ui_scale(pygame.Rect((15, 275), (476, 280))),
+                ui_scale(pygame.Rect((15, 275), (-1, -1))),
                 object_id="#text_box_30_horizleft",
                 manager=MANAGER,
                 container=self,
