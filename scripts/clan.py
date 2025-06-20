@@ -22,6 +22,7 @@ from scripts.cat.history import History
 from scripts.cat.names import names
 from scripts.cat.sprites import sprites
 from scripts.clan_resources.freshkill import FreshkillPile, Nutrition
+from scripts.clan_resources.herb.herb_supply import HerbSupply
 from scripts.events_module.generate_events import OngoingEvent
 from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.datadir import get_save_dir
@@ -29,7 +30,7 @@ from scripts.housekeeping.version import get_version_info, SAVE_VERSION_NUMBER
 from scripts.utility import (
     get_current_season,
     quit,
-    clan_symbol_sprite,
+    clan_symbol_sprite, get_living_clan_cat_count,
 )  # pylint: disable=redefined-builtin
 
 
@@ -40,7 +41,8 @@ class Clan:
 
     """
 
-    BIOME_TYPES = ["Forest", "Plains", "Mountainous", "Beach"]
+    BIOME_TYPES = game.BIOME_TYPES
+
 
     CAT_TYPES = [
         "newborn",
@@ -98,13 +100,16 @@ class Clan:
         camp_bg=None,
         symbol=None,
         game_mode="classic",
-        starting_members=[],
+        starting_members=None,
         starting_season="Newleaf",
         self_run_init_functions=True,
     ):
         self.history = History()
         if name == "":
             return
+
+        if starting_members is None:
+            starting_members = []
 
         self.name = name
         self.leader = leader
@@ -119,7 +124,6 @@ class Clan:
         self.med_cat_number = len(
             self.med_cat_list
         )  # Must do this after the medicine cat is added to the list.
-        self.herbs = {}
         self.age = 0
         self.current_season = "Newleaf"
         self.starting_season = starting_season
@@ -161,10 +165,11 @@ class Clan:
         self._reputation = 80
 
         self.starting_members = starting_members
-        if game_mode in ["expanded", "cruel season"]:
+        if game_mode in ("expanded", "cruel season"):
             self.freshkill_pile = FreshkillPile()
         else:
             self.freshkill_pile = None
+        self.herb_supply = HerbSupply()
         self.primary_disaster = None
         self.secondary_disaster = None
         self.war = {
@@ -524,12 +529,12 @@ class Clan:
 
         clan_data["war"] = self.war
 
-        self.save_herbs(game.clan)
+        self.save_herb_supply(game.clan)
         self.save_disaster(game.clan)
         self.save_pregnancy(game.clan)
 
         self.save_clan_settings()
-        if game.clan.game_mode in ["expanded", "cruel season"]:
+        if game.clan.game_mode in ("expanded", "cruel season"):
             self.save_freshkill_pile(game.clan)
 
         game.safe_save(f"{get_save_dir()}/{self.name}clan.json", clan_data)
@@ -809,7 +814,7 @@ class Clan:
         )
         game.clan.post_initialization_functions()
 
-        game.clan.reputation = int(clan_data["reputation"])
+        game.clan.reputation = max(0, min(100, int(clan_data["reputation"])))
 
         game.clan.age = clan_data["clanage"]
         game.clan.starting_season = (
@@ -910,7 +915,7 @@ class Clan:
                 game.mediated = clan_data["mediated"]
 
         self.load_pregnancy(game.clan)
-        self.load_herbs(game.clan)
+        self.load_herb_supply(game.clan)
         self.load_disaster(game.clan)
         if game.clan.game_mode != "classic":
             self.load_freshkill_pile(game.clan)
@@ -934,42 +939,11 @@ class Clan:
             ) as write_file:
                 _load_settings = ujson.loads(write_file.read())
 
-        for key, value in _load_settings.items():
-            if key in self.clan_settings:
-                self.clan_settings[key] = value
+            for key, value in _load_settings.items():
+                if key in self.clan_settings:
+                    self.clan_settings[key] = value
 
-    def load_herbs(self, clan):
-        """
-        TODO: DOCS
-        """
-        if not game.clan.name:
-            return
-        file_path = get_save_dir() + f"/{game.clan.name}/herbs.json"
-        if os.path.exists(file_path):
-            with open(
-                file_path, "r", encoding="utf-8"
-            ) as read_file:  # pylint: disable=redefined-outer-name
-                clan.herbs = ujson.loads(read_file.read())
-
-        else:
-            # generate a random set of herbs since the Clan didn't have any saved
-            herbs = {}
-            random_herbs = random.choices(HERBS, k=random.randrange(3, 8))
-            for herb in random_herbs:
-                herbs.update({herb: random.randint(1, 3)})
-            with open(file_path, "w", encoding="utf-8") as rel_file:
-                json_string = ujson.dumps(herbs, indent=4)
-                rel_file.write(json_string)
-            clan.herbs = herbs
-
-    def save_herbs(self, clan):
-        """
-        TODO: DOCS
-        """
-        if not game.clan.name:
-            return
-
-        game.safe_save(f"{get_save_dir()}/{game.clan.name}/herbs.json", clan.herbs)
+        # if settings files does not exist, default has been loaded by __init__
 
     def load_pregnancy(self, clan):
         """
@@ -1114,6 +1088,61 @@ class Clan:
             f"{get_save_dir()}/{clan.name}/disasters/secondary.json", disaster
         )
 
+    def load_herb_supply(self, clan):
+        """
+        Loads the Clan's saved herb supply info
+        """
+        if not game.clan.name:
+            return
+
+        save_dir = get_save_dir()
+
+        current_file_path = save_dir + f"/{game.clan.name}/herb_supply.json"
+        old_file_path = save_dir + f"/{game.clan.name}/herbs.json"
+
+        try:
+            # load the old file path and convert the save data into current format
+            if os.path.exists(old_file_path):
+                with open(
+                    old_file_path, "r", encoding="utf-8"
+                ) as save_file:
+                    herbs = ujson.load(save_file)
+                    clan.herb_supply = HerbSupply()
+                    clan.herb_supply.convert_old_save(herbs)
+
+            # load the current file path, if it exists in save
+            elif os.path.exists(current_file_path):
+                with open(
+                    current_file_path, "r", encoding="utf-8"
+                ) as save_file:
+                    herbs = ujson.load(save_file)
+                    clan.herb_supply = HerbSupply(herb_supply=herbs["storage"])
+                    clan.herb_supply.collected = herbs["collected"]
+
+            # else just start us with an empty herb supply
+            else:
+                clan.herb_supply = HerbSupply()
+            clan.herb_supply.required_herb_count = get_living_clan_cat_count(Cat) * 2
+        except:
+            clan.herb_supply = HerbSupply()
+
+    def save_herb_supply(self, clan):
+        """
+        saves the Clan's current herb supply
+        """
+        if not clan.herb_supply:
+            return
+
+        game.safe_save(
+            f"{get_save_dir()}/{game.clan.name}/herb_supply.json",
+            clan.herb_supply.combined_supply_dict
+        )
+
+        # delete old herb save file if it exists
+        if os.path.exists(get_save_dir() + f"/{game.clan.name}/herbs.json"):
+            os.remove(get_save_dir() + f"/{game.clan.name}/herbs.json")
+
+
     def load_freshkill_pile(self, clan):
         """
         TODO: DOCS
@@ -1193,7 +1222,7 @@ class Clan:
         all_cats = [
             i
             for i in Cat.all_cats_list
-            if i.status not in ["leader", "deputy"] and not i.dead and not i.outside
+            if i.status not in ("leader", "deputy") and not i.dead and not i.outside
         ]
         leader = (
             Cat.fetch_cat(self.leader)
@@ -1212,7 +1241,7 @@ class Clan:
             clan_sociability = round(
                 weight
                 * statistics.mean(
-                    [i.personality.sociability for i in [leader, deputy] if i]
+                    [i.personality.sociability for i in (leader, deputy) if i]
                 )
                 + (1 - weight)
                 * statistics.median([i.personality.sociability for i in all_cats])
@@ -1220,7 +1249,7 @@ class Clan:
             clan_aggression = round(
                 weight
                 * statistics.mean(
-                    [i.personality.aggression for i in [leader, deputy] if i]
+                    [i.personality.aggression for i in (leader, deputy) if i]
                 )
                 + (1 - weight)
                 * statistics.median([i.personality.aggression for i in all_cats])
@@ -1228,12 +1257,12 @@ class Clan:
         elif leader or deputy:
             clan_sociability = round(
                 statistics.mean(
-                    [i.personality.sociability for i in [leader, deputy] if i]
+                    [i.personality.sociability for i in (leader, deputy) if i]
                 )
             )
             clan_aggression = round(
                 statistics.mean(
-                    [i.personality.aggression for i in [leader, deputy] if i]
+                    [i.personality.aggression for i in (leader, deputy) if i]
                 )
             )
         elif all_cats:
@@ -1354,6 +1383,3 @@ class StarClan:
 clan_class = Clan()
 clan_class.remove_cat(cat_class.ID)
 
-HERBS = None
-with open("resources/dicts/herbs.json", "r", encoding="utf-8") as read_file:
-    HERBS = ujson.loads(read_file.read())

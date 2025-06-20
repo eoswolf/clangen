@@ -101,7 +101,7 @@ class Relationship:
         # check if an increase interaction or a decrease interaction
         in_de_crease = "increase" if positive else "decrease"
         # if the type is jealousy or dislike, then increase and decrease has to be turned around
-        if rel_type in ["jealousy", "dislike"]:
+        if rel_type in ("jealousy", "dislike"):
             in_de_crease = "decrease" if positive else "increase"
 
         chance = game.config["relationship"]["chance_for_neutral"]
@@ -235,7 +235,7 @@ class Relationship:
             Single_Event(
                 interaction_str,
                 ["relation", "interaction"],
-                [self.cat_to.ID, self.cat_from.ID],
+                cat_dict={"m_c": self.cat_to, "r_c": self.cat_from},
             )
         )
 

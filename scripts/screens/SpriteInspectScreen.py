@@ -12,8 +12,7 @@ from scripts.utility import (
     shorten_text_to_fit,
     ui_scale_dimensions,
     ui_scale_offset,
-    get_text_box_theme,
-)
+    get_text_box_theme, )
 from scripts.utility import ui_scale
 from .Screens import Screens
 from ..game_structure.screen_settings import MANAGER
@@ -241,7 +240,7 @@ class SpriteInspectScreen(Screens):
         # "young adult", "adult", and "senior adult" all look the same: collapse to adult
         # This is not the best way to do it, so if we make them have difference appearances, this will
         # need to be changed/removed.
-        if self.the_cat.age in ["young adult", "adult", "senior adult"]:
+        if self.the_cat.age in ("young adult", "adult", "senior adult"):
             current_life_stage = "adult"
         else:
             current_life_stage = self.the_cat.age
@@ -444,16 +443,8 @@ class SpriteInspectScreen(Screens):
         return super().exit_screen()
 
     def update_disabled_buttons(self):
-        # Previous and next cat button
-        if self.next_cat == 0:
-            self.next_cat_button.disable()
-        else:
-            self.next_cat_button.enable()
 
-        if self.previous_cat == 0:
-            self.previous_cat_button.disable()
-        else:
-            self.previous_cat_button.enable()
+        self.update_previous_next_cat_buttons()
 
         if self.displayed_life_stage >= len(self.valid_life_stages) - 1:
             self.next_life_stage.disable()

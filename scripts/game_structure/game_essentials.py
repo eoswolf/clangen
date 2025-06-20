@@ -15,6 +15,7 @@ pygame.init()
 
 # G A M E
 class Game:
+    event_editing = False
     max_name_length = 10
     # max_events_displayed = 10
     # event_scroll_ct = 0
@@ -73,6 +74,11 @@ class Game:
     }"""
     patrol_cats = {}
     patrolled = []
+
+    outsider_reps = ["welcoming", "neutral", "hostile"]
+    other_clan_reps = ["ally", "neutral", "hostile"]
+
+    BIOME_TYPES = ["Forest", "Plains", "Mountainous", "Beach", "Wetlands", "Desert"]
 
     # store changing parts of the game that the user can toggle with buttons
     switches = {
@@ -555,7 +561,7 @@ class Game:
             with open(events_path, "r", encoding="utf-8") as f:
                 events_list = ujson.loads(f.read())
             for event_dict in events_list:
-                event_obj = Single_Event.from_dict(event_dict)
+                event_obj = Single_Event.from_dict(event_dict, game.cat_class)
                 if event_obj:
                     game.cur_events_list.append(event_obj)
         except FileNotFoundError:
