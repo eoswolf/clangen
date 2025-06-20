@@ -737,7 +737,7 @@
         "season": ["any"],
         "sub_type": ["war"],
         "weight": 10,
-        "event_text": "m_c leads a bold team to truly show those o_c_n mouse-brains which is the superior Clan. When dawn breaks, {PRONOUN/m_c/subject} and {PRONOUN/m_c/poss} team pad back to camp with a litter of mewling o_c_n kits in their jaws. <i>c_n</i> kits, now.",
+        "event_text": "m_c slinks into o_c_n's nursery in the dead of night, making off with an entire litter of their kits. Rumour has it that their parent abandoned their Clan to try and track down the kits - even better for c_n!",
         "m_c": {
             "status": [
                 "leader",
@@ -754,15 +754,14 @@
             [
                 "can_birth",
                 "age:has_kits",
-                "clancat",
+                "rogue",
                 "meeting",
                 "new_name"
             ],
             [
                 "litter",
-                "parent:0",
                 "new_name",
-                "backstory:stolenkit",
+                "backstory:stolenkit1",
                 "age:newborn"
             ]
         ],
@@ -798,7 +797,7 @@
         "new_cat": [
             [
                 "new_name",
-                "backstory:stolenkit",
+                "backstory:stolenkit1",
                 "age:newborn"
             ]
         ],
