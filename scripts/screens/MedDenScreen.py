@@ -11,7 +11,7 @@ from scripts.game_structure.ui_elements import (
     UISpriteButton,
     UIImageButton,
     UITextBoxTweaked,
-    UISurfaceImageButton,
+    UISurfaceImageButton, UIModifiedImage,
 )
 from scripts.utility import (
     get_text_box_theme,
@@ -189,7 +189,7 @@ class MedDenScreen(Screens):
                 manager=MANAGER,
             )
             self.log_title.hide()
-            self.cat_bg = pygame_gui.elements.UIImage(
+            self.cat_bg = UIModifiedImage(
                 ui_scale(pygame.Rect((140, 440), (560, 200))),
                 get_box(BoxStyles.ROUNDED_BOX, (560, 200)),
                 manager=MANAGER,
@@ -259,9 +259,9 @@ class MedDenScreen(Screens):
             self.injured_and_sick_cats = []
             for the_cat in Cat.all_cats_list:
                 if (
-                    not the_cat.dead
-                    and not the_cat.outside
-                    and (the_cat.injuries or the_cat.illnesses)
+                        not the_cat.dead
+                        and not the_cat.outside
+                        and (the_cat.injuries or the_cat.illnesses)
                 ):
                     self.injured_and_sick_cats.append(the_cat)
             for cat in self.injured_and_sick_cats:
@@ -283,14 +283,14 @@ class MedDenScreen(Screens):
                                 self.minor_cats.remove(cat)
                             break
                         elif (
-                            injury
-                            in [
-                                "recovering from birth",
-                                "sprain",
-                                "lingering shock",
-                                "pregnant",
-                            ]
-                            and cat not in self.in_den_cats
+                                injury
+                                in [
+                                    "recovering from birth",
+                                    "sprain",
+                                    "lingering shock",
+                                    "pregnant",
+                                ]
+                                and cat not in self.in_den_cats
                         ):
                             if cat not in self.out_den_cats:
                                 self.out_den_cats.append(cat)
@@ -303,8 +303,8 @@ class MedDenScreen(Screens):
                 if cat.illnesses:
                     for illness in cat.illnesses:
                         if (
-                            cat.illnesses[illness]["severity"] != "minor"
-                            and illness != "grief stricken"
+                                cat.illnesses[illness]["severity"] != "minor"
+                                and illness != "grief stricken"
                         ):
                             if cat not in self.in_den_cats:
                                 self.in_den_cats.append(cat)
@@ -322,9 +322,9 @@ class MedDenScreen(Screens):
                             break
                         else:
                             if (
-                                cat not in self.in_den_cats
-                                and cat not in self.out_den_cats
-                                and cat not in self.minor_cats
+                                    cat not in self.in_den_cats
+                                    and cat not in self.out_den_cats
+                                    and cat not in self.minor_cats
                             ):
                                 self.minor_cats.append(cat)
             self.tab_list = self.in_den_cats
@@ -389,7 +389,6 @@ class MedDenScreen(Screens):
 
         else:
             self.meds_messages.set_text(choice(MESSAGES["no_meds_warning"]))
-
 
     def handle_tab_toggles(self):
         if self.open_tab == "cats":
@@ -607,7 +606,8 @@ class MedDenScreen(Screens):
             for herb, count in herb_supply.entire_supply.items():
                 if count <= 0:
                     continue
-                display = herb_supply.herb[herb].plural_display if count > 1 else herb_supply.herb[herb].singular_display
+                display = herb_supply.herb[herb].plural_display if count > 1 else herb_supply.herb[
+                    herb].singular_display
                 herb_list.append(f"{count} {display}")
 
         if len(herb_list) <= 10:
@@ -728,7 +728,7 @@ class MedDenScreen(Screens):
             self.med_cat.kill()
 
     def chunks(self, L, n):
-        return [L[x : x + n] for x in range(0, len(L), n)]
+        return [L[x: x + n] for x in range(0, len(L), n)]
 
     def clear_cat_buttons(self):
         for cat in self.cat_buttons:
