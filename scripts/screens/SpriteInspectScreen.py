@@ -393,7 +393,7 @@ class SpriteInspectScreen(Screens):
             scars_hidden=not self.scars_shown,
             acc_hidden=not self.acc_shown,
             always_living=self.override_dead_lineart,
-            no_not_working=self.override_not_working,
+            disable_sick_sprite=self.override_not_working,
         )
 
         self.cat_elements["cat_image"] = pygame_gui.elements.UIImage(

@@ -2655,7 +2655,7 @@ def generate_sprite(
     scars_hidden=False,
     acc_hidden=False,
     always_living=False,
-    no_not_working=False,
+    disable_sick_sprite=False,
 ) -> pygame.Surface:
     """
     Generates the sprite for a cat, with optional arguments that will override certain things.
@@ -2664,7 +2664,7 @@ def generate_sprite(
     :param scars_hidden: If True, doesn't display the cat's scars. If False, display cat scars.
     :param acc_hidden: If True, hide the accessory. If false, show the accessory.
     :param always_living: If True, always show the cat with living lineart
-    :param no_not_working: If true, never use the not_working lineart.
+    :param disable_sick_sprite: If true, never use the not_working lineart.
                     If false, use the cat.not_working() to determine the no_working art.
     """
 
@@ -2680,7 +2680,7 @@ def generate_sprite(
 
     # setting the cat_sprite (bc this makes things much easier)
     if (
-        not no_not_working
+        not disable_sick_sprite
         and cat.not_working()
         and age != "newborn"
         and game.config["cat_sprites"]["sick_sprites"]
