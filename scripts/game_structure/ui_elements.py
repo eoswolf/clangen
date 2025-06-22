@@ -2012,6 +2012,8 @@ class UIDropDown(UIDropDownContainer):
             ui_scale(pygame.Rect(dropdown_rect)),
             manager=manager,
             container=self,
+            resize_left=False,
+            resize_top=False,
             anchors=(
                 {
                     "top_target": self.parent_button,
