@@ -151,7 +151,7 @@ class ListScreen(Screens):
                 if event.ui_element.text == "screens.list.view_dead":
                     # changing dropdown options
                     self.choose_group_dropdown.new_item_list(self.dead_group_names)
-                    self.choose_group_dropdown.disable_child("general.starclan")
+                    self.choose_group_dropdown.set_selected_list(["general.starclan"])
                     self.sort_by_dropdown.new_item_list(self.dead_filter_names)
                     self.sort_by_dropdown.disable_child(
                         f"screens.list.filter_{game.sort_type}"
@@ -165,7 +165,7 @@ class ListScreen(Screens):
                 else:
                     # changing dropdown options
                     self.choose_group_dropdown.new_item_list(self.living_group_names)
-                    self.choose_group_dropdown.disable_child("general.your_clan")
+                    self.choose_group_dropdown.set_selected_list(["general.your_clan"])
                     self.sort_by_dropdown.new_item_list(self.dead_filter_names)
                     if game.sort_type == "death":
                         game.sort_type = "rank"
