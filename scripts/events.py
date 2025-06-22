@@ -938,6 +938,8 @@ class Events:
         -if the cat was not injured or ill, then they will do all of the above *and* trigger misc events, acc events,
         and new cat events
         """
+        if cat.faded:
+            return
         if cat.dead:
             cat.thoughts()
             if cat.ID in game.just_died:
