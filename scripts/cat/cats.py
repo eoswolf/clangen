@@ -332,6 +332,8 @@ class Cat:
         # Private Sprite
         self._sprite: Optional[pygame.Surface] = None
         self._sprite_mask: Optional[pygame.Mask] = None
+        self._sprite_working: bool = self.not_working()
+        """used to store whether we should be displaying sick sprite or not"""
 
         # SAVE CAT INTO ALL_CATS DICTIONARY IN CATS-CLASS
         self.all_cats[self.ID] = self
@@ -3337,8 +3339,9 @@ class Cat:
     @property
     def sprite(self):
         # Update the sprite
-        if self.pelt.rebuild_sprite:
+        if self.pelt.rebuild_sprite or self.not_working() != self._sprite_working:
             self.pelt.rebuild_sprite = False
+            self._sprite_working = self.not_working()
             update_sprite(self)
             update_mask(self)
         return self._sprite
