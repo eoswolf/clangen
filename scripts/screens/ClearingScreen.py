@@ -11,7 +11,8 @@ from scripts.game_structure.ui_elements import (
     UISpriteButton,
     UIImageButton,
     UITextBoxTweaked,
-    UISurfaceImageButton, UIModifiedImage,
+    UISurfaceImageButton,
+    UIModifiedImage,
 )
 from scripts.utility import (
     get_text_box_theme,
@@ -716,12 +717,12 @@ class ClearingScreen(Screens):
     def create_checkboxes(self):
         self.delete_checkboxes()
 
-        self.tactic_text[
-            "container_general"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((140, 450), (230, 175))),
-            allow_scroll_x=False,
-            manager=MANAGER,
+        self.tactic_text["container_general"] = (
+            pygame_gui.elements.UIScrollingContainer(
+                ui_scale(pygame.Rect((140, 450), (230, 175))),
+                allow_scroll_x=False,
+                manager=MANAGER,
+            )
         )
 
         n = 0
@@ -745,12 +746,12 @@ class ClearingScreen(Screens):
             ui_scale_dimensions((200, (n * 30 + x_val + 20)))
         )
 
-        self.additional_text[
-            "container_general"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((360, 450), (327, 175))),
-            allow_scroll_x=False,
-            manager=MANAGER,
+        self.additional_text["container_general"] = (
+            pygame_gui.elements.UIScrollingContainer(
+                ui_scale(pygame.Rect((360, 450), (327, 175))),
+                allow_scroll_x=False,
+                manager=MANAGER,
+            )
         )
 
         n = 0
@@ -783,27 +784,29 @@ class ClearingScreen(Screens):
         feeding_order = game.prey_config["feeding_order"]
         for status in feeding_order:
             amount = prey_requirement[status]
-            self.additional_text[
-                f"condition_increase_{n}"
-            ] = pygame_gui.elements.UITextBox(
-                "screens.clearing.condition_increase_text",
-                ui_scale(pygame.Rect((x_val, 0), (250, -1))),
-                container=self.additional_text["container_general"],
-                object_id="#text_box_30_horizleft_pad_0_8",
-                manager=MANAGER,
-                text_kwargs={
-                    "number": str(n),
-                    "status": i18n.t(
-                        f"general.{status}",
-                        count=2 if status not in ("leader", "deputy") else 1,
-                    ),
-                    "prey": i18n.t("screens.clearing.prey_count", count=amount),
-                },
-                anchors={
-                    "top_target": self.additional_text[f"condition_increase_{n-1}"]
-                    if n > 1
-                    else self.additional_text["condition_increase"]
-                },
+            self.additional_text[f"condition_increase_{n}"] = (
+                pygame_gui.elements.UITextBox(
+                    "screens.clearing.condition_increase_text",
+                    ui_scale(pygame.Rect((x_val, 0), (250, -1))),
+                    container=self.additional_text["container_general"],
+                    object_id="#text_box_30_horizleft_pad_0_8",
+                    manager=MANAGER,
+                    text_kwargs={
+                        "number": str(n),
+                        "status": i18n.t(
+                            f"general.{status}",
+                            count=2 if status not in ("leader", "deputy") else 1,
+                        ),
+                        "prey": i18n.t("screens.clearing.prey_count", count=amount),
+                    },
+                    anchors={
+                        "top_target": (
+                            self.additional_text[f"condition_increase_{n-1}"]
+                            if n > 1
+                            else self.additional_text["condition_increase"]
+                        )
+                    },
+                )
             )
             n += 1
 

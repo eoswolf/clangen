@@ -612,9 +612,11 @@ class ChooseMateScreen(Screens):
                 text = f"{self.the_cat.name} has no offspring."
 
             self.no_kits_message = pygame_gui.elements.UITextBox(
-                "screens.choose_mate.no_kits_pair"
-                if self.kits_selected_pair and self.selected_cat
-                else "screens.choose_mate.no_kits_single",
+                (
+                    "screens.choose_mate.no_kits_pair"
+                    if self.kits_selected_pair and self.selected_cat
+                    else "screens.choose_mate.no_kits_single"
+                ),
                 ui_scale(pygame.Rect((0, 0), (497, 120))),
                 container=self.offspring_container,
                 object_id="#text_box_30_horizcenter_vertcenter",
@@ -811,8 +813,16 @@ class ChooseMateScreen(Screens):
                 in ("young adult", "adult", "senior adult", "senior")
             )
         )
-        self.next_cat_button.disable() if self.next_cat == 0 else self.next_cat_button.enable()
-        self.previous_cat_button.disable() if self.previous_cat == 0 else self.previous_cat_button.enable()
+        (
+            self.next_cat_button.disable()
+            if self.next_cat == 0
+            else self.next_cat_button.enable()
+        )
+        (
+            self.previous_cat_button.disable()
+            if self.previous_cat == 0
+            else self.previous_cat_button.enable()
+        )
 
         for ele in self.current_cat_elements:
             self.current_cat_elements[ele].kill()
@@ -935,9 +945,11 @@ class ChooseMateScreen(Screens):
             anchors={
                 "bottom": "bottom",
                 "bottom_target": self.list_frame_image,
-                "left_target": self.tab_buttons["mates"]
-                if mates_tab_shown
-                else self.tab_buttons["potential"],
+                "left_target": (
+                    self.tab_buttons["mates"]
+                    if mates_tab_shown
+                    else self.tab_buttons["potential"]
+                ),
             },
         )
 
@@ -995,9 +1007,11 @@ class ChooseMateScreen(Screens):
                 image_cache.load_image(
                     "resources/images/heart_mates.png"
                     if self.selected_cat.ID in self.the_cat.mate
-                    else "resources/images/heart_breakup.png"
-                    if self.selected_cat.ID in self.the_cat.previous_mates
-                    else "resources/images/heart_maybe.png"
+                    else (
+                        "resources/images/heart_breakup.png"
+                        if self.selected_cat.ID in self.the_cat.previous_mates
+                        else "resources/images/heart_maybe.png"
+                    )
                 ).convert_alpha(),
                 ui_scale_dimensions((200, 78)),
             ),
@@ -1060,19 +1074,19 @@ class ChooseMateScreen(Screens):
         ):
             warning_rect = ui_scale(pygame.Rect((0, 0), (160, 45)))
             warning_rect.bottomleft = ui_scale_offset((0, -5))
-            self.selected_cat_elements[
-                "no kit warning"
-            ] = pygame_gui.elements.UITextBox(
-                "screens.choose_mate.no_kit_warning",
-                warning_rect,
-                object_id=get_text_box_theme(
-                    "#text_box_22_horizcenter_vertcenter_spacing_95"
-                ),
-                anchors={
-                    "centerx": "centerx",
-                    "bottom": "bottom",
-                    "bottom_target": self.toggle_mate,
-                },
+            self.selected_cat_elements["no kit warning"] = (
+                pygame_gui.elements.UITextBox(
+                    "screens.choose_mate.no_kit_warning",
+                    warning_rect,
+                    object_id=get_text_box_theme(
+                        "#text_box_22_horizcenter_vertcenter_spacing_95"
+                    ),
+                    anchors={
+                        "centerx": "centerx",
+                        "bottom": "bottom",
+                        "bottom_target": self.toggle_mate,
+                    },
+                )
             )
             del warning_rect
 
@@ -1086,11 +1100,13 @@ class ChooseMateScreen(Screens):
                 image_cache.load_image(
                     "resources/images/line_compatible.png"
                     if get_personality_compatibility(self.the_cat, self.selected_cat)
-                    else "resources/images/line_incompatible.png"
-                    if not get_personality_compatibility(
-                        self.the_cat, self.selected_cat
+                    else (
+                        "resources/images/line_incompatible.png"
+                        if not get_personality_compatibility(
+                            self.the_cat, self.selected_cat
+                        )
+                        else "resources/images/line_neutral.png"
                     )
-                    else "resources/images/line_neutral.png"
                 ).convert_alpha(),
                 ui_scale_dimensions((200, 78)),
             ),

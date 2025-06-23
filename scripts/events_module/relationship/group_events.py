@@ -40,10 +40,10 @@ class GroupEvents:
                 continue
             cls.GROUP_INTERACTION_MASTER_DICT[cat_amount] = {}
             for file in ("neutral.json", "positive.json", "negative.json"):
-                cls.GROUP_INTERACTION_MASTER_DICT[cat_amount][
-                    file[:-5]
-                ] = create_group_interaction(
-                    load_lang_resource(f"{directory}/{cat_amount}/{file}")
+                cls.GROUP_INTERACTION_MASTER_DICT[cat_amount][file[:-5]] = (
+                    create_group_interaction(
+                        load_lang_resource(f"{directory}/{cat_amount}/{file}")
+                    )
                 )
 
     @staticmethod

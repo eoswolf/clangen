@@ -2536,12 +2536,16 @@ def ui_scale_dimensions(dim: Tuple[int, int]):
     :return: The scaled dimensions
     """
     return (
-        floor(dim[0] * scripts.game_structure.screen_settings.screen_scale)
-        if dim[0] > 0
-        else dim[0],
-        floor(dim[1] * scripts.game_structure.screen_settings.screen_scale)
-        if dim[1] > 0
-        else dim[1],
+        (
+            floor(dim[0] * scripts.game_structure.screen_settings.screen_scale)
+            if dim[0] > 0
+            else dim[0]
+        ),
+        (
+            floor(dim[1] * scripts.game_structure.screen_settings.screen_scale)
+            if dim[1] > 0
+            else dim[1]
+        ),
     )
 
 

@@ -11,7 +11,8 @@ from scripts.game_structure.ui_elements import (
     UISpriteButton,
     UIImageButton,
     UITextBoxTweaked,
-    UISurfaceImageButton, UIModifiedImage,
+    UISurfaceImageButton,
+    UIModifiedImage,
 )
 from scripts.utility import (
     get_text_box_theme,
@@ -259,9 +260,9 @@ class MedDenScreen(Screens):
             self.injured_and_sick_cats = []
             for the_cat in Cat.all_cats_list:
                 if (
-                        not the_cat.dead
-                        and not the_cat.outside
-                        and (the_cat.injuries or the_cat.illnesses)
+                    not the_cat.dead
+                    and not the_cat.outside
+                    and (the_cat.injuries or the_cat.illnesses)
                 ):
                     self.injured_and_sick_cats.append(the_cat)
             for cat in self.injured_and_sick_cats:
@@ -283,14 +284,14 @@ class MedDenScreen(Screens):
                                 self.minor_cats.remove(cat)
                             break
                         elif (
-                                injury
-                                in [
-                                    "recovering from birth",
-                                    "sprain",
-                                    "lingering shock",
-                                    "pregnant",
-                                ]
-                                and cat not in self.in_den_cats
+                            injury
+                            in [
+                                "recovering from birth",
+                                "sprain",
+                                "lingering shock",
+                                "pregnant",
+                            ]
+                            and cat not in self.in_den_cats
                         ):
                             if cat not in self.out_den_cats:
                                 self.out_den_cats.append(cat)
@@ -303,8 +304,8 @@ class MedDenScreen(Screens):
                 if cat.illnesses:
                     for illness in cat.illnesses:
                         if (
-                                cat.illnesses[illness]["severity"] != "minor"
-                                and illness != "grief stricken"
+                            cat.illnesses[illness]["severity"] != "minor"
+                            and illness != "grief stricken"
                         ):
                             if cat not in self.in_den_cats:
                                 self.in_den_cats.append(cat)
@@ -322,9 +323,9 @@ class MedDenScreen(Screens):
                             break
                         else:
                             if (
-                                    cat not in self.in_den_cats
-                                    and cat not in self.out_den_cats
-                                    and cat not in self.minor_cats
+                                cat not in self.in_den_cats
+                                and cat not in self.out_den_cats
+                                and cat not in self.minor_cats
                             ):
                                 self.minor_cats.append(cat)
             self.tab_list = self.in_den_cats
@@ -724,7 +725,7 @@ class MedDenScreen(Screens):
             self.med_cat.kill()
 
     def chunks(self, L, n):
-        return [L[x: x + n] for x in range(0, len(L), n)]
+        return [L[x : x + n] for x in range(0, len(L), n)]
 
     def clear_cat_buttons(self):
         for cat in self.cat_buttons:

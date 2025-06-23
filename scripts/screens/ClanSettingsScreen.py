@@ -191,9 +191,11 @@ class ClanSettingsScreen(Screens):
             object_id="#toggle_fullscreen_button",
             manager=MANAGER,
             starting_height=2,
-            tool_tip_text="buttons.toggle_fullscreen_windowed"
-            if game.settings["fullscreen"]
-            else "buttons.toggle_fullscreen_fullscreen",
+            tool_tip_text=(
+                "buttons.toggle_fullscreen_windowed"
+                if game.settings["fullscreen"]
+                else "buttons.toggle_fullscreen_fullscreen"
+            ),
             anchors={
                 "bottom": "bottom",
                 "right": "right",
@@ -251,12 +253,12 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "general"
 
-        self.checkboxes_text[
-            "container_general"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((0, 245), (700, 300))),
-            allow_scroll_x=False,
-            manager=MANAGER,
+        self.checkboxes_text["container_general"] = (
+            pygame_gui.elements.UIScrollingContainer(
+                ui_scale(pygame.Rect((0, 245), (700, 300))),
+                allow_scroll_x=False,
+                manager=MANAGER,
+            )
         )
 
         n = 0
@@ -299,12 +301,12 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "role"
 
-        self.checkboxes_text[
-            "container_role"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((0, 245), (700, 300))),
-            allow_scroll_x=False,
-            manager=MANAGER,
+        self.checkboxes_text["container_role"] = (
+            pygame_gui.elements.UIScrollingContainer(
+                ui_scale(pygame.Rect((0, 245), (700, 300))),
+                allow_scroll_x=False,
+                manager=MANAGER,
+            )
         )
 
         n = 0
@@ -340,12 +342,12 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "relation"
 
-        self.checkboxes_text[
-            "container_relation"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((0, 245), (700, 300))),
-            allow_scroll_x=False,
-            manager=MANAGER,
+        self.checkboxes_text["container_relation"] = (
+            pygame_gui.elements.UIScrollingContainer(
+                ui_scale(pygame.Rect((0, 245), (700, 300))),
+                allow_scroll_x=False,
+                manager=MANAGER,
+            )
         )
 
         n = 0

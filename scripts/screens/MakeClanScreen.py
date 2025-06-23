@@ -1024,18 +1024,26 @@ class MakeClanScreen(Screens):
                 },
             )
 
-        self.tabs["tab1"].disable() if self.selected_camp_tab == 1 else self.tabs[
-            "tab1"
-        ].enable()
-        self.tabs["tab2"].disable() if self.selected_camp_tab == 2 else self.tabs[
-            "tab2"
-        ].enable()
-        self.tabs["tab3"].disable() if self.selected_camp_tab == 3 else self.tabs[
-            "tab3"
-        ].enable()
-        self.tabs["tab4"].disable() if self.selected_camp_tab == 4 else self.tabs[
-            "tab4"
-        ].enable()
+        (
+            self.tabs["tab1"].disable()
+            if self.selected_camp_tab == 1
+            else self.tabs["tab1"].enable()
+        )
+        (
+            self.tabs["tab2"].disable()
+            if self.selected_camp_tab == 2
+            else self.tabs["tab2"].enable()
+        )
+        (
+            self.tabs["tab3"].disable()
+            if self.selected_camp_tab == 3
+            else self.tabs["tab3"].enable()
+        )
+        (
+            self.tabs["tab4"].disable()
+            if self.selected_camp_tab == 4
+            else self.tabs["tab4"].enable()
+        )
 
         # I have to do this for proper layering.
         if "camp_art" in self.elements:
@@ -1070,14 +1078,14 @@ class MakeClanScreen(Screens):
             ]
         )
         if name not in self.game_bgs:
-            self.game_bgs[
-                name
-            ] = scripts.screens.screens_core.screens_core.default_game_bgs[self.theme][
-                "default"
-            ]
-            self.fullscreen_bgs[
-                name
-            ] = scripts.screens.screens_core.screens_core.process_blur_bg(src)
+            self.game_bgs[name] = (
+                scripts.screens.screens_core.screens_core.default_game_bgs[self.theme][
+                    "default"
+                ]
+            )
+            self.fullscreen_bgs[name] = (
+                scripts.screens.screens_core.screens_core.process_blur_bg(src)
+            )
 
         self.set_bg(name)
 
@@ -1118,14 +1126,14 @@ class MakeClanScreen(Screens):
             if "cat" + str(u) in self.elements:
                 self.elements["cat" + str(u)].kill()
             if game.choose_cats[u] == selected:
-                self.elements["cat" + str(u)] = self.elements[
-                    "cat" + str(u)
-                ] = UISpriteButton(
-                    ui_scale(pygame.Rect((270, 200), (150, 150))),
-                    pygame.transform.scale(
-                        game.choose_cats[u].sprite, ui_scale_dimensions((150, 150))
-                    ),
-                    cat_object=game.choose_cats[u],
+                self.elements["cat" + str(u)] = self.elements["cat" + str(u)] = (
+                    UISpriteButton(
+                        ui_scale(pygame.Rect((270, 200), (150, 150))),
+                        pygame.transform.scale(
+                            game.choose_cats[u].sprite, ui_scale_dimensions((150, 150))
+                        ),
+                        cat_object=game.choose_cats[u],
+                    )
                 )
             elif (
                 game.choose_cats[u]
@@ -1150,15 +1158,15 @@ class MakeClanScreen(Screens):
             if "cat" + str(u) in self.elements:
                 self.elements["cat" + str(u)].kill()
             if game.choose_cats[u] == selected:
-                self.elements["cat" + str(u)] = self.elements[
-                    "cat" + str(u)
-                ] = UISpriteButton(
-                    ui_scale(pygame.Rect((270, 200), (150, 150))),
-                    pygame.transform.scale(
-                        game.choose_cats[u].sprite, ui_scale_dimensions((150, 150))
-                    ),
-                    cat_object=game.choose_cats[u],
-                    manager=MANAGER,
+                self.elements["cat" + str(u)] = self.elements["cat" + str(u)] = (
+                    UISpriteButton(
+                        ui_scale(pygame.Rect((270, 200), (150, 150))),
+                        pygame.transform.scale(
+                            game.choose_cats[u].sprite, ui_scale_dimensions((150, 150))
+                        ),
+                        cat_object=game.choose_cats[u],
+                        manager=MANAGER,
+                    )
                 )
             elif (
                 game.choose_cats[u]
@@ -1984,9 +1992,11 @@ class MakeClanScreen(Screens):
             object_id=get_text_box_theme("#text_box_30_horizleft"),
             manager=MANAGER,
             text_kwargs={
-                "symbol": f"{self.clan_name.upper()}0"
-                if f"symbol{self.clan_name.upper()}0" in sprites.clan_symbols
-                else i18n.t("screens.make_clan.not_applicable")
+                "symbol": (
+                    f"{self.clan_name.upper()}0"
+                    if f"symbol{self.clan_name.upper()}0" in sprites.clan_symbols
+                    else i18n.t("screens.make_clan.not_applicable")
+                )
             },
             anchors={
                 "top_target": self.text["leader"],

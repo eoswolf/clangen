@@ -308,12 +308,12 @@ class ChooseMentorScreen(Screens):
         variable_dict = super().display_change_save()
 
         variable_dict["selected_mentor"] = self.selected_mentor
-        variable_dict[
-            "show_only_no_current_app_mentors"
-        ] = self.show_only_no_current_app_mentors
-        variable_dict[
-            "show_only_no_former_app_mentors"
-        ] = self.show_only_no_former_app_mentors
+        variable_dict["show_only_no_current_app_mentors"] = (
+            self.show_only_no_current_app_mentors
+        )
+        variable_dict["show_only_no_former_app_mentors"] = (
+            self.show_only_no_former_app_mentors
+        )
 
         variable_dict["current_page"] = self.current_page
 
@@ -426,13 +426,13 @@ class ChooseMentorScreen(Screens):
 
         name = str(self.the_cat.name)
         short_name = shorten_text_to_fit(name, 115, 17)
-        self.apprentice_details[
-            "apprentice_name"
-        ] = pygame_gui.elements.ui_label.UILabel(
-            ui_scale(pygame.Rect((620, 115), (117, 32))),
-            short_name,
-            object_id="#text_box_34_horizcenter",
-            manager=MANAGER,
+        self.apprentice_details["apprentice_name"] = (
+            pygame_gui.elements.ui_label.UILabel(
+                ui_scale(pygame.Rect((620, 115), (117, 32))),
+                short_name,
+                object_id="#text_box_34_horizcenter",
+                manager=MANAGER,
+            )
         )
 
         (
@@ -445,8 +445,16 @@ class ChooseMentorScreen(Screens):
             )
         )
 
-        self.next_cat_button.disable() if self.next_cat == 0 else self.next_cat_button.enable()
-        self.previous_cat_button.disable() if self.previous_cat == 0 else self.previous_cat_button.enable()
+        (
+            self.next_cat_button.disable()
+            if self.next_cat == 0
+            else self.next_cat_button.enable()
+        )
+        (
+            self.previous_cat_button.disable()
+            if self.previous_cat == 0
+            else self.previous_cat_button.enable()
+        )
 
     def change_mentor(self, new_mentor=None):
         old_mentor = Cat.fetch_cat(self.the_cat.mentor)
