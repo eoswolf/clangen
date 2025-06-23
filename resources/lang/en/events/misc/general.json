@@ -2258,7 +2258,7 @@
     "season": ["any"],
     "tags": ["clan_wide"],
     "weight": 20,
-    "event_text": "c_n finds tracks crossing the border and then hurriedly crossing out again, indicating the owner didn't intrude intentionally.",
+    "event_text": "c_n finds tracks crossing the border and then hurriedly backtracking, indicating the owner didn't intrude intentionally.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
@@ -2496,7 +2496,7 @@
     "season": ["any"],
     "tags": ["clan_wide"],
     "weight": 10,
-    "event_text": "Tracks don't lie, even if o_c_n may. One of them has been traipsing across the border. It remains to be seen if that cat is a confused apprentice or a deliberate provocation.",
+    "event_text": "Tracks don't lie, even if o_c_n may. One of them has been traipsing across the border. It remains to be seen if that cat is a confused apprentice or a deliberate provocateur.",
     "m_c": {
         "age": ["adolescent", "young adult", "adult", "senior adult", "senior"]
     },
