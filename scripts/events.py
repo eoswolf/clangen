@@ -232,9 +232,9 @@ class Events:
                     event,
                     ["birth_death"],
                     [i.ID for i in Cat.dead_cats],
-                    cat_dict={"m_c": Cat.dead_cats[0]}
-                    if len(Cat.dead_cats) == 1
-                    else None,
+                    cat_dict=(
+                        {"m_c": Cat.dead_cats[0]} if len(Cat.dead_cats) == 1 else None
+                    ),
                 )
             )
             if extra_event:

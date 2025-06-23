@@ -901,9 +901,11 @@ class Screens:
             blur_bg = (
                 "darkforest"
                 if cat.df
-                else "unknown_residence"
-                if cat.ID in game.clan.unknown_cats
-                else "starclan"
+                else (
+                    "unknown_residence"
+                    if cat.ID in game.clan.unknown_cats
+                    else "starclan"
+                )
             )
             self.set_bg(bg=bg, blur_bg=blur_bg)
         else:
@@ -951,12 +953,16 @@ class Screens:
             self, "next_cat_button"
         ):
             return
-        self.previous_cat_button.enable() if hasattr(
-            self, "previous_cat"
-        ) and self.previous_cat else self.previous_cat_button.disable()
-        self.next_cat_button.enable() if hasattr(
-            self, "next_cat"
-        ) and self.next_cat else self.next_cat_button.disable()
+        (
+            self.previous_cat_button.enable()
+            if hasattr(self, "previous_cat") and self.previous_cat
+            else self.previous_cat_button.disable()
+        )
+        (
+            self.next_cat_button.enable()
+            if hasattr(self, "next_cat") and self.next_cat
+            else self.next_cat_button.disable()
+        )
 
     # pragma pylint: enable=no-member
 
