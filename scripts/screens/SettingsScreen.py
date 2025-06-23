@@ -378,12 +378,12 @@ class SettingsScreen(Screens):
         self.sub_menu = "general"
         self.save_settings_button.show()
 
-        self.checkboxes_text["container_general"] = (
-            pygame_gui.elements.UIScrollingContainer(
-                ui_scale(pygame.Rect((0, 220), (700, 300))),
-                allow_scroll_x=False,
-                manager=MANAGER,
-            )
+        self.checkboxes_text[
+            "container_general"
+        ] = pygame_gui.elements.UIScrollingContainer(
+            ui_scale(pygame.Rect((0, 220), (700, 300))),
+            allow_scroll_x=False,
+            manager=MANAGER,
         )
 
         for i, (code, desc) in enumerate(settings_dict["general"].items()):
@@ -508,13 +508,13 @@ class SettingsScreen(Screens):
         self.sub_menu = "info"
         self.save_settings_button.hide()
 
-        self.checkboxes_text["info_container"] = (
-            pygame_gui.elements.UIScrollingContainer(
-                ui_scale(pygame.Rect((0, 150), (600, 500))),
-                allow_scroll_x=False,
-                manager=MANAGER,
-                anchors={"centerx": "centerx"},
-            )
+        self.checkboxes_text[
+            "info_container"
+        ] = pygame_gui.elements.UIScrollingContainer(
+            ui_scale(pygame.Rect((0, 150), (600, 500))),
+            allow_scroll_x=False,
+            manager=MANAGER,
+            anchors={"centerx": "centerx"},
         )
 
         self.checkboxes_text["info_text_box"] = pygame_gui.elements.UITextBox(

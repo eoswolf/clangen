@@ -286,14 +286,14 @@ class ListScreen(Screens):
             starting_height=1,
         )
 
-        self.cat_list_bar_elements["search_bar_entry"] = (
-            pygame_gui.elements.UITextEntryLine(
-                ui_scale(pygame.Rect((45, 4), (122, 27))),
-                object_id="#search_entry_box",
-                placeholder_text="general.name_search",
-                container=self.cat_list_bar,
-                manager=MANAGER,
-            )
+        self.cat_list_bar_elements[
+            "search_bar_entry"
+        ] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((45, 4), (122, 27))),
+            object_id="#search_entry_box",
+            placeholder_text="general.name_search",
+            container=self.cat_list_bar,
+            manager=MANAGER,
         )
 
         # SHOW LIVING/DEAD
@@ -428,18 +428,18 @@ class ListScreen(Screens):
             manager=MANAGER,
         )
         # page number
-        self.display_container_elements["page_entry"] = (
-            pygame_gui.elements.UITextEntryLine(
-                ui_scale(pygame.Rect((370, 604), (30, 27))),
-                container=self.list_screen_container,
-                placeholder_text=str(self.current_page),
-                object_id=(
-                    get_text_box_theme("#page_entry_box")
-                    if self.death_status == "living"
-                    else ObjectID("#dark", "#page_entry_box")
-                ),
-                manager=MANAGER,
-            )
+        self.display_container_elements[
+            "page_entry"
+        ] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((370, 604), (30, 27))),
+            container=self.list_screen_container,
+            placeholder_text=str(self.current_page),
+            object_id=(
+                get_text_box_theme("#page_entry_box")
+                if self.death_status == "living"
+                else ObjectID("#dark", "#page_entry_box")
+            ),
+            manager=MANAGER,
         )
         self.display_container_elements["page_number"] = pygame_gui.elements.UITextBox(
             "",

@@ -922,9 +922,9 @@ class EventEditScreen(Screens):
                     selected_block = self.get_selected_block_info()
                     info = selected_block["adjust"].replace("increase_", "")
                     if info != self.supply_element["increase_entry"].text:
-                        selected_block["adjust"] = (
-                            f"increase_{self.supply_element['increase_entry'].text}"
-                        )
+                        selected_block[
+                            "adjust"
+                        ] = f"increase_{self.supply_element['increase_entry'].text}"
                         self.update_block_info()
 
     def on_use(self):
@@ -3619,16 +3619,16 @@ class EventEditScreen(Screens):
         self.clear_supply_constraints()
 
         # CONSTRAINT CONTAINER
-        self.supply_element["constraint_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((0, 0), (440, 0))),
-                container=self.editor_container,
-                manager=MANAGER,
-                resize_left=False,
-                resize_top=False,
-                resize_right=False,
-                anchors={"top_target": self.editor_element["supply_start"]},
-            )
+        self.supply_element[
+            "constraint_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (440, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            resize_right=False,
+            anchors={"top_target": self.editor_element["supply_start"]},
         )
 
         selected_constraints = self.get_selected_block_info()
@@ -4116,16 +4116,16 @@ class EventEditScreen(Screens):
         self.clear_injury_constraints()
 
         # CONSTRAINT CONTAINER
-        self.injury_element["constraint_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((0, 0), (440, 0))),
-                container=self.injury_element["container"],
-                manager=MANAGER,
-                resize_left=False,
-                resize_top=False,
-                resize_right=False,
-                anchors={"top_target": self.editor_element["injury_start"]},
-            )
+        self.injury_element[
+            "constraint_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (440, 0))),
+            container=self.injury_element["container"],
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            resize_right=False,
+            anchors={"top_target": self.editor_element["injury_start"]},
         )
         selected_constraints = self.get_selected_block_info()
         # CAT SELECTION
@@ -4419,16 +4419,16 @@ class EventEditScreen(Screens):
         self.clear_history_constraints()
 
         # CONSTRAINT CONTAINER
-        self.history_element["constraint_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((0, 0), (440, 0))),
-                container=self.history_element["container"],
-                manager=MANAGER,
-                resize_left=False,
-                resize_top=False,
-                resize_right=False,
-                anchors={"top_target": self.editor_element["history_start"]},
-            )
+        self.history_element[
+            "constraint_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (440, 0))),
+            container=self.history_element["container"],
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            resize_right=False,
+            anchors={"top_target": self.editor_element["history_start"]},
         )
         selected_constraints = self.get_selected_block_info()
         # CAT SELECTION
@@ -4553,15 +4553,15 @@ class EventEditScreen(Screens):
         )
 
     def create_relationships_editor(self):
-        self.relationships_element["container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((0, 0), (0, 0))),
-                container=self.editor_container,
-                manager=MANAGER,
-                resize_left=False,
-                resize_top=False,
-                anchors={"top_target": self.history_element["history"]},
-            )
+        self.relationships_element[
+            "container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            anchors={"top_target": self.history_element["history"]},
         )
         self.relationships_element["start_intro"] = UITextBoxTweaked(
             "screens.event_edit.relationships_info",
@@ -4666,16 +4666,16 @@ class EventEditScreen(Screens):
         self.clear_relationships_constraints()
 
         # CONSTRAINT CONTAINER
-        self.relationships_element["constraint_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((0, 0), (440, 0))),
-                container=self.relationships_element["container"],
-                manager=MANAGER,
-                resize_left=False,
-                resize_top=False,
-                resize_right=False,
-                anchors={"top_target": self.editor_element["relationships_start"]},
-            )
+        self.relationships_element[
+            "constraint_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (440, 0))),
+            container=self.relationships_element["container"],
+            manager=MANAGER,
+            resize_left=False,
+            resize_top=False,
+            resize_right=False,
+            anchors={"top_target": self.editor_element["relationships_start"]},
         )
         selected_constraints = self.get_selected_block_info()
 
@@ -4843,17 +4843,17 @@ class EventEditScreen(Screens):
                 "top_target": self.editor_element["values"],
             },
         )
-        self.relationships_element[f"amount_entry"] = (
-            pygame_gui.elements.UITextEntryLine(
-                ui_scale(pygame.Rect((10, 23), (40, 29))),
-                manager=MANAGER,
-                container=self.relationships_element["constraint_container"],
-                anchors={
-                    "top_target": self.editor_element["values"],
-                    "left_target": self.relationships_element["amount_text"],
-                },
-                initial_text=str(selected_constraints["amount"]),
-            )
+        self.relationships_element[
+            f"amount_entry"
+        ] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((10, 23), (40, 29))),
+            manager=MANAGER,
+            container=self.relationships_element["constraint_container"],
+            anchors={
+                "top_target": self.editor_element["values"],
+                "left_target": self.relationships_element["amount_text"],
+            },
+            initial_text=str(selected_constraints["amount"]),
         )
 
         prev_element = None
@@ -5258,13 +5258,13 @@ class EventEditScreen(Screens):
         self.create_divider(self.backstory_element["display"], "backstory")
 
     def create_bool_editor(self):
-        self.new_cat_element["checkbox_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((20, 0), (0, 0))),
-                container=self.editor_container,
-                manager=MANAGER,
-                anchors={"top_target": self.editor_element["display"]},
-            )
+        self.new_cat_element[
+            "checkbox_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((20, 0), (0, 0))),
+            container=self.editor_container,
+            manager=MANAGER,
+            anchors={"top_target": self.editor_element["display"]},
         )
         prev_element = None
         for info in self.new_cat_bools:
@@ -5679,13 +5679,13 @@ class EventEditScreen(Screens):
             anchors={"top_target": self.editor_element["age"]},
         )
         # container for the checkbox list, this will get tossed into the collapsible container ^
-        self.rel_status_element["checkboxes"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((48, 0), (0, 0))),
-                container=self.rel_status_element["container"],
-                manager=MANAGER,
-                anchors={"top_target": self.rel_status_element["container"].top_button},
-            )
+        self.rel_status_element[
+            "checkboxes"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((48, 0), (0, 0))),
+            container=self.rel_status_element["container"],
+            manager=MANAGER,
+            anchors={"top_target": self.rel_status_element["container"].top_button},
         )
 
         # only the main cat has access to these tags
@@ -5761,14 +5761,14 @@ class EventEditScreen(Screens):
                 if value in tag:
                     initial_text = tag.replace(f"{value}_", "")
 
-            self.rel_value_element[f"{value}_entry"] = (
-                pygame_gui.elements.UITextEntryLine(
-                    ui_scale(pygame.Rect((250, 13), (40, 29))),
-                    manager=MANAGER,
-                    container=self.rel_status_element["values"],
-                    anchors={"top_target": prev_element} if prev_element else None,
-                    initial_text=initial_text,
-                )
+            self.rel_value_element[
+                f"{value}_entry"
+            ] = pygame_gui.elements.UITextEntryLine(
+                ui_scale(pygame.Rect((250, 13), (40, 29))),
+                manager=MANAGER,
+                container=self.rel_status_element["values"],
+                anchors={"top_target": prev_element} if prev_element else None,
+                initial_text=initial_text,
             )
             self.rel_value_element[f"{value}_low_button"] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((10, 12), (30, 30))),
@@ -6062,15 +6062,13 @@ class EventEditScreen(Screens):
             container=self.editor_container,
             anchors={"top_target": self.type_element["display"]},
         )
-        self.tag_element["basic_checkbox_container"] = (
-            pygame_gui.elements.UIAutoResizingContainer(
-                ui_scale(pygame.Rect((48, 0), (0, 0))),
-                container=self.tag_element["collapse_container"],
-                manager=MANAGER,
-                anchors={
-                    "top_target": self.tag_element["collapse_container"].top_button
-                },
-            )
+        self.tag_element[
+            "basic_checkbox_container"
+        ] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((48, 0), (0, 0))),
+            container=self.tag_element["collapse_container"],
+            manager=MANAGER,
+            anchors={"top_target": self.tag_element["collapse_container"].top_button},
         )
 
         self.update_basic_checkboxes()

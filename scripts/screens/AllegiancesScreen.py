@@ -195,9 +195,9 @@ class AllegiancesScreen(Screens):
         # Medicine Cat Box:
         if living_meds:
             _box = ["", ""]
-            _box[0] = (
-                f"<b><u>{i18n.t('general.medicine cat', count=len(living_meds)).upper()}</u></b>"
-            )
+            _box[
+                0
+            ] = f"<b><u>{i18n.t('general.medicine cat', count=len(living_meds)).upper()}</u></b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_meds])
             outputs.append(_box)
@@ -205,9 +205,9 @@ class AllegiancesScreen(Screens):
         # Mediator Box:
         if living_mediators:
             _box = ["", ""]
-            _box[0] = (
-                f"<b><u>{i18n.t('general.mediator', count=len(living_mediators)).upper()}</u></b>"
-            )
+            _box[
+                0
+            ] = f"<b><u>{i18n.t('general.mediator', count=len(living_mediators)).upper()}</u></b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_mediators])
             outputs.append(_box)
@@ -215,9 +215,9 @@ class AllegiancesScreen(Screens):
         # Warrior Box:
         if living_warriors:
             _box = ["", ""]
-            _box[0] = (
-                f"<b><u>{i18n.t('general.warrior', count=len(living_warriors)).upper()}</u></b>"
-            )
+            _box[
+                0
+            ] = f"<b><u>{i18n.t('general.warrior', count=len(living_warriors)).upper()}</u></b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_warriors])
             outputs.append(_box)
@@ -235,9 +235,9 @@ class AllegiancesScreen(Screens):
         # Queens and Kits Box:
         if queen_dict or living_kits:
             _box = ["", ""]
-            _box[0] = (
-                f"<b><u>{i18n.t('general.queen', count=2).upper()} AND {i18n.t('general.kit', count=2).upper()}</u></b>"
-            )
+            _box[
+                0
+            ] = f"<b><u>{i18n.t('general.queen', count=2).upper()} AND {i18n.t('general.kit', count=2).upper()}</u></b>"
 
             # This one is a bit different.  First all the queens, and the kits they are caring for.
             all_entries = []

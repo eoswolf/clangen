@@ -370,9 +370,9 @@ class Screens:
                                 )
                             }
                         )
-                        cls.menu_buttons[den] = (
-                            scripts.screens.screens_core.screens_core.menu_buttons[den]
-                        )
+                        cls.menu_buttons[
+                            den
+                        ] = scripts.screens.screens_core.screens_core.menu_buttons[den]
                 else:
                     cls.menu_buttons[den].show()
 
@@ -743,19 +743,19 @@ class Screens:
                     continue
 
                 # there's an input blur_bg here, so scale it
-                self.fullscreen_bgs[name] = (
-                    scripts.screens.screens_core.screens_core.process_blur_bg(
-                        blur_bgs[name], blur_radius=0, vignette_strength=vignette_alpha
-                    )
+                self.fullscreen_bgs[
+                    name
+                ] = scripts.screens.screens_core.screens_core.process_blur_bg(
+                    blur_bgs[name], blur_radius=0, vignette_strength=vignette_alpha
                 )
                 continue
 
             # no blur_bg, so blur the input bg to become the fullscreen backing
             # also blit the vignette & game frame over the top of that for performance
-            self.fullscreen_bgs[name] = (
-                scripts.screens.screens_core.screens_core.process_blur_bg(
-                    bg, blur_radius=radius, vignette_strength=vignette_alpha
-                )
+            self.fullscreen_bgs[
+                name
+            ] = scripts.screens.screens_core.screens_core.process_blur_bg(
+                bg, blur_radius=radius, vignette_strength=vignette_alpha
             )
 
     def set_bg(self, bg: Optional[str] = None, blur_bg: Optional[str] = None):

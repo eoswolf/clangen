@@ -1074,19 +1074,19 @@ class ChooseMateScreen(Screens):
         ):
             warning_rect = ui_scale(pygame.Rect((0, 0), (160, 45)))
             warning_rect.bottomleft = ui_scale_offset((0, -5))
-            self.selected_cat_elements["no kit warning"] = (
-                pygame_gui.elements.UITextBox(
-                    "screens.choose_mate.no_kit_warning",
-                    warning_rect,
-                    object_id=get_text_box_theme(
-                        "#text_box_22_horizcenter_vertcenter_spacing_95"
-                    ),
-                    anchors={
-                        "centerx": "centerx",
-                        "bottom": "bottom",
-                        "bottom_target": self.toggle_mate,
-                    },
-                )
+            self.selected_cat_elements[
+                "no kit warning"
+            ] = pygame_gui.elements.UITextBox(
+                "screens.choose_mate.no_kit_warning",
+                warning_rect,
+                object_id=get_text_box_theme(
+                    "#text_box_22_horizcenter_vertcenter_spacing_95"
+                ),
+                anchors={
+                    "centerx": "centerx",
+                    "bottom": "bottom",
+                    "bottom_target": self.toggle_mate,
+                },
             )
             del warning_rect
 

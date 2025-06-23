@@ -704,26 +704,26 @@ class History:
                 murder_history["revealed_by"] = other_cat.ID if other_cat else None
                 murder_history["revelation_moon"] = game.clan.age
                 if not other_cat:
-                    murder_history["revelation_text"] = (
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
-                    )
+                    murder_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
                 else:
-                    murder_history["revelation_text"] = (
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
-                    )
+                    murder_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
 
                 victim_history = victim_history["is_victim"][0]
                 victim_history["revealed"] = True
                 victim_history["revealed_by"] = other_cat.ID if other_cat else None
                 victim_history["revelation_moon"] = game.clan.age
                 if not other_cat:
-                    victim_history["revelation_text"] = (
-                        "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
-                    )
+                    victim_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
                 else:
-                    victim_history["revelation_text"] = (
-                        "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
-                    )
+                    victim_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
 
                 discoverer: str = ""
                 if other_cat:
