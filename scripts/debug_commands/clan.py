@@ -27,7 +27,9 @@ class ReloadClanCommand(Command):
             game.switches["switch_clan"] = True
             add_output_line_to_log("Reload successful!")
         else:
-            add_output_line_to_log("Unable to reload clan, arguments might not be correct.")
+            add_output_line_to_log(
+                "Unable to reload clan, arguments might not be correct."
+            )
 
 
 class ClanCommand(Command):
@@ -35,9 +37,7 @@ class ClanCommand(Command):
     description = "Manage current loaded clan"
     aliases = ["clan", "cl"]
 
-    sub_commands = [
-        ReloadClanCommand()
-    ]
+    sub_commands = [ReloadClanCommand()]
 
     def callback(self, args: List[str]):
         add_output_line_to_log("Please specify a subcommand")
