@@ -228,14 +228,14 @@ def load_data():
     except Exception as e:
         logging.exception("File failed to load")
         if not game.switches["error_message"]:
-            game.switches[
-                "error_message"
-            ] = "There was an error loading the cats file!"
+            game.switches["error_message"] = "There was an error loading the cats file!"
             game.switches["traceback"] = e
 
     finished_loading = True
 
+
 images = []
+
 
 def loading_animation(scale: float = 1):
     # Load images, adjust color
@@ -285,6 +285,7 @@ def loading_animation(scale: float = 1):
 
         pygame.display.update()
 
+
 def load_game():
     """
     Performs the functions needed to load the game.
@@ -305,9 +306,10 @@ def load_game():
     loading_thread.start()
     loading_animation(screen_scale)
 
-    #loading thread should be done by now, so just join it for safety.
+    # loading thread should be done by now, so just join it for safety.
     loading_thread.join()
     del loading_thread
+
 
 # load spritesheets
 sprites.load_all()
@@ -353,7 +355,7 @@ while 1:
             pass
         else:
             game.all_screens[game.current_screen].handle_event(event)
-            
+
         sound_manager.handle_sound_events(event)
 
         if event.type == pygame.QUIT:

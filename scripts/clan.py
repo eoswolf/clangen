@@ -471,7 +471,7 @@ class Clan:
         else:
             game.save_clanlist(clan)
         game.switches["switch_clan"] = True
-        #quit(savesettings=False, clearevents=True)
+        # quit(savesettings=False, clearevents=True)
 
     def save_clan(self):
         """

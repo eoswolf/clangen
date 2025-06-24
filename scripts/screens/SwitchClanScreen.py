@@ -62,7 +62,8 @@ class SwitchClanScreen(Screens):
                     if event.ui_element in page:
                         self.change_screen("start screen")
                         Clan.switch_clans(
-                            self.clan_name[self.page][page.index(event.ui_element)], False
+                            self.clan_name[self.page][page.index(event.ui_element)],
+                            False,
                         )
 
         elif event.type == pygame.KEYDOWN and game.settings["keybinds"]:
