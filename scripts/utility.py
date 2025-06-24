@@ -2985,7 +2985,6 @@ def get_text_box_theme(theme_name=None):
     else:
         return theme_name
 
-
 def quit(savesettings=False, clearevents=False):
     """
     Quits the game, avoids a bunch of repeated lines
