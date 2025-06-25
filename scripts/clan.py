@@ -1133,10 +1133,12 @@ class Clan:
 
         combined_supply_dict = {
             "storage": {
-                herb: [int(i) for i in amounts] for herb, amounts in combined_supply_dict["storage"].items()
+                herb: [int(i) for i in amounts]
+                for herb, amounts in combined_supply_dict["storage"].items()
             },
             "collected": {
-                herb: int(amount) for herb, amount in combined_supply_dict["collected"].items()
+                herb: int(amount)
+                for herb, amount in combined_supply_dict["collected"].items()
             },
         }
 
