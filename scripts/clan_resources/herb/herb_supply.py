@@ -179,8 +179,6 @@ class HerbSupply:
         handle herbs on moon skip: add collected to supply, use herbs where needed, expire old herbs, look for new herbs
         """
 
-        print(self.combined_supply_dict)
-
         # clear log
         self.log = []
 
