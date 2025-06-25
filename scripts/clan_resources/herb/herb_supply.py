@@ -503,7 +503,7 @@ class HerbSupply:
                 )
                 == 1
             ):
-                found_herbs[herb] = (
+                found_herbs[herb] = int(
                     choices(population=[1, 2, 3], weights=weight, k=1)[0]
                     * quantity_modifier
                 )
