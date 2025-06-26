@@ -352,7 +352,11 @@ class GenerateEvents:
                 # determine which injury severity list will be used
                 allowed_severity = None
                 discard = False
-                if cat.status in GenerateEvents.INJURY_DISTRIBUTION:
+                if (
+                    cat.status in GenerateEvents.INJURY_DISTRIBUTION
+                    and game.config["event_generation"]["debug_type_override"]
+                    != "injury"
+                ):
                     minor_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status][
                         "minor"
                     ]
