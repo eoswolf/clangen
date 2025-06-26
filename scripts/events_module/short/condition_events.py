@@ -363,7 +363,10 @@ class Condition_Events:
             triggered = True
             return triggered
 
-        if game.config["event_generation"]["debug_type_override"] == "injury":
+        if (
+            game.config["event_generation"]["debug_type_override"] == "injury"
+            and random_cat
+        ):
             handle_short_events.handle_event(
                 event_type="health",
                 main_cat=cat,
