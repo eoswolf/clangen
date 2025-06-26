@@ -955,8 +955,16 @@ class Events:
         # are connected to cats are located in there
         cat.one_moon()
 
+        if game.config["event_generation"]["debug_type_override"]:
+            debug_type_override = game.config["event_generation"]["debug_type_override"]
+            if debug_type_override in ["death", "injury"]:
+                self.handle_injuries_or_general_death(cat)
+            elif debug_type_override == "misc":
+                self.other_interactions(cat)
+            elif debug_type_override == "new_cat":
+                self.invite_new_cats(cat)
+
         # Handle Mediator Events
-        # TODO: this is not a great way to handle them, ideally they should be converted to ShortEvent format
         self.mediator_events(cat)
 
         # handle nutrition amount
@@ -1867,6 +1875,15 @@ class Events:
             Cat, main_cat=cat, parent_child_modifier=True, mentor_app_modifier=True
         )
 
+        if game.config["event_generation"]["debug_type_override"] == "new_cat":
+            handle_short_events.handle_event(
+                event_type="new_cat",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+
         if (
             not int(random.random() * chance)
             and not cat.age.is_baby()
@@ -1885,6 +1902,16 @@ class Events:
         """
         TODO: DOCS
         """
+        if game.config["event_generation"]["debug_type_override"] == "misc":
+            random_cat = get_random_moon_cat(Cat, main_cat=cat)
+            handle_short_events.handle_event(
+                event_type="misc",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+
         hit = int(random.random() * 30)
         if hit:
             return
@@ -1907,6 +1934,18 @@ class Events:
         random_cat = get_random_moon_cat(
             Cat, cat, parent_child_modifier=True, mentor_app_modifier=True
         )
+
+        if game.config["event_generation"]["debug_type_override"] == "death":
+            handle_short_events.handle_event(
+                event_type="birth_death",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+        elif game.config["event_generation"]["debug_type_override"] == "injury":
+            Condition_Events.handle_injuries(cat, random_cat)
+            return
 
         # chance to kill leader: 1/50 by default
         if (
