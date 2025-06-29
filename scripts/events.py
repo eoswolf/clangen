@@ -1142,7 +1142,6 @@ class Events:
                     enemy_clan.relations += 2
                 elif choice == "rel_down" and enemy_clan.relations > 1:
                     enemy_clan.relations -= 1
-            print(enemy_clan.relations)
 
         else:  # try to start a war if no war in progress
             for other_clan in game.clan.all_clans:
