@@ -5034,7 +5034,7 @@
         "id": "deaf_congenital_gen_to_alive_gen",
         "thoughts": [
             "Teaches a Clanmate how to do tail signals",
-            "{PRONOUN/m_c/Are/Is} delighted when r_c asks to learn tail signals",
+            "{VERB/m_c/Are/Is} delighted when r_c asks to learn tail signals",
             "Recently discovered that {PRONOUN/m_c/subject} {VERB/m_c/have/has} a habit of stomping",
             "Is confused when r_c indicates birdsong",
             "Wonders what r_c sounds like",
