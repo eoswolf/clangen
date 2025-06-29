@@ -1114,11 +1114,11 @@ class Events:
                     enemy_clan = other_clan
                     break
 
-            threshold = 5
+            threshold = 10
             if enemy_clan.temperament == "bloodthirsty":
-                threshold = 10
+                threshold = 12
             if enemy_clan.temperament in ["mellow", "amiable", "gracious"]:
-                threshold = 3
+                threshold = 7
 
             threshold -= int(game.clan.war["duration"])
             if enemy_clan.relations < 0:
@@ -1129,7 +1129,7 @@ class Events:
                 game.clan.war["at_war"] = False
                 game.clan.war["enemy"] = None
                 game.clan.war["duration"] = 0
-                enemy_clan.relations += 12
+                enemy_clan.relations += 2
                 war_events = self.WAR_TXT["conclusion_events"]
             else:  # try to influence the relation with warring clan
                 game.clan.war["duration"] += 1
@@ -1142,6 +1142,7 @@ class Events:
                     enemy_clan.relations += 2
                 elif choice == "rel_down" and enemy_clan.relations > 1:
                     enemy_clan.relations -= 1
+            print(enemy_clan.relations)
 
         else:  # try to start a war if no war in progress
             for other_clan in game.clan.all_clans:
