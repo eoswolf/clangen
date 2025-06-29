@@ -4880,7 +4880,7 @@
             "Secretly worries that {PRONOUN/m_c/poss} hearing is getting worse...",
             "Insists that {PRONOUN/m_c/poss} hearing is fine, everyone's just whispering"
             ],
-        "has_injuries": {
+        "perm_conditions": {
             "m_c": [
                 "partial hearing loss"
             ]
