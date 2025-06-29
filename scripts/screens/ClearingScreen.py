@@ -78,6 +78,7 @@ class ClearingScreen(Screens):
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
+            self.hungry_tab.disable()
 
             if event.ui_element == self.back_button:
                 self.change_screen(game.last_screen_forupdate)
