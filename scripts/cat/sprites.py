@@ -627,7 +627,7 @@ class Sprites:
                 "BLACK CICADA",
             ],
             [
-                "ROAD RUNNER FEATHER"
+                "ROAD RUNNER FEATHER",
             ],
         ]
 
