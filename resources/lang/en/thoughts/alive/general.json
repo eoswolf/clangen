@@ -4903,7 +4903,7 @@
     {
         "id": "partial_hearing_loss_gen_congenital_to_alive_gen",
         "thoughts": [
-            "{VERB/m_c/Are/Is} curious about the sounds {PRONOUN/m_c/poss} Clanmates describe",
+            "Is curious about the sounds {PRONOUN/m_c/poss} Clanmates describe",
             "Imagines birdsong",
             "Wonders how high r_c's voice actually is compared to what {PRONOUN/m_c/subject} {VERB/m_c/hear/hears}"
         ],
