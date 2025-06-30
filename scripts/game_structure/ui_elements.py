@@ -885,6 +885,10 @@ class UISpriteButton:
         )
         del input_sprite
         self.button.join_focus_sets(self.image)
+        self.image.check_hover = self.__image_check_hover
+
+    def __image_check_hover(self, time_delta: float, hovered_higher_element: bool):
+        return False
 
     def return_cat_id(self):
         return self.button.return_cat_id()
