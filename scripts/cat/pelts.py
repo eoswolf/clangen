@@ -314,6 +314,11 @@ class Pelt:
         "ROSE MALLOW",
         "PICKLEWEED",
         "GOLDEN CREEPING JENNY",
+        "DESERT WILLOW",
+        "CACTUS FLOWER",
+        "PRARIE FIRE",
+        "VERBENA EAR",
+        "VERBENA PELT",
     ]
     wild_accessories = [
         "RED FEATHERS",
@@ -327,6 +332,7 @@ class Pelt:
         "MONARCH BUTTERFLY",
         "CICADA WINGS",
         "BLACK CICADA",
+        "ROAD RUNNER FEATHER",
     ]
     collars = [
         "CRIMSON",
@@ -452,12 +458,18 @@ class Pelt:
         "DRY LAURELS",
         "ROSE MALLOW",
         "PICKLEWEED",
+        "DESERT WILLOW",
+        "CACTUS FLOWER",
+        "PRARIE FIRE",
+        "VERBENA EAR",
     ]
 
     body_accessories = [
         "HERBS",
         "PETALS",
         "DRY HERBS",
+        "VERBENA PELT",
+        "ROAD RUNNER FEATHER",
     ]
 
     tabbies = ["Tabby", "Ticked", "Mackerel", "Classic", "Sokoke", "Agouti"]
