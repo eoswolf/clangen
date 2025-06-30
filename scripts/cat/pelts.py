@@ -316,7 +316,7 @@ class Pelt:
         "GOLDEN CREEPING JENNY",
         "DESERT WILLOW",
         "CACTUS FLOWER",
-        "PRARIE FIRE",
+        "PRAIRIE FIRE",
         "VERBENA EAR",
         "VERBENA PELT",
     ]
@@ -460,7 +460,7 @@ class Pelt:
         "PICKLEWEED",
         "DESERT WILLOW",
         "CACTUS FLOWER",
-        "PRARIE FIRE",
+        "PRAIRIE FIRE",
         "VERBENA EAR",
     ]
 
