@@ -608,7 +608,7 @@ class Sprites:
                 "CACTUS FLOWER",
                 "PRARIE FIRE",
                 "VERBENA EAR",
-                "VERBENA PELT"
+                "VERBENA PELT",
             ],
         ]
         dryherbs_data = [["DRY HERBS", "DRY CATMINT", "DRY NETTLES", "DRY LAURELS"]]
