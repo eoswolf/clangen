@@ -606,7 +606,7 @@ class Sprites:
                 "GOLDEN CREEPING JENNY",
                 "DESERT WILLOW",
                 "CACTUS FLOWER",
-                "PRARIE FIRE",
+                "PRAIRIE FIRE",
                 "VERBENA EAR",
                 "VERBENA PELT",
             ],
