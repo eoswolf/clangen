@@ -94,10 +94,10 @@
             "many": "cactus flowers",
             "one": "cactus flower"
         },
-        "PRARIE FIRE": {
-            "zero": "prarie-fire",
-            "many": "prarie-fires",
-            "one": "prarie-fire"
+        "PRAIRIE FIRE": {
+            "zero": "prairie-fire",
+            "many": "prairie-fires",
+            "one": "prairie-fire"
         },
         "VERBENA EAR": {
             "zero": "verbena",
