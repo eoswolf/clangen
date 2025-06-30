@@ -169,8 +169,14 @@ class UISurfaceImageButton(pygame_gui.elements.UIButton):
             self.join_focus_sets(self.text_layer)
             self.text_layer.disable()
 
+            # Override the text layer hover check so that it doesn't block anything below it
+            self.text_layer.check_hover = self.__text_layer_check_hover
+
             if self._is_tab:
                 self.find_text_layer_pos()
+
+    def __text_layer_check_hover(self, time_delta: float, hovered_higher_element: bool):
+        return False
 
     def find_text_layer_pos(self):
         if self.text_layer.rect.height >= self.relative_rect[3]:
