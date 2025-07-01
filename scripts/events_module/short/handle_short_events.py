@@ -80,8 +80,8 @@ class HandleShortEvents:
         self,
         event_type: str,
         main_cat: Cat,
-        random_cat: Cat,
         freshkill_pile: FreshkillPile,
+        random_cat: Cat = None,
         victim_cat: Cat = None,
         sub_type: list = None,
         ignore_subtyping: bool = False,
@@ -140,7 +140,6 @@ class HandleShortEvents:
             weight = 2
         else:
             weight = 1
-        print(f"weight: {weight}")
 
         chosen_event = None
         while not chosen_event and weight < 5:
@@ -162,27 +161,9 @@ class HandleShortEvents:
                 ignore_subtyping=ignore_subtyping,
             )
             if not chosen_event:
+                # we'll see if any higher weighted events are available
                 weight += 1
 
-        if isinstance(game.config["event_generation"]["debug_ensure_event_id"], str):
-            found = False
-            for _event in final_events:
-                if (
-                    _event.event_id
-                    == game.config["event_generation"]["debug_ensure_event_id"]
-                ):
-                    final_events = [_event]
-                    print(
-                        f"FOUND debug_ensure_event_id: {game.config['event_generation']['debug_ensure_event_id']} "
-                        f"was set as the only event option"
-                    )
-                    found = True
-                    break
-            if not found:
-                # this print is very spammy, but can be helpful if unsure why a debug event isn't triggering
-                # print(f"debug_ensure_event_id: {game.config['event_generation']['debug_ensure_event_id']} "
-                #      f"was not possible for {self.main_cat.name}.  {self.main_cat.name} was looking for a {event_type}: {self.sub_types} event")
-                pass
         # ---------------------------------------------------------------------------- #
         #                               do the event                                   #
         # ---------------------------------------------------------------------------- #
@@ -201,7 +182,7 @@ class HandleShortEvents:
         self.additional_event_text = ""
 
         # check if another cat is present
-        if self.chosen_event.r_c:
+        if self.random_cat:
             self.involved_cats.append(self.random_cat.ID)
 
         # checking if a mass death should happen, happens here so that we can toss the event if needed
@@ -215,8 +196,8 @@ class HandleShortEvents:
         # create new cats (must happen here so that new cats can be included in further changes)
         self.handle_new_cats()
 
-        # remove cats from involved_cats if theyre supposed to be
-        if self.chosen_event.r_c and "r_c" in self.chosen_event.exclude_involved:
+        # remove cats from involved_cats if they're supposed to be
+        if self.random_cat and "r_c" in self.chosen_event.exclude_involved:
             self.involved_cats.remove(self.random_cat.ID)
         if "m_c" in self.chosen_event.exclude_involved:
             self.involved_cats.remove(self.main_cat.ID)
@@ -283,6 +264,7 @@ class HandleShortEvents:
                 other_cat = None
             else:
                 other_cat = self.random_cat
+
             History.reveal_murder(
                 cat=self.main_cat,
                 other_cat=other_cat,
