@@ -224,7 +224,7 @@ class GenerateEvents:
                 return event
 
     @staticmethod
-    def possible_short_events(event_type=None):
+    def possible_short_events(event_type=None, weight=4):
         event_list = []
 
         # skip the rest of the loading if there is an unrecognised biome
@@ -240,18 +240,6 @@ class GenerateEvents:
             )
 
         biome = temp_biome.lower()
-
-        # choosing rarity
-        # think of it as "in a span of 10 moons, in how many moons should this sort of event appear?"
-        rarity_roll = random.randint(1, 10)
-        if rarity_roll <= 4:
-            weight = 4
-        elif rarity_roll <= 7:
-            weight = 3
-        elif rarity_roll <= 9:
-            weight = 2
-        else:
-            weight = 1
 
         # biome specific events
         event_list.extend(
@@ -502,15 +490,7 @@ class GenerateEvents:
                 if discard:
                     continue
 
-            # ensure ID without requirements override
-            if (
-                event.event_id
-                == game.config["event_generation"]["debug_ensure_event_id"]
-            ):
-                final_events.append(event)
-                break
-
-            final_events.extend([event] * event.weight)
+            final_events.append(event)
 
         for notice in incorrect_format:
             print(notice)

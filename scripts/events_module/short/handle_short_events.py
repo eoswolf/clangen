@@ -128,21 +128,43 @@ class HandleShortEvents:
             event_type = "death"
         elif event_type == "health":
             event_type = "injury"
-        possible_short_events = GenerateEvents.possible_short_events(event_type)
 
-        final_events = GenerateEvents.filter_possible_short_events(
-            Cat_class=Cat,
-            possible_events=possible_short_events,
-            cat=self.main_cat,
-            random_cat=self.random_cat,
-            other_clan=self.other_clan,
-            freshkill_active=FRESHKILL_EVENT_ACTIVE,
-            freshkill_trigger_factor=FRESHKILL_EVENT_TRIGGER_FACTOR,
-            sub_types=self.sub_types,
-            allowed_events=self.allowed_events,
-            excluded_events=self.excluded_events,
-            ignore_subtyping=ignore_subtyping,
-        )
+        # choosing rarity
+        # think of it as "in a span of 10 moons, in how many moons should this sort of event appear?"
+        rarity_roll = randint(1, 10)
+        if rarity_roll <= 4:
+            weight = 4
+        elif rarity_roll <= 7:
+            weight = 3
+        elif rarity_roll <= 9:
+            weight = 2
+        else:
+            weight = 1
+        print(f"weight: {weight}")
+
+        final_events = None
+        while not final_events and weight < 5:
+            possible_short_events = GenerateEvents.possible_short_events(
+                event_type, weight
+            )
+
+            final_events = GenerateEvents.filter_possible_short_events(
+                Cat_class=Cat,
+                possible_events=possible_short_events,
+                cat=self.main_cat,
+                random_cat=self.random_cat,
+                other_clan=self.other_clan,
+                freshkill_active=FRESHKILL_EVENT_ACTIVE,
+                freshkill_trigger_factor=FRESHKILL_EVENT_TRIGGER_FACTOR,
+                sub_types=self.sub_types,
+                allowed_events=self.allowed_events,
+                excluded_events=self.excluded_events,
+                ignore_subtyping=ignore_subtyping,
+            )
+            if not final_events:
+                weight += 1
+
+            print(f"found events: {len(final_events)}")
 
         if isinstance(game.config["event_generation"]["debug_ensure_event_id"], str):
             found = False
