@@ -105,12 +105,13 @@ class GenerateEvents:
         GenerateEvents.loaded_events = {}
 
     @staticmethod
-    def generate_short_events(event_triggered, biome):
+    def generate_short_events(event_triggered, biome, weight):
         file_path = f"{event_triggered}/{biome}.json"
+        load_name = f"{file_path}_{weight}"
 
         try:
-            if file_path in GenerateEvents.loaded_events:
-                return GenerateEvents.loaded_events[file_path]
+            if load_name in GenerateEvents.loaded_events:
+                return GenerateEvents.loaded_events[load_name]
             else:
                 events_dict = GenerateEvents.get_short_event_dicts(file_path)
 
@@ -119,6 +120,7 @@ class GenerateEvents:
                     return event_list
                 for event in events_dict:
                     event_text = event["event_text"] if "event_text" in event else None
+                    event_weight = event["weight"] if "weight" in event else 4
                     if not event_text:
                         event_text = (
                             event["death_text"] if "death_text" in event else None
@@ -128,6 +130,10 @@ class GenerateEvents:
                         print(
                             f"WARNING: some events resources which are used in generate_events have no 'event_text'."
                         )
+
+                    if weight != event_weight:
+                        continue
+
                     event = ShortEvent(
                         event_id=event["event_id"] if "event_id" in event else "",
                         location=event["location"] if "location" in event else ["any"],
@@ -163,7 +169,7 @@ class GenerateEvents:
                     event_list.append(event)
 
                 # Add to loaded events.
-                GenerateEvents.loaded_events[file_path] = event_list
+                GenerateEvents.loaded_events[load_name] = event_list
                 return event_list
         except:
             print(f"WARNING: {file_path} was not found, check short event generation")
@@ -235,11 +241,27 @@ class GenerateEvents:
 
         biome = temp_biome.lower()
 
+        # choosing rarity
+        # think of it as "in a span of 10 moons, in how many moons should this sort of event appear?"
+        rarity_roll = random.randint(1, 10)
+        if rarity_roll <= 4:
+            weight = 4
+        elif rarity_roll <= 7:
+            weight = 3
+        elif rarity_roll <= 9:
+            weight = 2
+        else:
+            weight = 1
+
         # biome specific events
-        event_list.extend(GenerateEvents.generate_short_events(event_type, biome))
+        event_list.extend(
+            GenerateEvents.generate_short_events(event_type, biome, weight)
+        )
 
         # any biome events
-        event_list.extend(GenerateEvents.generate_short_events(event_type, "general"))
+        event_list.extend(
+            GenerateEvents.generate_short_events(event_type, "general", weight)
+        )
 
         return event_list
 
