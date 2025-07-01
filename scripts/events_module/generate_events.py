@@ -455,7 +455,6 @@ class GenerateEvents:
             else:
                 chosen_event = random.choice(final_events) if final_events else None
 
-
         while final_events and not chosen_cat and not chosen_event:
             chosen_event = random.choice(final_events)
             # if we have an ensured id, only allow that event past
