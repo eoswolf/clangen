@@ -189,6 +189,7 @@ def get_free_possible_mates(cat):
             cats.append(inter_cat)
     return cats
 
+
 def get_warring_clan():
     """
     returns enemy clan if a war is currently ongoing
