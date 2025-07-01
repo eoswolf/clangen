@@ -7,7 +7,7 @@
         "season": [
             "any"
         ],
-        "weight": 3,
+        "weight": 2,
         "event_text": "m_c was practicing {PRONOUN/m_c/poss} tree climbing skills when {PRONOUN/m_c/subject} slipped from a branch. {PRONOUN/m_c/subject/CAP}'{VERB/m_c/re/s} brought home badly injured.",
         "m_c": {
             "status": [

@@ -40,7 +40,7 @@
             "newleaf",
             "leaf-fall"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "Naive to the dangers of the sun, m_c falls asleep while sunbathing. Though {PRONOUN/m_c/subject} {VERB/m_c/are/is} retrieved promptly, the young are vulerable to the desert heat.",
         "m_c": {
             "status": [
@@ -239,7 +239,7 @@
         "season": [
             "leaf-bare"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "The leaf-bare rains are dangerous to the unprepared and young. m_c is found, chilled and wet to the bone, after getting lost on a midnight adventure.",
         "m_c": {
             "status": [
@@ -265,7 +265,7 @@
         "season": [
             "greenleaf"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "Greenleaf is a harsh season for kithood. m_c was outside for just a little too long, and when {PRONOUN/m_c/subject} {VERB/m_c/return/returns} to the nursery, {PRONOUN/m_c/poss} little body is dangerously hot.",
         "m_c": {
             "status": [
@@ -323,7 +323,7 @@
             "leaf-fall",
             "newleaf"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c pushes {PRONOUN/m_c/self} a little too hard and ends up dehydrated for {PRONOUN/m_c/poss} troubles.",
         "m_c": {
             "age": [
@@ -353,7 +353,7 @@
         "season": [
             "greenleaf"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "Sunstroke stalks c_n in greenleaf, lurking to pounce on anyone unwary or unwise. This moon it strikes m_c.",
         "m_c": {
             "age": [
@@ -679,7 +679,7 @@
         "season": [
             "greenleaf"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "The greenleaf sun is beating down overhead, searingly hot and bright. m_c comes down with an awful headache after too much time spent outside.",
         "m_c": {
             "age": [
@@ -860,7 +860,7 @@
         "tags": [
             "clan:kitten"
         ],
-        "weight": 4,
+        "weight": 1,
         "event_text": "A piece of stray Twoleg trash ignites in the dry heat of the sun, threatening the nursery. m_c leads the efforts to rescue the kits, and will happily trade {PRONOUN/m_c/poss} singed coat and the acrid smell of burned fur for the safety of the young ones.",
         "m_c": {
             "age": [
@@ -946,7 +946,7 @@
             "greenleaf",
             "leaf-fall"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "The dry season between the last rains and the beginning of the next is always a vulnerable time for the elderly, but m_c didn't think {PRONOUN/m_c/subject} {VERB/m_c/were/was} <i>that</i> old yet.",
         "m_c": {
             "age": [
@@ -976,7 +976,7 @@
         "season": [
             "greenleaf"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c has been trying to keep {PRONOUN/m_c/poss} fluids up, but staying healthy in the oppressive heat of greenleaf was definitely easier in {PRONOUN/m_c/poss} prime. Sunstroke is the result.",
         "m_c": {
             "age": [
@@ -1014,7 +1014,7 @@
         "tags": [
             "clan:apprentice"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c thanks r_c for the water, squeezing the precious liquid gently out of the soaked moss the apprentice has brought. {PRONOUN/m_c/subject/CAP} {VERB/m_c/don't/doesn't} want {PRONOUN/m_c/poss} dehydration to get any worse.",
         "m_c": {
             "age": [
@@ -1082,7 +1082,7 @@
         "season": [
             "greenleaf"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "On one of the hottest days of the year r_c spends all {PRONOUN/r_c/poss} energy making sure that the older members of c_n keep drinking. Only m_c gets touched by sunstroke, and it's only a mild case of dehydration.",
         "m_c": {
             "age": [
@@ -1146,7 +1146,7 @@
         "season": [
             "any"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c wakes early one morning and spots a scorpion crawling up the sleeping r_c's back! {PRONOUN/m_c/subject/CAP} helped r_c escape, but got stung {PRONOUN/m_c/self} in the process.",
         "m_c": {
             "age": [

@@ -681,7 +681,7 @@
         "tags": [
             "clan:warrior"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c tried to interject and de-escalate an argument between two Clanmates, but r_c retaliated at the interruption. m_c limps away, fresh clawmarks scored through {PRONOUN/m_c/poss} pelt.",
         "m_c": {
             "age": [
@@ -786,7 +786,7 @@
         "season": [
             "any"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c was on a walk when {PRONOUN/m_c/subject} saw r_c being attacked by a rogue! {PRONOUN/m_c/subject/CAP} helped r_c escape, but not before gaining a few wounds.",
         "m_c": {
             "age": [
@@ -902,7 +902,7 @@
         "season": [
             "any"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c was on a walk when {PRONOUN/m_c/subject} saw r_c being attacked by a dog! {PRONOUN/m_c/subject/CAP} helped r_c escape, but not before gaining a few wounds.",
         "m_c": {
             "age": [
@@ -1140,7 +1140,7 @@
         "season": [
             "any"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "On a border patrol near the o_c_n border, m_c could no longer take o_c_n's jeers and smirks. {PRONOUN/m_c/subject/CAP} lashed out at the first jeering cat {PRONOUN/m_c/subject} saw, although the hotheaded move wasn't smart as m_c couldn't escape the skirmish without injury.",
         "m_c": {
             "age": [
@@ -1287,7 +1287,7 @@
             "leaf-fall",
             "leaf-bare"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c snuck out of camp and returned cold and shivering, frostbite nipping at {PRONOUN/m_c/poss} paws.",
         "m_c": {
             "status": [
@@ -1405,7 +1405,7 @@
             "newleaf",
             "leaf-fall"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c fell into a river, and inhaled a lot of water before managing to get out. {PRONOUN/m_c/subject/CAP}{VERB/m_c/'ve/'s} been hacking and sputtering ever since.",
         "m_c": {
             "age": [
@@ -1490,7 +1490,7 @@
         "season": [
             "leaf-bare"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c went out for a walk, but slipped on the ice and broke a bone.",
         "m_c": {
             "age": [
@@ -1530,7 +1530,7 @@
         "season": [
             "any"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was grabbed and dropped by an eagle, but {PRONOUN/m_c/subject} somehow survived.",
         "m_c": {
             "status": [
