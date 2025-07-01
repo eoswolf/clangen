@@ -271,27 +271,6 @@ class GenerateEvents:
         final_events = []
         incorrect_format = []
 
-        # picking injury severity
-        allowed_severity = "any"
-        r_c_injuries = []
-        if game.config["event_generation"]["debug_type_override"] != "injury":
-            # determine which injury severity list will be used
-            discard = False
-            if cat.status in GenerateEvents.INJURY_DISTRIBUTION:
-                minor_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["minor"]
-                major_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["major"]
-                severe_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["severe"]
-                severity_chosen = random.choices(
-                    ["minor", "major", "severe"],
-                    [minor_chance, major_chance, severe_chance],
-                    k=1,
-                )
-                if severity_chosen[0] == "minor":
-                    allowed_severity = "minor"
-                elif severity_chosen[0] == "major":
-                    allowed_severity = "major"
-                else:
-                    allowed_severity = "severe"
 
         for event in possible_events:
             if event.history:
@@ -371,17 +350,10 @@ class GenerateEvents:
                 continue
 
             m_c_injuries = []
+            r_c_injuries = []
             discard = False
             for block in event.injury:
                 for injury in block["injuries"]:
-                    if injury in GenerateEvents.INJURIES:
-                        # if injury doesn't match chosen severity, and we haven't overridden severity checks
-                        if (
-                            GenerateEvents.INJURIES[injury]["severity"]
-                            != allowed_severity
-                        ) and allowed_severity != "any":
-                            discard = True
-                            break
                     if "m_c" in block["cats"]:
                         m_c_injuries.append(injury)
                     if "r_c" in block["cats"]:
@@ -399,6 +371,7 @@ class GenerateEvents:
                     injuries=m_c_injuries,
                 ):
                     continue
+            # if a random cat was pre-chosen, then we check if the event will be suitable for them
             if random_cat:
                 if not event_for_cat(
                     cat_info=event.r_c,
