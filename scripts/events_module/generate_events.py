@@ -271,7 +271,6 @@ class GenerateEvents:
         final_events = []
         incorrect_format = []
 
-
         for event in possible_events:
             if event.history:
                 if (
@@ -445,9 +444,9 @@ class GenerateEvents:
             final_events.append(event)
 
         cat_list = [
-            cat
-            for cat in Cat_class.all_cats.values()
-            if cat.is_alive() and not cat.outside
+            c
+            for c in Cat_class.all_cats.values()
+            if c.is_alive() and not c.outside and c != cat
         ]
         chosen_cat = None
         chosen_event = None
@@ -460,6 +459,11 @@ class GenerateEvents:
             chosen_event = random.choice(final_events)
             if not chosen_event.r_c:
                 break
+
+            # gotta gather injuries so we can check if the cat can get them
+            r_c_injuries = []
+            for block in chosen_event.injury:
+                r_c_injuries.extend(block["injuries"] if "r_c" in block["cats"] else [])
 
             chosen_cat = cat_for_event(
                 constraint_dict=chosen_event.r_c,
