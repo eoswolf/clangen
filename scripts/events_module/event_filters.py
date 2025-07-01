@@ -267,6 +267,23 @@ def event_for_cat(
             return False
 
     if cat_info.get("relationship_status", []):
+        for status in cat_info.get("relationship_status", []):
+            # just some preliminary checks to see if any of these are impossible for this cat
+            if status == "siblings" and not cat.get_siblings():
+                return False
+            elif status == "mates" and not cat.get_mates():
+                return False
+            elif status == "mates_with_pl" and p_l.ID not in cat.get_mates():
+                return False
+            elif status == "parent/child" and not cat.get_children():
+                return False
+            elif status == "child/parent" and not cat.get_parents():
+                return False
+            elif status == "mentor/app" and not cat.apprentice:
+                return False
+            elif status == "app/mentor" and not cat.mentor:
+                return False
+
         if not filter_relationship_type(
             group=cat_group,
             filter_types=cat_info["relationship_status"],
@@ -454,13 +471,14 @@ def cat_for_event(
         comparison_cat_rel_status or constraint_dict.get("relationship_status")
     ):
         for cat in allowed_cats.copy():
+            # checking comparison cat's rel toward cat
             if comparison_cat_rel_status:
                 if not filter_relationship_type(
                     group=[comparison_cat, cat], filter_types=comparison_cat_rel_status
                 ):
                     allowed_cats.remove(cat)
                     continue
-
+            # now we can check cat's rel toward comparison_cat
             if constraint_dict.get("relationship_status"):
                 if not filter_relationship_type(
                     group=[cat, comparison_cat],
