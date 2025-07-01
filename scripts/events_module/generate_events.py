@@ -259,10 +259,10 @@ class GenerateEvents:
         Cat_class,
         possible_events,
         cat,
-        random_cat,
         other_clan,
         freshkill_active,
         freshkill_trigger_factor,
+        random_cat=None,
         sub_types=None,
         allowed_events=None,
         excluded_events=None,
@@ -399,6 +399,15 @@ class GenerateEvents:
                     injuries=m_c_injuries,
                 ):
                     continue
+            if random_cat:
+                if not event_for_cat(
+                    cat_info=event.r_c,
+                    cat=random_cat,
+                    cat_group=[random_cat, cat],
+                    event_id=event.event_id,
+                    injuries=r_c_injuries,
+                ):
+                    continue
 
             # check if outsider event is allowed
             if event.outsider:
@@ -469,7 +478,12 @@ class GenerateEvents:
         ]
         chosen_cat = None
         chosen_event = None
-        while final_events:
+        if random_cat:
+            chosen_cat = random_cat
+            chosen_event = random.choice(final_events) if final_events else None
+
+
+        while final_events and not chosen_cat and not chosen_event:
             chosen_event = random.choice(final_events)
             if not chosen_event.r_c:
                 break

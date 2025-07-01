@@ -38,7 +38,6 @@ from scripts.utility import (
     change_clan_reputation,
     get_alive_status_cats,
     get_living_clan_cat_count,
-    get_random_moon_cat,
     ceremony_text_adjust,
     get_current_season,
     adjust_list_text,
@@ -540,14 +539,13 @@ class Events:
     def mediator_events(self, cat):
         """Check for mediator events"""
         # If the cat is a mediator, check if they visited other clans
+        # TODO: honestly we don't really need to handle this as it's own subtype? i think they could just be plain misc
         if cat.status in ("mediator", "mediator apprentice") and not cat.not_working():
             # 1/10 chance
             if not int(random.random() * 10):
-                random_cat = get_random_moon_cat(Cat, main_cat=cat)
                 handle_short_events.handle_event(
                     event_type="misc",
                     main_cat=cat,
-                    random_cat=random_cat,
                     sub_type=["mediator"],
                     freshkill_pile=game.clan.freshkill_pile,
                 )
