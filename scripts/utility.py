@@ -1258,7 +1258,7 @@ def filter_relationship_type(
             if patrol_leader in group:
                 group.remove(patrol_leader)
             group.insert(0, patrol_leader)
-        # It should be exactly two cats for a "parent/child" event
+        # It should be exactly two cats for a "child/parent" event
         if len(group) != 2:
             return False
         # test for parentage
@@ -1270,7 +1270,7 @@ def filter_relationship_type(
             if patrol_leader in group:
                 group.remove(patrol_leader)
             group.insert(0, patrol_leader)
-        # It should be exactly two cats for a "parent/child" event
+        # It should be exactly two cats for a "mentor/app" event
         if len(group) != 2:
             return False
         # test for parentage
@@ -1282,7 +1282,7 @@ def filter_relationship_type(
             if patrol_leader in group:
                 group.remove(patrol_leader)
             group.insert(0, patrol_leader)
-        # It should be exactly two cats for a "parent/child" event
+        # It should be exactly two cats for a "app/mentor" event
         if len(group) != 2:
             return False
         # test for parentage
