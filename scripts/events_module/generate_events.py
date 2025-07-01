@@ -300,14 +300,10 @@ class GenerateEvents:
             if excluded_events and event.event_id in excluded_events:
                 continue
 
-            # ensure ID and requirements override
-            if (
-                event.event_id
-                == game.config["event_generation"]["debug_ensure_event_id"]
-                and game.config["event_generation"]["debug_override_requirements"]
-            ):
+            # if requirements are overridden, allow event through
+            if game.config["event_generation"]["debug_override_requirements"]:
                 final_events.append(event)
-                break
+                continue
 
             # check for event sub_type
             if not ignore_subtyping:
@@ -450,15 +446,40 @@ class GenerateEvents:
         ]
         chosen_cat = None
         chosen_event = None
+
         if random_cat:
             chosen_cat = random_cat
-            chosen_event = random.choice(final_events) if final_events else None
+            # if we've got our random cat already, then check if we have to find an ensured event
+            if game.config["event_generation"]["debug_ensure_event_id"]:
+                for event in final_events:
+                    if (
+                        event.event_id
+                        == game.config["event_generation"]["debug_ensure_event_id"]
+                    ):
+                        chosen_event = event
+                        break
+            # else, pick a random one from the available events
+            else:
+                chosen_event = random.choice(final_events) if final_events else None
 
 
         while final_events and not chosen_cat and not chosen_event:
             chosen_event = random.choice(final_events)
+            # if we have an ensured id, only allow that event past
+            if (
+                game.config["event_generation"]["debug_ensure_event_id"]
+                != chosen_event.event_id
+            ):
+                final_events.remove(chosen_event)
+                continue
+
             if not chosen_event.r_c:
                 break
+
+            # if we're overriding requirements, don't bother looking for an appropriate cat
+            if game.config["event_generation"]["debug_override_requirements"]:
+                chosen_cat = random.choice(cat_list)
+                continue
 
             # gotta gather injuries so we can check if the cat can get them
             r_c_injuries = []
