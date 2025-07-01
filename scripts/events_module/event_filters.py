@@ -470,14 +470,19 @@ def cat_for_event(
     if allowed_cats and (
         comparison_cat_rel_status or constraint_dict.get("relationship_status")
     ):
+        allowed_cats, comparison_cat_rel_status = _get_cats_with_rel_status(
+            allowed_cats, comparison_cat, comparison_cat_rel_status
+        )
+
         for cat in allowed_cats.copy():
-            # checking comparison cat's rel toward cat
+            # checking comparison cat's rel values toward cat
             if comparison_cat_rel_status:
                 if not filter_relationship_type(
                     group=[comparison_cat, cat], filter_types=comparison_cat_rel_status
                 ):
                     allowed_cats.remove(cat)
                     continue
+
             # now we can check cat's rel toward comparison_cat
             if constraint_dict.get("relationship_status"):
                 if not filter_relationship_type(
@@ -495,6 +500,34 @@ def cat_for_event(
         return cat.ID
     else:
         return cat
+
+
+def _get_cats_with_rel_status(cat_list: list, cat, rel_status_list: list) -> list:
+    # theoretically none of these should ever be used together
+    if "siblings" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.get_siblings()]
+        rel_status_list.remove("siblings")
+    elif "mates" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.mate]
+        rel_status_list.remove("mates")
+    elif "not_mates" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID not in cat.mate]
+        rel_status_list.remove("not_mates")
+    elif "parent/child" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.get_children()]
+        rel_status_list.remove("parent/child")
+    elif "child/parent" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.get_parents()]
+        rel_status_list.remove("child/parent")
+    # but these could be used alongside the above tags, so they get their own if/elif
+    if "mentor/app" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.apprentice]
+        rel_status_list.remove("mentor/app")
+    elif "app/mentor" in rel_status_list:
+        cat_list = [c for c in cat_list if c.ID in cat.mentor]
+        rel_status_list.remove("app/mentor")
+
+    return cat_list, rel_status_list
 
 
 def _get_cats_with_age(cat_list: list, ages: tuple) -> list:
