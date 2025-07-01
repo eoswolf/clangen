@@ -468,6 +468,7 @@ class GenerateEvents:
             # if we have an ensured id, only allow that event past
             if (
                 game.config["event_generation"]["debug_ensure_event_id"]
+                and game.config["event_generation"]["debug_ensure_event_id"]
                 != chosen_event.event_id
             ):
                 final_events.remove(chosen_event)

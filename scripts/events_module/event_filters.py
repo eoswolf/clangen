@@ -426,11 +426,13 @@ def cat_for_event(
     """
     Checks the given cat list against constraint_dict to find any eligible cats.
     Returns a single cat ID chosen from eligible cats.
-    :param constraint_dict: Can include age, status, skill, trait, and backstory lists
+    :param constraint_dict: Can include age, status, skill, not_skill, trait, not_trait, relationship_status, and backstory lists
     :param possible_cats: List of possible cat objects
     :param comparison_cat: If you need to search for cats with a specific relationship status, then include a comparison
      cat. Keep in mind that this will search for a possible cat with the given relationship toward comparison cat.
+    :param comparison_cat_rel_status: The relationship_status dict for the comparison cat
     :param injuries: List of injuries this cat may get from the event
+    :param return_id: If true, return cat ID instead of object
     """
     # gather funcs to use
     func_dict = {
