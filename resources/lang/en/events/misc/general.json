@@ -129,7 +129,7 @@
         "location": ["any"],
         "season": ["any"],
         "sub_type": ["murder_reveal"],
-        "weight": 1,
+        "weight": 3,
         "event_text": "r_c avoids m_c at all costs after accidentally witnessing mur_c's murder. r_c knows {PRONOUN/r_c/subject} can't keep it a secret but is terrified of what m_c might do.",
         "m_c": {
             "age": ["any"],

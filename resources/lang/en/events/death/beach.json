@@ -11,7 +11,7 @@
             "no_body",
             "all_lives"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was washed out to sea, never to be seen again.",
         "m_c": {
             "age": [
@@ -42,7 +42,7 @@
             "any"
         ],
         "tags": [],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was poisoned by a sea creature and died.",
         "m_c": {
             "dies": true
@@ -69,7 +69,7 @@
             "no_body",
             "all_lives"
         ],
-        "weight": 4,
+        "weight": 3,
         "event_text": "m_c was lost to the sea while trying to save r_c from drowning.",
         "m_c": {
             "age": [
@@ -159,7 +159,7 @@
         "tags": [
             "no_body"
         ],
-        "weight": 4,
+        "weight": 1,
         "event_text": "When m_c fell into the water, something large and unseen dragged {PRONOUN/m_c/object} beneath the waves.",
         "m_c": {
             "age": [
@@ -235,7 +235,7 @@
         "tags": [
             "classic"
         ],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c carelessly died to dehydration and heat.",
         "m_c": {
             "age": [
@@ -264,7 +264,7 @@
             "greenleaf"
         ],
         "tags": [],
-        "weight": 4,
+        "weight": 2,
         "event_text": "r_c discovered m_c's dead body. It seems {PRONOUN/m_c/subject} died to dehydration and heat.",
         "m_c": {
             "age": [
@@ -304,7 +304,7 @@
             "greenleaf"
         ],
         "tags": [],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c misjudged the weather and succumbed to the intense heat of the day.",
         "m_c": {
             "age": [
@@ -333,7 +333,7 @@
             "greenleaf"
         ],
         "tags": [],
-        "weight": 4,
+        "weight": 2,
         "event_text": "r_c was surprised to stumble upon m_c's dead body. It seems {PRONOUN/m_c/subject} died to the heat.",
         "m_c": {
             "age": [

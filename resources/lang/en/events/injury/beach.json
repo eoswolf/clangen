@@ -3,7 +3,7 @@
         "event_id": "bch_injury_waterinlungs_anyapp1",
         "location": ["beach"],
         "season": ["any"],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c went out of camp alone to practice swimming in the ocean; unfortunately, {PRONOUN/m_c/poss} inexperience led to {PRONOUN/m_c/object} being swept up by a riptide. r_c heard {PRONOUN/m_c/poss} cries and saved {PRONOUN/m_c/object}, but m_c almost drowned.",
         "m_c": {
             "status": ["apprentice"],
@@ -62,7 +62,7 @@
         "event_id": "bch_injury_bruises_anymultitraitapprentice1",
         "location": ["beach:camp2"],
         "season": ["leaf-bare"],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was dashing around the apprentice rock, when {PRONOUN/m_c/subject} slipped and fell into the high tide waters of the cave. {PRONOUN/m_c/subject/CAP}{VERB/m_c/'re/'s} alright, though a bit bruised and embarrassed.",
         "m_c": {
             "status": ["apprentice"],
@@ -175,7 +175,7 @@
         "event_id": "bch_injury_clawwound_anycamp1kit1",
         "location": ["beach:camp1_camp2"],
         "season": ["any"],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was grabbed by a seagull, but luckily r_c saves {PRONOUN/m_c/object}! The kit is still left injured from the ordeal.",
         "m_c": {
             "status": ["kitten"]
@@ -217,7 +217,7 @@
         "event_id": "bch_injury_clawwound_anypelicankit1",
         "location": ["beach:camp1_camp2"],
         "season": ["any"],
-        "weight": 4,
+        "weight": 2,
         "event_text": "m_c was grabbed by a pelican, but luckily r_c saves {PRONOUN/m_c/object}! The kit is still left injured from the ordeal.",
         "m_c": {
             "status": ["kitten"]
