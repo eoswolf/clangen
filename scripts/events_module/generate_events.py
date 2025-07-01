@@ -14,6 +14,7 @@ from scripts.events_module.event_filters import (
     event_for_freshkill_supply,
     event_for_herb_supply,
     event_for_clan_relations,
+    cat_for_event,
 )
 from scripts.events_module.ongoing.ongoing_event import OngoingEvent
 from scripts.events_module.short.short_event import ShortEvent
@@ -270,6 +271,28 @@ class GenerateEvents:
         final_events = []
         incorrect_format = []
 
+        # picking injury severity
+        allowed_severity = "any"
+        r_c_injuries = []
+        if game.config["event_generation"]["debug_type_override"] != "injury":
+            # determine which injury severity list will be used
+            discard = False
+            if cat.status in GenerateEvents.INJURY_DISTRIBUTION:
+                minor_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["minor"]
+                major_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["major"]
+                severe_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status]["severe"]
+                severity_chosen = random.choices(
+                    ["minor", "major", "severe"],
+                    [minor_chance, major_chance, severe_chance],
+                    k=1,
+                )
+                if severity_chosen[0] == "minor":
+                    allowed_severity = "minor"
+                elif severity_chosen[0] == "major":
+                    allowed_severity = "major"
+                else:
+                    allowed_severity = "severe"
+
         for event in possible_events:
             if event.history:
                 if (
@@ -347,87 +370,34 @@ class GenerateEvents:
             if "transition" in event.sub_type and cat.gender != cat.genderalign:
                 continue
 
+            m_c_injuries = []
+            discard = False
+            for block in event.injury:
+                for injury in block["injuries"]:
+                    if injury in GenerateEvents.INJURIES:
+                        # if injury doesn't match chosen severity, and we haven't overridden severity checks
+                        if (
+                            GenerateEvents.INJURIES[injury]["severity"]
+                            != allowed_severity
+                        ) and allowed_severity != "any":
+                            discard = True
+                            break
+                    if "m_c" in block["cats"]:
+                        m_c_injuries.append(injury)
+                    if "r_c" in block["cats"]:
+                        r_c_injuries.append(injury)
+                if discard:
+                    continue
+
+            # check if m_c is allowed this event
             if event.m_c:
                 if not event_for_cat(
                     cat_info=event.m_c,
                     cat=cat,
                     cat_group=[cat, random_cat] if random_cat else None,
                     event_id=event.event_id,
+                    injuries=m_c_injuries,
                 ):
-                    continue
-
-            if event.r_c and random_cat:
-                if not event_for_cat(
-                    cat_info=event.r_c,
-                    cat=random_cat,
-                    cat_group=[random_cat, cat],
-                    event_id=event.event_id,
-                ):
-                    continue
-
-            # check that injury is possible
-            if (
-                event.injury
-                and game.config["event_generation"]["debug_type_override"] != "injury"
-            ):
-                # determine which injury severity list will be used
-                allowed_severity = None
-                discard = False
-                if cat.status in GenerateEvents.INJURY_DISTRIBUTION:
-                    minor_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status][
-                        "minor"
-                    ]
-                    major_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status][
-                        "major"
-                    ]
-                    severe_chance = GenerateEvents.INJURY_DISTRIBUTION[cat.status][
-                        "severe"
-                    ]
-                    severity_chosen = random.choices(
-                        ["minor", "major", "severe"],
-                        [minor_chance, major_chance, severe_chance],
-                        k=1,
-                    )
-                    if severity_chosen[0] == "minor":
-                        allowed_severity = "minor"
-                    elif severity_chosen[0] == "major":
-                        allowed_severity = "major"
-                    else:
-                        allowed_severity = "severe"
-
-                for block in event.injury:
-                    for injury in block["injuries"]:
-                        if injury in GenerateEvents.INJURIES:
-                            if (
-                                GenerateEvents.INJURIES[injury]["severity"]
-                                != allowed_severity
-                            ):
-                                discard = True
-                                break
-
-                            if "m_c" in block["cats"]:
-                                if injury == "mangled tail" and (
-                                    "NOTAIL" in cat.pelt.scars
-                                    or "HALFTAIL" in cat.pelt.scars
-                                ):
-                                    continue
-
-                                if injury == "torn ear" and "NOEAR" in cat.pelt.scars:
-                                    continue
-                            if "r_c" in block["cats"]:
-                                if injury == "mangled tail" and (
-                                    "NOTAIL" in random_cat.pelt.scars
-                                    or "HALFTAIL" in random_cat.pelt.scars
-                                ):
-                                    continue
-
-                                if (
-                                    injury == "torn ear"
-                                    and "NOEAR" in random_cat.pelt.scars
-                                ):
-                                    continue
-
-                if discard:
                     continue
 
             # check if outsider event is allowed
@@ -492,10 +462,39 @@ class GenerateEvents:
 
             final_events.append(event)
 
+        cat_list = [
+            cat
+            for cat in Cat_class.all_cats.values()
+            if cat.is_alive() and not cat.outside
+        ]
+        chosen_cat = None
+        chosen_event = None
+        while final_events:
+            chosen_event = random.choice(final_events)
+            if not chosen_event.r_c:
+                break
+
+            chosen_cat = cat_for_event(
+                constraint_dict=chosen_event.r_c,
+                possible_cats=cat_list,
+                comparison_cat=cat,
+                comparison_cat_rel_status=chosen_event.m_c.get(
+                    "relationship_status", []
+                ),
+                injuries=r_c_injuries,
+                return_id=False,
+            )
+
+            if not chosen_cat:
+                final_events.remove(chosen_event)
+                chosen_event = None
+            else:
+                break
+
         for notice in incorrect_format:
             print(notice)
 
-        return final_events
+        return chosen_event, chosen_cat
 
     @staticmethod
     def possible_ongoing_events(event_type=None, specific_event=None):

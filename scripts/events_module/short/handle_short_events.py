@@ -142,13 +142,13 @@ class HandleShortEvents:
             weight = 1
         print(f"weight: {weight}")
 
-        final_events = None
-        while not final_events and weight < 5:
+        chosen_event = None
+        while not chosen_event and weight < 5:
             possible_short_events = GenerateEvents.possible_short_events(
                 event_type, weight
             )
 
-            final_events = GenerateEvents.filter_possible_short_events(
+            chosen_event, random_cat = GenerateEvents.filter_possible_short_events(
                 Cat_class=Cat,
                 possible_events=possible_short_events,
                 cat=self.main_cat,
@@ -161,10 +161,8 @@ class HandleShortEvents:
                 excluded_events=self.excluded_events,
                 ignore_subtyping=ignore_subtyping,
             )
-            if not final_events:
+            if not chosen_event:
                 weight += 1
-
-            print(f"found events: {len(final_events)}")
 
         if isinstance(game.config["event_generation"]["debug_ensure_event_id"], str):
             found = False
@@ -188,15 +186,13 @@ class HandleShortEvents:
         # ---------------------------------------------------------------------------- #
         #                               do the event                                   #
         # ---------------------------------------------------------------------------- #
-        try:
-            self.chosen_event = choice(final_events)
-            # this print is good for testing, but gets spammy in large clans
-            # print(f"CHOSEN: {self.chosen_event.event_id}")
-        except IndexError:
+        if chosen_event:
+            self.chosen_event = chosen_event
+            self.random_cat = random_cat
+        else:
             # this doesn't necessarily mean there's a problem, but can be helpful for narrowing down possibilities
             print(
-                f"WARNING: no {event_type}: {self.sub_types} events found for {self.main_cat.name} "
-                f"and {self.random_cat.name if self.random_cat else 'no random cat'}"
+                f"WARNING: no {event_type}: {self.sub_types} events found for {self.main_cat.name}"
             )
             return
 
