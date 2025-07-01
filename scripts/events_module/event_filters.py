@@ -232,7 +232,12 @@ def event_for_herb_supply(trigger, supply_type, clan_size) -> bool:
 
 
 def event_for_cat(
-    cat_info: dict, cat, cat_group: list = None, event_id: str = None, p_l=None
+    cat_info: dict,
+    cat,
+    cat_group: list = None,
+    event_id: str = None,
+    p_l=None,
+    injuries: list = None,
 ) -> bool:
     """
     checks if a cat is suitable for the event
@@ -241,6 +246,7 @@ def event_for_cat(
     :param cat_group: the group of cats being included within the event
     :param event_id: if event comes with an id, include it here
     :param p_l: if event is a patrol, include patrol leader object here
+    :param injuries: list of injuries that the event may give this cat
     """
 
     func_lookup = {
@@ -267,6 +273,15 @@ def event_for_cat(
             event_id=event_id,
             patrol_leader=p_l,
         ):
+            return False
+
+    for injury in injuries:
+        if injury == "mangled tail" and (
+            "NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars
+        ):
+            return False
+
+        if injury == "torn ear" and "NOEAR" in cat.pelt.scars:
             return False
 
     return True
@@ -383,7 +398,14 @@ def _check_cat_gender(cat, genders: list) -> bool:
     return False
 
 
-def cat_for_event(constraint_dict: dict, possible_cats: list, comparison_cat=None):
+def cat_for_event(
+    constraint_dict: dict,
+    possible_cats: list,
+    comparison_cat=None,
+    comparison_cat_rel_status: list = None,
+    injuries: list = None,
+    return_id: bool = True,
+):
     """
     Checks the given cat list against constraint_dict to find any eligible cats.
     Returns a single cat ID chosen from eligible cats.
@@ -391,6 +413,7 @@ def cat_for_event(constraint_dict: dict, possible_cats: list, comparison_cat=Non
     :param possible_cats: List of possible cat objects
     :param comparison_cat: If you need to search for cats with a specific relationship status, then include a comparison
      cat. Keep in mind that this will search for a possible cat with the given relationship toward comparison cat.
+    :param injuries: List of injuries this cat may get from the event
     """
     # gather funcs to use
     func_dict = {
@@ -404,31 +427,56 @@ def cat_for_event(constraint_dict: dict, possible_cats: list, comparison_cat=Non
     }
 
     # run funcs
-    allowed_cats = []
+    allowed_cats = possible_cats
     for param in func_dict:
         if param not in constraint_dict:
             continue
-        allowed_cats = func_dict[param](
-            possible_cats, tuple(constraint_dict.get(param))
-        )
+        allowed_cats = func_dict[param](allowed_cats, tuple(constraint_dict.get(param)))
 
         # if the list is emptied, break
         if not allowed_cats:
             break
 
-    # rel status check
-    if comparison_cat and constraint_dict.get("relationship_status", []):
+    # ensure cat can get the injuries that will be given
+    if injuries:
         for cat in allowed_cats.copy():
-            if not filter_relationship_type(
-                group=[cat, comparison_cat],
-                filter_types=constraint_dict["relationship_status"],
-            ):
-                allowed_cats.remove(cat)
+            for injury in injuries:
+                if injury == "mangled tail" and (
+                    "NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars
+                ):
+                    allowed_cats.remove(cat)
+
+                if injury == "torn ear" and "NOEAR" in cat.pelt.scars:
+                    allowed_cats.remove(cat)
+
+    # rel status check
+    if allowed_cats and (
+        comparison_cat_rel_status or constraint_dict.get("relationship_status")
+    ):
+        for cat in allowed_cats.copy():
+            if comparison_cat_rel_status:
+                if not filter_relationship_type(
+                    group=[comparison_cat, cat], filter_types=comparison_cat_rel_status
+                ):
+                    allowed_cats.remove(cat)
+                    continue
+
+            if constraint_dict.get("relationship_status"):
+                if not filter_relationship_type(
+                    group=[cat, comparison_cat],
+                    filter_types=constraint_dict["relationship_status"],
+                ):
+                    allowed_cats.remove(cat)
+                    continue
 
     if not allowed_cats:
         return None
 
-    return choice(allowed_cats).ID
+    cat = choice(allowed_cats)
+    if return_id:
+        return cat.ID
+    else:
+        return cat
 
 
 def _get_cats_with_age(cat_list: list, ages: tuple) -> list:
@@ -509,7 +557,7 @@ def _get_cats_with_trait(cat_list: list, traits: tuple) -> list:
     if not traits:
         return cat_list
 
-    return [kitty for kitty in cat_list if kitty.trait in traits]
+    return [kitty for kitty in cat_list if kitty.personality.trait in traits]
 
 
 def _get_cats_without_trait(cat_list: list, traits: tuple) -> list:
@@ -519,7 +567,7 @@ def _get_cats_without_trait(cat_list: list, traits: tuple) -> list:
     if not traits:
         return cat_list
 
-    return [kitty for kitty in cat_list if kitty.trait not in traits]
+    return [kitty for kitty in cat_list if kitty.personality.trait not in traits]
 
 
 def _get_cats_with_backstory(cat_list: list, backstories: tuple) -> list:
