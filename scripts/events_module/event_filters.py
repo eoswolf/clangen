@@ -266,6 +266,14 @@ def event_for_cat(
         if not func_lookup[func]:
             return False
 
+    # checking injuries
+    if injuries:
+        if "mangled tail" in injuries and ("NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars):
+            return False
+        if "torn ear" in injuries and "NOEAR" in cat.pelt.scars:
+            return False
+
+    # checking relationships
     if cat_info.get("relationship_status", []):
         for status in cat_info.get("relationship_status", []):
             # just some preliminary checks to see if any of these are impossible for this cat
@@ -292,14 +300,6 @@ def event_for_cat(
         ):
             return False
 
-    for injury in injuries:
-        if injury == "mangled tail" and (
-            "NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars
-        ):
-            return False
-
-        if injury == "torn ear" and "NOEAR" in cat.pelt.scars:
-            return False
 
     return True
 
@@ -452,26 +452,26 @@ def cat_for_event(
             continue
         allowed_cats = func_dict[param](allowed_cats, tuple(constraint_dict.get(param)))
 
-        # if the list is emptied, break
+        # if the list is emptied, return
         if not allowed_cats:
-            break
+            return None
 
-    # ensure cat can get the injuries that will be given
+    # find cats that can get the injuries that will be given
     if injuries:
         for cat in allowed_cats.copy():
-            for injury in injuries:
-                if injury == "mangled tail" and (
-                    "NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars
-                ):
-                    allowed_cats.remove(cat)
+            if "mangled tail" in injuries and ("NOTAIL" in cat.pelt.scars or "HALFTAIL" in cat.pelt.scars):
+                allowed_cats.remove(cat)
+            if "torn ear" in injuries and "NOEAR" in cat.pelt.scars:
+                allowed_cats.remove(cat)
 
-                if injury == "torn ear" and "NOEAR" in cat.pelt.scars:
-                    allowed_cats.remove(cat)
+        # if the list is emptied, return
+        if not allowed_cats:
+            return None
+
 
     # rel status check
-    if allowed_cats and (
-        comparison_cat_rel_status or constraint_dict.get("relationship_status")
-    ):
+    if comparison_cat_rel_status or constraint_dict.get("relationship_status"):
+        # preliminary check to see if we can just skip to gathering certain rel groups
         allowed_cats, comparison_cat_rel_status = _get_cats_with_rel_status(
             allowed_cats, comparison_cat, comparison_cat_rel_status
         )
@@ -498,6 +498,7 @@ def cat_for_event(
         return None
 
     cat = choice(allowed_cats)
+
     if return_id:
         return cat.ID
     else:
