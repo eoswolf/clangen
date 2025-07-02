@@ -432,7 +432,7 @@ def cat_for_event(
     :param comparison_cat: If you need to search for cats with a specific relationship status, then include a comparison
      cat. Keep in mind that this will search for a possible cat with the given relationship toward comparison cat.
     :param comparison_cat_rel_status: The relationship_status dict for the comparison cat
-    :param injuries: List of injuries this cat may get from the event
+    :param injuries: List of injuries a cat may get from the event
     :param return_id: If true, return cat ID instead of object
     """
     # gather funcs to use
