@@ -593,7 +593,7 @@ class Condition_Events:
                     event = event + " " + get_leader_life_notice()
                     history_event = history_event.replace("m_c ", "").replace(".", "")
                     cat.history.add_death(
-                        ccondition=illness, death_text=history_event.strip()
+                        condition=illness, death_text=history_event.strip()
                     )
                 else:
                     cat.history.add_death(condition=illness, death_text=history_event)
