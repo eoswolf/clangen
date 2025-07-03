@@ -847,7 +847,8 @@
             {
                 "type": "any_herb",
                 "trigger": [
-                    "always"
+                    "low",
+                    "adequate"
                 ],
                 "adjust": "increase_5"
             }
