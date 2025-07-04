@@ -175,7 +175,6 @@ class Condition_Events:
 
             event = event_text_adjust(Cat, event.strip(), main_cat=cat)
 
-
             if cat.status == "leader":
                 history_event = history_event.replace("m_c ", "").replace(".", "")
                 cat.history.add_death(
@@ -595,7 +594,6 @@ class Condition_Events:
 
                 event = event_text_adjust(Cat, event, main_cat=cat)
 
-
                 if cat.status == "leader":
                     event = event + " " + get_leader_life_notice()
                     history_event = history_event.replace("m_c ", "").replace(".", "")
@@ -680,7 +678,6 @@ class Condition_Events:
             if skipped:
                 continue
 
-
             if cat.dead or (
                 cat.status == "leader" and starting_life_count != game.clan.leader_lives
             ):
@@ -705,7 +702,6 @@ class Condition_Events:
                     )
 
                 event = event_text_adjust(Cat, event, main_cat=cat)
-
 
                 if cat.status == "leader":
                     event = event + " " + get_leader_life_notice()
@@ -888,7 +884,6 @@ class Condition_Events:
                         condition=translated_condition,
                     )
                 event_list.append(event)
-
 
                 if cat.status == "leader":
                     cat.history.add_death(

@@ -1088,7 +1088,6 @@ class KillCat(UIWindow):
             resizable=False,
         )
 
-
         self.the_cat = cat
         self.take_all = False
         self.back_button = UIImageButton(

@@ -532,7 +532,6 @@ class Cat:
             self._pronouns[i18n.config.get("locale")] = val
             return
 
-
     @property
     def history(self) -> History:
         """load history if it is None"""
@@ -1043,11 +1042,7 @@ class Cat:
             scars.extend(
                 {"involved": None, "text": scar, "moon": "?"} for scar in scar_events
             )
-        self.history = History(
-            died_by=deaths,
-            scar_events=scars,
-            cat=self
-        )
+        self.history = History(died_by=deaths, scar_events=scars, cat=self)
 
     def load_history(self):
         """Load this cat's history"""
@@ -1076,7 +1071,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
-                cat=self
+                cat=self,
             )
             return
         try:
@@ -1115,7 +1110,7 @@ class Cat:
                         else []
                     ),
                     murder=history_data["murder"] if "murder" in history_data else {},
-                    cat=self
+                    cat=self,
                 )
         except Exception:
             self._history = None
@@ -1147,7 +1142,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
-                cat=self
+                cat=self,
             )
 
             print(f"WARNING: saving history of cat #{self.ID} didn't work")

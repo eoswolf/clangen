@@ -699,9 +699,9 @@ class GroupEvents:
 
             if possible_death or possible_scar:
                 for condition in injuries:
-
-                    injured_cat.history.add_possible_history(condition, death_text=possible_death,
-                                                             scar_text=possible_scar)
+                    injured_cat.history.add_possible_history(
+                        condition, death_text=possible_death, scar_text=possible_scar
+                    )
 
     @staticmethod
     def prepare_text(text: str, abbreviations_cat_id: dict) -> str:

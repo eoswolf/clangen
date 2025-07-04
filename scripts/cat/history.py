@@ -9,19 +9,22 @@ class History:
     this class handles the cat's history!
     """
 
-    def __init__(self,
-                 beginning=None,
-                 mentor_influence=None,
-                 app_ceremony=None,
-                 lead_ceremony=None,
-                 possible_history=None,
-                 died_by=None,
-                 scar_events=None,
-                 murder=None,
-                 cat=None
-                 ):
+    def __init__(
+        self,
+        beginning=None,
+        mentor_influence=None,
+        app_ceremony=None,
+        lead_ceremony=None,
+        possible_history=None,
+        died_by=None,
+        scar_events=None,
+        murder=None,
+        cat=None,
+    ):
         self.beginning = beginning if beginning else {}
-        self.mentor_influence = mentor_influence if mentor_influence else {"trait": {}, "skill": {}}
+        self.mentor_influence = (
+            mentor_influence if mentor_influence else {"trait": {}, "skill": {}}
+        )
         self.app_ceremony = app_ceremony if app_ceremony else {}
         self.lead_ceremony = lead_ceremony if lead_ceremony else None
         self.possible_history = possible_history if possible_history else {}
@@ -158,7 +161,7 @@ class History:
             "clan_born": clan_born,
             "birth_season": game.clan.current_season if clan_born else None,
             "age": self.cat.moons,
-            "moon": game.clan.age
+            "moon": game.clan.age,
         }
 
     def add_mentor_facet_influence_strings(self):
@@ -169,41 +172,64 @@ class History:
         if not self.mentor_influence["trait"]:
             return
 
-        if ("Benevolent" or "Abrasive" or "Reserved" or "Outgoing") in self.mentor_influence["trait"]:
+        if (
+            "Benevolent" or "Abrasive" or "Reserved" or "Outgoing"
+        ) in self.mentor_influence["trait"]:
             self.mentor_influence["trait"] = None
             return
 
         # working under the impression that these blurbs will be preceded by "more likely to"
         facet_influence_text = {
             "lawfulness_raise": [
-                "follow rules", "follow the status quo",
-                "heed {PRONOUN/m_c/poss} inner compass", "have strong inner morals"
+                "follow rules",
+                "follow the status quo",
+                "heed {PRONOUN/m_c/poss} inner compass",
+                "have strong inner morals",
             ],
             "lawfulness_lower": [
-                "bend the rules", "break away from the status quo",
-                "break rules that don't suit {PRONOUN/m_c/object}", "make {PRONOUN/m_c/poss} own rules"
+                "bend the rules",
+                "break away from the status quo",
+                "break rules that don't suit {PRONOUN/m_c/object}",
+                "make {PRONOUN/m_c/poss} own rules",
             ],
             "sociability_raise": [
-                "be friendly towards others", "step out of {PRONOUN/m_c/poss} comfort zone",
-                "interact with others", "put others at ease"
+                "be friendly towards others",
+                "step out of {PRONOUN/m_c/poss} comfort zone",
+                "interact with others",
+                "put others at ease",
             ],
             "sociability_lower": [
-                "be cold towards others", "refrain from socializing", "bicker with others"
+                "be cold towards others",
+                "refrain from socializing",
+                "bicker with others",
             ],
             "aggression_raise": [
-                "be ready for a fight", "start a fight", "defend {PRONOUN/m_c/poss} beliefs", "use teeth and claws over words",
-                "resort to violence"
+                "be ready for a fight",
+                "start a fight",
+                "defend {PRONOUN/m_c/poss} beliefs",
+                "use teeth and claws over words",
+                "resort to violence",
             ],
             "aggression_lower": [
-                "be slow to anger", "avoid a fight", "use words over teeth and claws", "try to avoid violence"
+                "be slow to anger",
+                "avoid a fight",
+                "use words over teeth and claws",
+                "try to avoid violence",
             ],
             "stability_raise": [
-                "stay collected", "think things through", "be resilient",
-                "have a positive outlook", "be consistent", "adapt easily"
+                "stay collected",
+                "think things through",
+                "be resilient",
+                "have a positive outlook",
+                "be consistent",
+                "adapt easily",
             ],
             "stability_lower": [
-                "behave erratically", "make impulsive decisions", "have trouble adapting", "dwell on things"
-            ]
+                "behave erratically",
+                "make impulsive decisions",
+                "have trouble adapting",
+                "dwell on things",
+            ],
         }
 
         for _ment in self.mentor_influence["trait"]:
@@ -213,10 +239,12 @@ class History:
                 if _fac in self.cat.personality.facet_types:
                     if self.mentor_influence["trait"][_ment][_fac] > 0:
                         self.mentor_influence["trait"][_ment]["strings"].append(
-                            random.choice(facet_influence_text[_fac + "_raise"]))
+                            random.choice(facet_influence_text[_fac + "_raise"])
+                        )
                     elif self.mentor_influence["trait"][_ment][_fac] < 0:
                         self.mentor_influence["trait"][_ment]["strings"].append(
-                            random.choice(facet_influence_text[_fac + "_lower"]))
+                            random.choice(facet_influence_text[_fac + "_lower"])
+                        )
 
     def add_mentor_skill_influence_strings(self):
         """
@@ -249,7 +277,7 @@ class History:
             SkillPath.DREAM: ["understanding dreams"],
             SkillPath.CLAIRVOYANT: ["predicting the future"],
             SkillPath.PROPHET: ["understanding prophecies"],
-            SkillPath.GHOST: ["connecting to the afterlife"]
+            SkillPath.GHOST: ["connecting to the afterlife"],
         }
 
         for _ment in self.mentor_influence["skill"]:
@@ -262,12 +290,13 @@ class History:
                 try:
                     if self.mentor_influence["skill"][_ment][_path] > 0:
                         self.mentor_influence["skill"][_ment]["strings"].append(
-                            random.choice(skill_influence_text[SkillPath[_path]]))
+                            random.choice(skill_influence_text[SkillPath[_path]])
+                        )
                 except KeyError:
                     print("issue", _path)
 
     def add_facet_mentor_influence(self, mentor_id, facet, amount):
-        """Adds the history information for a single mentor facet change, that occurs after a patrol. """
+        """Adds the history information for a single mentor facet change, that occurs after a patrol."""
 
         if mentor_id not in self.mentor_influence["trait"]:
             self.mentor_influence["trait"][mentor_id] = {}
@@ -276,7 +305,7 @@ class History:
         self.mentor_influence["trait"][mentor_id][facet] += amount
 
     def add_skill_mentor_influence(self, mentor_id, path, amount):
-        """Adds mentor influence on skills. """
+        """Adds mentor influence on skills."""
 
         if not isinstance(path, SkillPath):
             path = SkillPath[path]
@@ -298,10 +327,16 @@ class History:
         self.app_ceremony = {
             "honor": honor,
             "graduation_age": self.cat.moons,
-            "moon": game.clan.age
+            "moon": game.clan.age,
         }
 
-    def add_possible_history(self, condition: str, death_text: str = None, scar_text: str = None, other_cat=None):
+    def add_possible_history(
+        self,
+        condition: str,
+        death_text: str = None,
+        scar_text: str = None,
+        other_cat=None,
+    ):
         """
         this adds the possible death/scar to the cat's history
         :param condition: the condition that is causing the death/scar
@@ -322,7 +357,7 @@ class History:
             # Use a default is none is provided.
             # Will probably sound weird, but it's better than nothing
             if not death_text:
-                if self.cat.status == 'leader':
+                if self.cat.status == "leader":
                     death_text = f"died from an injury or illness ({condition})"
                 else:
                     death_text = f"m_c died from an injury or illness ({condition})."
@@ -332,7 +367,7 @@ class History:
             self.possible_history[condition] = {
                 "death_text": death_text,
                 "scar_text": scar_text,
-                "other_cat": other_cat.ID if other_cat else None
+                "other_cat": other_cat.ID if other_cat else None,
             }
 
     def remove_possible_history(self, condition):
@@ -347,10 +382,10 @@ class History:
             self.possible_history.pop(condition)
 
     def add_death(self, death_text, condition=None, other_cat=None):
-        """ Adds death to cat's history. If a condition is passed, it will look into
-            possible_history to see if anything is saved there, and, if so, use the text and
-            other_cat there (overriding the
-            passed death_text and other_cat). """
+        """Adds death to cat's history. If a condition is passed, it will look into
+        possible_history to see if anything is saved there, and, if so, use the text and
+        other_cat there (overriding the
+        passed death_text and other_cat)."""
 
         if not game.clan:
             return
@@ -363,11 +398,9 @@ class History:
             other_cat = self.possible_history[condition].get("other_cat")
             self.remove_possible_history(condition)
 
-        self.died_by.append({
-            "involved": other_cat,
-            "text": death_text,
-            "moon": game.clan.age
-        })
+        self.died_by.append(
+            {"involved": other_cat, "text": death_text, "moon": game.clan.age}
+        )
 
     def add_scar(self, scar_text, condition=None, other_cat=None):
         if not game.clan:
@@ -381,11 +414,9 @@ class History:
             other_cat = self.possible_history[condition].get("other_cat")
             self.remove_possible_history(condition)
 
-        self.scar_events.append({
-            "involved": other_cat,
-            "text": scar_text,
-            "moon": game.clan.age
-        })
+        self.scar_events.append(
+            {"involved": other_cat, "text": scar_text, "moon": game.clan.age}
+        )
 
     @staticmethod
     def add_murders(victim, murderer, revealed, text=None, unrevealed_text=None):
@@ -402,21 +433,21 @@ class History:
             return
         if "is_murderer" not in murderer.history.murder:
             murderer.history.murder["is_murderer"] = []
-        if 'is_victim' not in victim.history.murder:
+        if "is_victim" not in victim.history.murder:
             victim.history.murder["is_victim"] = []
 
-        murderer.history.murder["is_murderer"].append({
-            "victim": victim.ID,
-            "revealed": revealed,
-            "moon": game.clan.age
-        })
-        victim.history.murder["is_victim"].append({
-            "murderer": murderer.ID,
-            "revealed": revealed,
-            "text": text,
-            "unrevealed_text": unrevealed_text,
-            "moon": game.clan.age
-        })
+        murderer.history.murder["is_murderer"].append(
+            {"victim": victim.ID, "revealed": revealed, "moon": game.clan.age}
+        )
+        victim.history.murder["is_victim"].append(
+            {
+                "murderer": murderer.ID,
+                "revealed": revealed,
+                "text": text,
+                "unrevealed_text": unrevealed_text,
+                "moon": game.clan.age,
+            }
+        )
 
     def add_lead_ceremony(self):
         """
@@ -497,8 +528,10 @@ class History:
         """
 
         if not death and not scar:
-            print('WARNING: event type was not specified during scar/death history retrieval, '
-                  'did you remember to set scar or death as True?')
+            print(
+                "WARNING: event type was not specified during scar/death history retrieval, "
+                "did you remember to set scar or death as True?"
+            )
         elif scar:
             return self.scar_events
         elif death:
@@ -529,22 +562,26 @@ class History:
                 murder_history["revealed_by"] = discoverer.ID if discoverer else None
                 murder_history["revelation_moon"] = game.clan.age
                 if not discoverer:
-                    murder_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
+                    murder_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
                 else:
-                    murder_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
+                    murder_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
 
                 victim_history = victim_history["is_victim"][0]
                 victim_history["revealed"] = True
                 victim_history["revealed_by"] = discoverer.ID if discoverer else None
                 victim_history["revelation_moon"] = game.clan.age
                 if not discoverer:
-                    victim_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
+                    victim_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
                 else:
-                    victim_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
+                    victim_history[
+                        "revelation_text"
+                    ] = "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
 
                 discoverer_text: str = ""
                 if discoverer:
@@ -552,9 +589,12 @@ class History:
                 if "clan_discovery" in murder_history:
                     discoverer_text = game.clan.name + "Clan"
 
-                murder_history["revelation_text"] = murder_history["revelation_text"].replace('[victim]',
-                                                                                              str(victim.name))
-                murder_history["revelation_text"] = murder_history["revelation_text"].replace('[discoverer]',
-                                                                                              discoverer_text)
-                victim_history["revelation_text"] = victim_history["revelation_text"].replace('[discoverer]',
-                                                                                              discoverer_text)
+                murder_history["revelation_text"] = murder_history[
+                    "revelation_text"
+                ].replace("[victim]", str(victim.name))
+                murder_history["revelation_text"] = murder_history[
+                    "revelation_text"
+                ].replace("[discoverer]", discoverer_text)
+                victim_history["revelation_text"] = victim_history[
+                    "revelation_text"
+                ].replace("[discoverer]", discoverer_text)

@@ -611,7 +611,6 @@ class HandleShortEvents:
             if "m_c" in block["cats"]:
                 # death history
                 if self.chosen_event.m_c["dies"]:
-
                     # find history
                     if self.main_cat.status == "leader":
                         death_history = history_text_adjust(
@@ -652,7 +651,6 @@ class HandleShortEvents:
             if "r_c" in block["cats"]:
                 # death history
                 if self.chosen_event.r_c["dies"]:
-
                     if self.random_cat.status == "leader":
                         death_history = history_text_adjust(
                             block.get("lead_death"),
@@ -684,7 +682,6 @@ class HandleShortEvents:
             # multi_cat history
             if "multi_cat" in block["cats"]:
                 for cat in self.multi_cat:
-
                     if cat.status == "leader":
                         death_history = history_text_adjust(
                             block.get("lead_death"),
