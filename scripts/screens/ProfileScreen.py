@@ -1212,7 +1212,7 @@ class ProfileScreen(Screens):
             "rogue",
             "former Clancat",
         ):
-            beginning = History.get_beginning(self.the_cat)
+            beginning = self.the_cat.history.beginning
             if beginning:
                 text += " "
                 if beginning["clan_born"]:
