@@ -505,18 +505,22 @@ class History:
             return self.died_by
 
     @staticmethod
-    def reveal_murder(cat_class, murderer, discoverer, victim, murder_index):
+    def reveal_murder(cat_class, murderer, discoverer, victim):
         """Reveals the murder properly in all associated history text.
 
         :param cat_class: The cat class
         :param murderer: The murderer
         :param discoverer: The cat who discovers the truth about the murder
-        :param victim: The victim whose murder is being revealed
-        :param murder_index: Index of the murder"""
+        :param victim: The victim whose murder is being revealed"""
 
         victim = cat_class.fetch_cat(victim)
         murder_history = murderer.history.murder
         victim_history = victim.history.murder
+
+        for murder in murder_history:
+            if murder["victim"] == victim.ID:
+                murder_index = murder_history.index(murder)
+                break
 
         if murder_history:
             if "is_murderer" in murder_history:

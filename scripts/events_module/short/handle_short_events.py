@@ -266,8 +266,8 @@ class HandleShortEvents:
             else:
                 other_cat = self.random_cat
             History.reveal_murder(
-                cat=self.main_cat,
-                other_cat=other_cat,
+                murderer=self.main_cat,
+                discoverer=other_cat,
                 cat_class=Cat,
                 victim=self.victim_cat,
             )
