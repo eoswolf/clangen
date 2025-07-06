@@ -1,9 +1,10 @@
-import random
+from random import choice, choices, randrange, sample, randint
 from typing import List
 
 import i18n
 
 from scripts.clan_resources.herb.herb import HERBS
+from scripts.events_module.future.future_event import prep_event
 from scripts.game_structure import localization
 from scripts.cat.cats import Cat
 from scripts.cat.history import History
@@ -31,11 +32,6 @@ from scripts.utility import (
     get_alive_status_cats,
     adjust_list_text,
 )
-
-
-# ---------------------------------------------------------------------------- #
-#                               Death Event Class                              #
-# ---------------------------------------------------------------------------- #
 
 
 class HandleShortEvents:
@@ -76,6 +72,9 @@ class HandleShortEvents:
 
         self.chosen_event = None
         self.additional_event_text = ""
+        self.allowed_events = None
+        self.excluded_events = None
+        self.future_event = None
 
     def handle_event(
         self,
@@ -83,7 +82,9 @@ class HandleShortEvents:
         main_cat: Cat,
         random_cat: Cat,
         freshkill_pile: FreshkillPile,
+        victim_cat: Cat = None,
         sub_type: list = None,
+        ignore_subtyping: bool = False,
     ):
         """
         This function handles the generation and execution of the event
@@ -101,38 +102,26 @@ class HandleShortEvents:
 
         self.main_cat = main_cat
         self.random_cat = random_cat
+        self.victim_cat = victim_cat
 
         # random cat gets added to involved later on, only if the event chosen requires a random cat
         self.involved_cats = [self.main_cat.ID]
 
         # check for war and assign self.other_clan accordingly
-        if game.clan.war.get("at_war", False) and random.randint(1, 5) != 1:
+        war_chance = 5
+        # if the war didn't go badly, then we decrease the chance of this event being war-focused
+        if game.switches["war_rel_change_type"] != "rel_down":
+            war_chance = 2
+        if game.clan.war.get("at_war", False) and randint(1, war_chance) != 1:
             enemy_clan = get_warring_clan()
             self.other_clan = enemy_clan
             self.other_clan_name = f"{self.other_clan.name}Clan"
             self.sub_types.append("war")
         else:
-            self.other_clan = random.choice(
+            self.other_clan = choice(
                 game.clan.all_clans if game.clan.all_clans else None
             )
             self.other_clan_name = f"{self.other_clan.name}Clan"
-
-        # checking if a murder reveal should happen
-        if event_type == "misc":
-            self.victim_cat = None
-            cat_history = History.get_murders(self.main_cat)
-            if cat_history:
-                if "is_murderer" in cat_history:
-                    murder_history = cat_history["is_murderer"]
-                    for murder in murder_history:
-                        self.murder_index = murder_history.index(murder)
-                        if murder_history[self.murder_index]["revealed"] is True:
-                            continue
-                        self.victim_cat = Cat.fetch_cat(
-                            murder_history[self.murder_index]["victim"]
-                        )
-                        self.sub_types.append("murder_reveal")
-                        break
 
         # NOW find the possible events and filter
         if event_type == "birth_death":
@@ -150,6 +139,9 @@ class HandleShortEvents:
             freshkill_active=FRESHKILL_EVENT_ACTIVE,
             freshkill_trigger_factor=FRESHKILL_EVENT_TRIGGER_FACTOR,
             sub_types=self.sub_types,
+            allowed_events=self.allowed_events,
+            excluded_events=self.excluded_events,
+            ignore_subtyping=ignore_subtyping,
         )
 
         if isinstance(game.config["event_generation"]["debug_ensure_event_id"], str):
@@ -175,7 +167,7 @@ class HandleShortEvents:
         #                               do the event                                   #
         # ---------------------------------------------------------------------------- #
         try:
-            self.chosen_event = random.choice(final_events)
+            self.chosen_event = choice(final_events)
             # this print is good for testing, but gets spammy in large clans
             # print(f"CHOSEN: {self.chosen_event.event_id}")
         except IndexError:
@@ -241,7 +233,7 @@ class HandleShortEvents:
         # used in some murder events,
         # this kind of sucks tho it would be nice to change how this sort of thing is handled
         if "kit_manipulated" in self.chosen_event.tags:
-            kit = Cat.fetch_cat(random.choice(get_alive_status_cats(Cat, ["kitten"])))
+            kit = Cat.fetch_cat(choice(get_alive_status_cats(Cat, ["kitten"])))
             self.involved_cats.append(kit.ID)
             change_relationship_values(
                 [self.random_cat],
@@ -274,11 +266,10 @@ class HandleShortEvents:
             else:
                 other_cat = self.random_cat
             History.reveal_murder(
-                cat=self.main_cat,
-                other_cat=other_cat,
+                murderer=self.main_cat,
+                discoverer=other_cat,
                 cat_class=Cat,
                 victim=self.victim_cat,
-                murder_index=self.murder_index,
             )
 
         # change outsider rep
@@ -325,6 +316,8 @@ class HandleShortEvents:
         if self.chosen_herb:
             game.herb_events_list.append(f"{self.chosen_event} {self.herb_notice}.")
 
+        self.gather_future_event()
+
         game.cur_events_list.append(
             Single_Event(
                 self.text + " " + self.additional_event_text,
@@ -332,6 +325,45 @@ class HandleShortEvents:
                 self.involved_cats,
             )
         )
+
+    def gather_future_event(self):
+        """
+        Handles gathering information for future event
+        """
+        if not self.chosen_event.future_event:
+            return
+
+        possible_cats = {
+            "m_c": self.main_cat,
+            "r_c": self.random_cat,
+            "mur_c": self.victim_cat,
+        }
+
+        for x, newbie in enumerate(self.new_cats):
+            possible_cats[f"n_c:{x}"] = newbie
+
+        prep_event(
+            event=self.chosen_event,
+            event_id=self.chosen_event.event_id,
+            possible_cats=possible_cats,
+        )
+
+    def trigger_future_event(self, event):
+        self.allowed_events = event.pool.get("event_id")
+        self.excluded_events = event.pool.get("excluded_event_id")
+
+        self.handle_event(
+            event_type=event.event_type,
+            main_cat=Cat.fetch_cat(event.involved_cats.get("m_c")),
+            random_cat=Cat.fetch_cat(event.involved_cats.get("r_c")),
+            freshkill_pile=game.clan.freshkill_pile,
+            victim_cat=Cat.fetch_cat(event.involved_cats.get("mur_c")),
+            sub_type=event.pool.get("subtype"),
+            ignore_subtyping=True if "subtype" in event.pool else False,
+        )
+
+        self.allowed_events = []
+        self.excluded_events = []
 
     def handle_new_cats(self):
         """
@@ -447,9 +479,9 @@ class HandleShortEvents:
             return False
 
         if self.main_cat.pelt.accessory:
-            self.main_cat.pelt.accessory.append(random.choice(acc_list))
+            self.main_cat.pelt.accessory.append(choice(acc_list))
         else:
-            self.main_cat.pelt.accessory = [random.choice(acc_list)]
+            self.main_cat.pelt.accessory = [choice(acc_list)]
 
     def handle_transition(self):
         """
@@ -458,7 +490,7 @@ class HandleShortEvents:
         possible_genders = getattr(self.chosen_event, "new_gender", [])
 
         if possible_genders:
-            new_gender = random.choice(possible_genders)
+            new_gender = choice(possible_genders)
             self.main_cat.genderalign = new_gender
 
             self.main_cat.pronouns = localization.get_new_pronouns(
@@ -497,9 +529,7 @@ class HandleShortEvents:
                 if "all_lives" in self.chosen_event.tags:
                     game.clan.leader_lives -= 10
                 elif "some_lives" in self.chosen_event.tags:
-                    game.clan.leader_lives -= random.randrange(
-                        2, self.current_lives - 1
-                    )
+                    game.clan.leader_lives -= randrange(2, self.current_lives - 1)
                 else:
                     game.clan.leader_lives -= 1
 
@@ -548,11 +578,11 @@ class HandleShortEvents:
                 population.append(n)
                 weight = 1 / (0.75 * n)  # Lower chance for more dead cats
                 weights.append(weight)
-            dead_count = random.choices(population, weights=weights)[0]
+            dead_count = choices(population, weights=weights)[0]
             if dead_count < 2:
                 dead_count = 2
 
-            self.dead_cats = random.sample(alive_cats, dead_count)
+            self.dead_cats = sample(alive_cats, dead_count)
             if self.main_cat not in self.dead_cats:
                 self.dead_cats.append(
                     self.main_cat
@@ -608,14 +638,13 @@ class HandleShortEvents:
                         self.current_lives -= 1
                         if self.current_lives != game.clan.leader_lives:
                             while self.current_lives > game.clan.leader_lives:
-                                History.add_death(
-                                    self.main_cat,
+                                self.main_cat.history.add_death(
                                     "multi_lives",
                                     other_cat=self.random_cat,
                                 )
                                 self.current_lives -= 1
-                    History.add_death(
-                        self.main_cat, death_history, other_cat=self.random_cat
+                    self.main_cat.history.add_death(
+                        death_history, other_cat=self.random_cat
                     )
 
             # random_cat history
@@ -641,14 +670,13 @@ class HandleShortEvents:
                         self.current_lives -= 1
                         if self.current_lives != game.clan.leader_lives:
                             while self.current_lives > game.clan.leader_lives:
-                                History.add_death(
-                                    self.random_cat,
+                                self.random_cat.history.add_death(
                                     "multi_lives",
                                     other_cat=self.random_cat,
                                 )
                                 self.current_lives -= 1
-                    History.add_death(
-                        self.random_cat, death_history, other_cat=self.random_cat
+                    self.random_cat.history.add_death(
+                        death_history, other_cat=self.random_cat
                     )
 
             # multi_cat history
@@ -673,9 +701,9 @@ class HandleShortEvents:
                         self.current_lives -= 1
                         if self.current_lives != game.clan.leader_lives:
                             while self.current_lives > game.clan.leader_lives:
-                                History.add_death(cat, "multi_lives")
+                                cat.history.add_death("multi_lives")
                                 self.current_lives -= 1
-                    History.add_death(cat, death_history)
+                    cat.history.add_death(death_history)
 
             # new_cat history
             for abbr in block["cats"]:
@@ -688,8 +716,8 @@ class HandleShortEvents:
                                 game.clan,
                                 self.random_cat,
                             )
-                            History.add_death(
-                                new_cats[i], death_history, other_cat=self.random_cat
+                            new_cats[i].history.add_death(
+                                death_history, other_cat=self.random_cat
                             )
 
     def handle_injury(self):
@@ -721,20 +749,20 @@ class HandleShortEvents:
             for abbr in cats_affected:
                 # MAIN CAT
                 if abbr == "m_c":
-                    injury = random.choice(possible_injuries)
+                    injury = choice(possible_injuries)
                     self.main_cat.get_injured(injury)
                     self.handle_injury_history(self.main_cat, "m_c", injury)
 
                 # RANDOM CAT
                 elif abbr == "r_c":
-                    injury = random.choice(possible_injuries)
+                    injury = choice(possible_injuries)
                     self.random_cat.get_injured(injury)
                     self.handle_injury_history(self.random_cat, "r_c", injury)
 
                 # NEW CATS
                 elif "n_c" in abbr:
                     for i, new_cats in enumerate(self.new_cats):
-                        injury = random.choice(possible_injuries)
+                        injury = choice(possible_injuries)
                         new_cats[i].get_injured(injury)
                         self.handle_injury_history(new_cats[i], abbr, injury)
 
@@ -748,7 +776,8 @@ class HandleShortEvents:
         # TODO: problematic as we currently cannot mark who is the r_c and who is the m_c
         #  should consider if we can have history text be converted to use the cat's ID number in place of abbrs
 
-        # if injury is false, then this is classic, and they just need scar history
+        # if injury is false then this is classic, and they just need scar history
+
         if not injury:
             for block in self.chosen_event.history:
                 if "scar" not in block:
@@ -757,7 +786,7 @@ class HandleShortEvents:
                     history_text = history_text_adjust(
                         block["scar"], self.other_clan_name, game.clan, self.random_cat
                     )
-                    History.add_scar(cat, history_text)
+                    cat.history.add_scar(history_text)
                     break
         else:
             for block in self.chosen_event.history:
@@ -782,7 +811,7 @@ class HandleShortEvents:
                             self.random_cat,
                         )
                     if possible_scar or possible_death:
-                        History.add_possible_history(
+                        cat.history.add_possible_history(
                             cat,
                             injury,
                             scar_text=possible_scar,
@@ -816,6 +845,7 @@ class HandleShortEvents:
             reduce_amount = -int(freshkill_pile.total_amount / 8)
         elif "increase" in adjustment:
             increase_amount = adjustment.split("_")[1]
+            increase_amount = int(increase_amount)
 
         if reduce_amount != 0:
             freshkill_pile.remove_freshkill(reduce_amount, take_random=True)
@@ -864,7 +894,7 @@ class HandleShortEvents:
                     if rating in trigger:
                         possible_herbs.append(herb)
 
-                self.chosen_herb = random.choice(possible_herbs)
+                self.chosen_herb = choice(possible_herbs)
 
             # if it wasn't a random herb or all herbs, then it's one specific herb
             else:
