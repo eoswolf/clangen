@@ -16,7 +16,9 @@ from scripts.game_structure.ui_elements import (
     UIImageButton,
     UISurfaceImageButton,
     UIImageHorizontalSlider,
+    UIModifiedScrollingContainer,
 )
+from scripts.housekeeping.datadir import open_data_dir
 from scripts.utility import get_text_box_theme, ui_scale, ui_scale_dimensions
 from .Screens import Screens
 from ..game_structure.audio import music_manager, sound_manager
@@ -24,7 +26,6 @@ from ..game_structure.screen_settings import (
     MANAGER,
     set_display_mode,
 )
-from ..housekeeping.datadir import get_data_dir
 from ..housekeeping.version import get_version_info
 from ..ui.generate_button import get_button_dict, ButtonStyles
 
@@ -142,15 +143,7 @@ class SettingsScreen(Screens):
                     fullscreen=game.settings["fullscreen"], source_screen=self
                 )
             elif event.ui_element == self.open_data_directory_button:
-                if platform.system() == "Darwin":
-                    subprocess.Popen(["open", "-R", get_data_dir()])
-                elif platform.system() == "Windows":
-                    os.startfile(get_data_dir())  # pylint: disable=no-member
-                elif platform.system() == "Linux":
-                    try:
-                        subprocess.Popen(["xdg-open", get_data_dir()])
-                    except OSError:
-                        logger.exception("Failed to call to xdg-open.")
+                open_data_dir()
                 return
             elif event.ui_element == self.save_settings_button:
                 self.save_settings()
@@ -378,11 +371,10 @@ class SettingsScreen(Screens):
         self.sub_menu = "general"
         self.save_settings_button.show()
 
-        self.checkboxes_text[
-            "container_general"
-        ] = pygame_gui.elements.UIScrollingContainer(
+        self.checkboxes_text["container_general"] = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((0, 220), (700, 300))),
             allow_scroll_x=False,
+            allow_scroll_y=True,
             manager=MANAGER,
         )
 
@@ -508,11 +500,10 @@ class SettingsScreen(Screens):
         self.sub_menu = "info"
         self.save_settings_button.hide()
 
-        self.checkboxes_text[
-            "info_container"
-        ] = pygame_gui.elements.UIScrollingContainer(
+        self.checkboxes_text["info_container"] = UIModifiedScrollingContainer(
             ui_scale(pygame.Rect((0, 150), (600, 500))),
             allow_scroll_x=False,
+            allow_scroll_y=True,
             manager=MANAGER,
             anchors={"centerx": "centerx"},
         )

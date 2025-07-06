@@ -20,12 +20,17 @@ from scripts.utility import (
 class HerbSupply:
     """Handles managing the Clan's herb supply."""
 
-    def __init__(self, herb_supply: dict = None):
+    def __init__(self, herb_supply: dict[str, list[int | float]] = None):
         """
         Initialize the class
         """
         # a dict of current stored herbs - herbs collected this moon
-        self.storage: dict = herb_supply if herb_supply else {}
+        if herb_supply:
+            self.storage: dict[str, list[int]] = {
+                herb: [int(i) for i in amounts] for herb, amounts in herb_supply.items()
+            }
+        else:
+            self.storage = {}
 
         # a dict of herbs collected this moon
         self.collected: dict = {}
@@ -44,6 +49,13 @@ class HerbSupply:
 
         # med den log for current moon
         self.log = []
+
+        # ensures all herbs in HERBS are present as keys in self.storage and self.collected because KEYERRORS SUCK
+        for herb in self.base_herb_list:
+            if herb not in self.storage:
+                self.storage[herb] = []
+            if herb not in self.collected:
+                self.collected[herb] = 0
 
     @property
     def combined_supply_dict(self) -> dict:
@@ -173,6 +185,7 @@ class HerbSupply:
         """
         handle herbs on moon skip: add collected to supply, use herbs where needed, expire old herbs, look for new herbs
         """
+
         # clear log
         self.log = []
 
@@ -460,9 +473,13 @@ class HerbSupply:
         found_herbs = {}
 
         # adjust weighting according to season
-        weight = game.config["clan_resources"]["herbs"][game.clan.biome.casefold()][
-            game.clan.current_season.casefold()
-        ]
+        weight = game.config["clan_resources"]["herbs"][
+            (
+                game.clan.biome
+                if not game.clan.override_biome
+                else game.clan.override_biome
+            ).casefold()
+        ][game.clan.current_season.casefold()]
 
         # the amount of herb types the med has found
         amount_of_herbs = (
@@ -484,7 +501,10 @@ class HerbSupply:
 
             # rarity is set to 0 if the herb can't be found in the current season
             if not self.herb[herb].get_rarity(
-                game.clan.biome, game.clan.current_season
+                game.clan.biome
+                if not game.clan.override_biome
+                else game.clan.override_biome,
+                game.clan.current_season,
             ):
                 continue
 
@@ -493,12 +513,15 @@ class HerbSupply:
                 randint(
                     1,
                     self.herb[herb].get_rarity(
-                        game.clan.biome, game.clan.current_season
+                        game.clan.biome
+                        if not game.clan.override_biome
+                        else game.clan.override_biome,
+                        game.clan.current_season,
                     ),
                 )
                 == 1
             ):
-                found_herbs[herb] = (
+                found_herbs[herb] = int(
                     choices(population=[1, 2, 3], weights=weight, k=1)[0]
                     * quantity_modifier
                 )

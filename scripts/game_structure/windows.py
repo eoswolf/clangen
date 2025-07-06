@@ -38,7 +38,7 @@ from scripts.housekeeping.datadir import (
     get_save_dir,
     get_cache_dir,
     get_saved_images_dir,
-    get_data_dir,
+    open_data_dir,
 )
 from scripts.housekeeping.progress_bar_updater import UIUpdateProgressBar
 from scripts.housekeeping.update import (
@@ -425,7 +425,7 @@ class EditorSaveCheck(UIWindow):
 
 
 class EditorMissingInfo(UIWindow):
-    def __init__(self):
+    def __init__(self, alert_text):
         super().__init__(
             ui_scale(pygame.Rect((200, 200), (400, 200))),
             window_display_title="Info Missing",
@@ -434,13 +434,16 @@ class EditorMissingInfo(UIWindow):
             always_on_top=True,
         )
 
+        text = "windows.editor_missing_info" if not alert_text else alert_text
         self.missing_info = UITextBoxTweaked(
-            "windows.editor_missing_info",
-            ui_scale(pygame.Rect((0, -30), (360, -1))),
+            text,
+            ui_scale(pygame.Rect((0, 30), (360, -1))),
             line_spacing=1,
             object_id="#text_box_30_horizcenter",
             container=self,
-            anchors={"centerx": "centerx", "centery": "centery"},
+            anchors={
+                "centerx": "centerx",
+            },
         )
 
         self.back_button = UIImageButton(
@@ -611,11 +614,12 @@ class ChangeCatName(UIWindow):
 
         self.heading = pygame_gui.elements.UITextBox(
             "windows.change_name_title",
-            ui_scale(pygame.Rect((0, 10), (400, 40))),
+            ui_scale(pygame.Rect((0, 10), (200, 40))),
             object_id="#text_box_30_horizcenter",
             manager=MANAGER,
             container=self,
             text_kwargs={"name": self.the_cat.name},
+            anchors={"centerx": "centerx"},
         )
 
         self.name_changed = pygame_gui.elements.UITextBox(
@@ -1095,10 +1099,11 @@ class KillCat(UIWindow):
         cat_dict = {"m_c": (str(self.the_cat.name), choice(self.the_cat.pronouns))}
         self.heading = pygame_gui.elements.UITextBox(
             "windows.kill_cat_method",
-            ui_scale(pygame.Rect((10, 10), (430, 75))),
+            ui_scale(pygame.Rect((10, 10), (300, -1))),
             object_id="#text_box_30_horizcenter_spacing_95",
             manager=MANAGER,
             container=self,
+            anchors={"centerx": "centerx"},
         )
 
         self.one_life_check = UIImageButton(
@@ -1140,7 +1145,7 @@ class KillCat(UIWindow):
             self.all_lives_check.hide()
             self.life_text = pygame_gui.elements.UITextBox(
                 "windows.all_lives_leader",
-                ui_scale(pygame.Rect((60, 147), (450, 40))),
+                ui_scale(pygame.Rect((60, 147), (130, -1))),
                 object_id="#text_box_30_horizleft",
                 manager=MANAGER,
                 container=self,
@@ -1173,7 +1178,7 @@ class KillCat(UIWindow):
 
             self.beginning_prompt = pygame_gui.elements.UITextBox(
                 self.prompt,
-                ui_scale(pygame.Rect((25, 30), (450, 40))),
+                ui_scale(pygame.Rect((25, 30), (200, -1))),
                 object_id="#text_box_30_horizleft",
                 manager=MANAGER,
                 container=self,
@@ -1841,15 +1846,7 @@ class SaveAsImage(UIWindow):
             if event.ui_element == self.close_button:
                 self.kill()
             elif event.ui_element == self.open_data_directory_button:
-                if system() == "Darwin":
-                    subprocess.Popen(["open", "-R", get_data_dir()])
-                elif system() == "Windows":
-                    os.startfile(get_data_dir())  # pylint: disable=no-member
-                elif system() == "Linux":
-                    try:
-                        subprocess.Popen(["xdg-open", get_data_dir()])
-                    except OSError:
-                        logger.exception("Failed to call to xdg-open.")
+                open_data_dir()
                 return True
             elif event.ui_element == self.save_as_image:
                 file_name = self.save_image()

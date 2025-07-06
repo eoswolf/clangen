@@ -23,15 +23,16 @@ from scripts.conditions import (
     get_amount_cat_for_one_medic,
 )
 from scripts.event_class import Single_Event
-from scripts.events_module.short.condition_events import Condition_Events
 from scripts.events_module.generate_events import GenerateEvents, generate_events
-from scripts.events_module.short.handle_short_events import handle_short_events
 from scripts.events_module.outsider_events import OutsiderEvents
-from scripts.events_module.relationship.relation_events import Relation_Events
-from scripts.events_module.relationship.pregnancy_events import Pregnancy_Events
-from scripts.game_structure.game_essentials import game
-from scripts.game_structure.windows import SaveError
 from scripts.events_module.patrol.patrol import Patrol
+from scripts.events_module.relationship.pregnancy_events import Pregnancy_Events
+from scripts.events_module.relationship.relation_events import Relation_Events
+from scripts.events_module.short.condition_events import Condition_Events
+from scripts.events_module.short.handle_short_events import handle_short_events
+from scripts.game_structure.game_essentials import game
+from scripts.game_structure.localization import load_lang_resource
+from scripts.game_structure.windows import SaveError
 from scripts.utility import (
     change_clan_relations,
     change_clan_reputation,
@@ -47,7 +48,6 @@ from scripts.utility import (
     history_text_adjust,
     unpack_rel_block,
 )
-from scripts.game_structure.localization import load_lang_resource
 
 
 class Events:
@@ -133,6 +133,8 @@ class Events:
         rejoin_upperbound = game.config["lost_cat"]["rejoin_chance"]
         if random.randint(1, rejoin_upperbound) == 1:
             self.handle_lost_cats_return()
+
+        self.handle_future_events()
 
         # Calling of "one_moon" functions.
         for cat in Cat.all_cats.copy().values():
@@ -315,6 +317,24 @@ class Events:
             except:
                 SaveError(traceback.format_exc())
 
+    def handle_future_events(self):
+        """
+        Handles aging future events and triggering them.
+        """
+        removals = []
+
+        for event in game.clan.future_events:
+            event.moon_delay -= 1
+            # we give events a buffer of 12 moons to allow any season-locked events a chance to trigger, then we remove
+            if event.moon_delay <= -12:
+                removals.append(event)
+            if event.moon_delay <= 0:
+                handle_short_events.trigger_future_event(event)
+
+        for event in removals:
+            if event in game.clan.future_events:
+                game.clan.future_events.remove(event)
+
     def handle_lead_den_event(self):
         """
         Handles the events that are chosen in the leaders den the previous moon and resets the relevant clan settings
@@ -456,7 +476,9 @@ class Events:
                                     )
                                     invited_cat.name.give_suffix(
                                         pelt=None,
-                                        biome=game.clan.biome,
+                                        biome=game.clan.biome
+                                        if not game.clan.override_biome
+                                        else game.clan.override_biome,
                                         tortiepattern=None,
                                     )
                                     invited_cat.specsuffix_hidden = False
@@ -953,8 +975,16 @@ class Events:
         # are connected to cats are located in there
         cat.one_moon()
 
+        if game.config["event_generation"]["debug_type_override"]:
+            debug_type_override = game.config["event_generation"]["debug_type_override"]
+            if debug_type_override in ["death", "injury"]:
+                self.handle_injuries_or_general_death(cat)
+            elif debug_type_override == "misc":
+                self.other_interactions(cat)
+            elif debug_type_override == "new_cat":
+                self.invite_new_cats(cat)
+
         # Handle Mediator Events
-        # TODO: this is not a great way to handle them, ideally they should be converted to ShortEvent format
         self.mediator_events(cat)
 
         # handle nutrition amount
@@ -1084,11 +1114,11 @@ class Events:
                     enemy_clan = other_clan
                     break
 
-            threshold = 5
+            threshold = 10
             if enemy_clan.temperament == "bloodthirsty":
-                threshold = 10
+                threshold = 12
             if enemy_clan.temperament in ["mellow", "amiable", "gracious"]:
-                threshold = 3
+                threshold = 7
 
             threshold -= int(game.clan.war["duration"])
             if enemy_clan.relations < 0:
@@ -1099,11 +1129,11 @@ class Events:
                 game.clan.war["at_war"] = False
                 game.clan.war["enemy"] = None
                 game.clan.war["duration"] = 0
-                enemy_clan.relations += 12
+                enemy_clan.relations += 2
                 war_events = self.WAR_TXT["conclusion_events"]
             else:  # try to influence the relation with warring clan
                 game.clan.war["duration"] += 1
-                choice = random.choice(["rel_up", "rel_up", "neutral", "rel_down"])
+                choice = random.choice(["rel_up", "neutral", "rel_down"])
                 game.switches["war_rel_change_type"] = choice
                 war_events = self.WAR_TXT["progress_events"][choice]
                 if enemy_clan.relations < 0:
@@ -1128,6 +1158,7 @@ class Events:
                     game.clan.war["at_war"] = True
                     game.clan.war["enemy"] = other_clan.name
                     war_events = self.WAR_TXT["trigger_events"]
+                    game.switches["war_rel_change_type"] = "rel_down"
 
         # if nothing happened, return
         if not war_events or not enemy_clan:
@@ -1142,6 +1173,7 @@ class Events:
                 if not game.clan.medicine_cat and "med_name" in event:
                     war_events.remove(event)
 
+        # grab our war "notice" for this moon
         event = random.choice(war_events)
         event = ongoing_event_text_adjust(
             Cat, event, other_clan_name=f"{enemy_clan.name}Clan", clan=game.clan
@@ -1865,6 +1897,15 @@ class Events:
             Cat, main_cat=cat, parent_child_modifier=True, mentor_app_modifier=True
         )
 
+        if game.config["event_generation"]["debug_type_override"] == "new_cat":
+            handle_short_events.handle_event(
+                event_type="new_cat",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+
         if (
             not int(random.random() * chance)
             and not cat.age.is_baby()
@@ -1883,6 +1924,16 @@ class Events:
         """
         TODO: DOCS
         """
+        if game.config["event_generation"]["debug_type_override"] == "misc":
+            random_cat = get_random_moon_cat(Cat, main_cat=cat)
+            handle_short_events.handle_event(
+                event_type="misc",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+
         hit = int(random.random() * 30)
         if hit:
             return
@@ -1905,6 +1956,18 @@ class Events:
         random_cat = get_random_moon_cat(
             Cat, cat, parent_child_modifier=True, mentor_app_modifier=True
         )
+
+        if game.config["event_generation"]["debug_type_override"] == "death":
+            handle_short_events.handle_event(
+                event_type="birth_death",
+                main_cat=cat,
+                random_cat=random_cat,
+                freshkill_pile=game.clan.freshkill_pile,
+            )
+            return
+        elif game.config["event_generation"]["debug_type_override"] == "injury":
+            Condition_Events.handle_injuries(cat, random_cat)
+            return
 
         # chance to kill leader: 1/50 by default
         if (
