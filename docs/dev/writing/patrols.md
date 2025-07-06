@@ -94,34 +94,34 @@ This is a good starting point for writing your own patrols.
     "decline_text": "And they head right back!",
     "success_outcomes": [
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         },
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         }
     ],
     "fail_outcomes": [
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         },
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         }
     ],
     "antag_success_outcomes": [
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         },
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         }
     ],
     "antag_fail_outcomes": [
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         },
         {
-            "SEE OUTCOME BLOCK TEMPLATE": null
+            SEE OUTCOME BLOCK TEMPLATE
         }
     ]
 }
