@@ -461,7 +461,6 @@ class GenerateEvents:
             if chosen_event.event_id in failed_ids:
                 final_events.remove(chosen_event)
                 chosen_event = None
-                print(f"removed copy of {chosen_event.event_id}")
                 continue
 
             # if we have an ensured id, only allow that event past

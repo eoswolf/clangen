@@ -1,5 +1,7 @@
 from typing import List
 
+from scripts.game_structure.game_essentials import game
+
 
 class ShortEvent:
     """
@@ -33,13 +35,21 @@ class ShortEvent:
     ):
         if not event_id:
             print("WARNING: moon event has no event_id")
+
+        self.weight = weight
+
         self.event_id = event_id
         self.location = location if location else ["any"]
+        if "any" not in self.location:
+            self.weight += 1
         self.season = season if season else ["any"]
+        if "any" not in self.season:
+            self.weight += 4 - len(
+                self.season
+            )  # this increases the weight inversely to the number of season constraints
         self.sub_type = sub_type if sub_type else []
         self.tags = tags if tags else []
         self.rarity = rarity
-        self.weight = weight
         self.text = text
         self.new_accessory = new_accessory if new_accessory else []
         self.m_c = m_c if m_c else {"age": ["any"]}
