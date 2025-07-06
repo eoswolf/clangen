@@ -632,6 +632,8 @@ class Cat:
         if game.clan and not self.outside and not self.exiled:
             self.grief(body)
 
+        # mark the sprite as outdated
+        self.pelt.rebuild_sprite = True
         if not self.outside:
             Cat.dead_cats.append(self)
             if game.clan.instructor.df is False:
