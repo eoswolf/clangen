@@ -30,77 +30,75 @@ When writing the text for patrol events, we use a variety of abbreviations that 
 ## Formatting
 
 !!! tip
-	If you are new to patrol writing, I recommend going through the [Full Featured Patrol Example](#full-featured-patrol-example) line by line and reading the following parameter explanations as you do.
+    If you are new to patrol writing, I recommend going through the [Full Featured Patrol Example](#full-featured-patrol-example) line by line and reading the following parameter explanations as you do.
 
-	Likewise, before beginning, be sure to at least read the first section of [Coding Terms for Writers to Know](index.md#coding-terms-for-writers-to-know). This explains much of the terminology used here.
+    Likewise, before beginning, be sure to at least read the first section of [Coding Terms for Writers to Know](index.md#coding-terms-for-writers-to-know). This explains much of the terminology used here.
 
 ### Patrol Template
 This is a good starting point for writing your own patrols. 
 
-```py
+```json
 {
-	"patrol_id": "some_unique_id",
-	"biome": [],
-	"season": [],
-	"types": [],
-	"tags": [],
-	"patrol_art": null,
-	"patrol_art_clean": null,
-	"min_cats": 1,
-	"max_cats": 6,
-	"min_max_status": {
-		"apprentice": [0, 6],
-		"medicine cat apprentice": [0, 6],
-		"medicine cat": [0, 6],
-		"deputy": [0, 6],
-		"warrior": [0, 6],
-		"leader": [0, 6],
-		"healer cats": [0, 6],
-		"normal adult": [0, 6],
-		"all apprentices": [0, 6]
-	},
-	"weight": 20,
-	"chance_of_success": 50,
-	"relationship_constraint": [],
-	"pl_skill_constraint": [],
-	"intro_text": "The patrol heads out.",
-	"decline_text": "And they head right back!",
-	"success_outcomes": [
-		{
-			SEE OUTCOME BLOCK TEMPLATE
-},
-{
-			SEE OUTCOME BLOCK TEMPLATE
-		},
-	],
-	"fail_outcomes": [
-		{
-			SEE OUTCOME BLOCK TEMPLATE
-},
-{
-			SEE OUTCOME BLOCK TEMPLATE
-		},
-	],
-
-	"antag_success_outcomes": [
-		{
-			SEE OUTCOME BLOCK TEMPLATE
-},
-{
-			SEE OUTCOME BLOCK TEMPLATE
-		},
-	],
-
-	"antag_fail_outcomes": [
-		{
-			SEE OUTCOME BLOCK TEMPLATE
-},
-{
-			SEE OUTCOME BLOCK TEMPLATE
-		},
-	],
-
+    "patrol_id": "some_unique_id",
+    "biome": [],
+    "season": [],
+    "types": [],
+    "tags": [],
+    "patrol_art": null,
+    "patrol_art_clean": null,
+    "min_cats": 1,
+    "max_cats": 6,
+    "min_max_status": {
+        "apprentice": [0, 6],
+        "medicine cat apprentice": [0, 6],
+        "medicine cat": [0, 6],
+        "deputy": [0, 6],
+        "warrior": [0, 6],
+        "leader": [0, 6],
+        "healer cats": [0, 6],
+        "normal adult": [0, 6],
+        "all apprentices": [0, 6]
+    },
+    "weight": 20,
+    "chance_of_success": 50,
+    "relationship_constraint": [],
+    "pl_skill_constraint": [],
+    "intro_text": "The patrol heads out.",
+    "decline_text": "And they head right back!",
+    "success_outcomes": [
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        },
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        }
+    ],
+    "fail_outcomes": [
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        },
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        }
+    ],
+    "antag_success_outcomes": [
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        },
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        }
+    ],
+    "antag_fail_outcomes": [
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        },
+        {
+            SEE OUTCOME BLOCK TEMPLATE
+        }
+    ]
 }
+
 ```
 
 ### By Parameter - Patrol
@@ -183,7 +181,7 @@ Please have a look at the [full biome differences list](index.md#clangen-biomes)
 
 
 !!! tip
-	There are two further subtypes of patrols which occur as isolated events within the four main types. These are other_clan and new_cat patrols. Other clan patrols deal with the Clans neighboring the player Clan and are discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#other_clan_rep). New cat patrols deal with patrols where a new cat joins the player Clan. The chance of finding a new_cat patrol is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#outsider_rep), the new_cat tag is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#tags-liststr), and the code to generate a new_cat is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#new_cat-listliststr). A patrol is firstly one of the four types, e.g herb gathering, and then can also be a other_clan or new_cat (or both!) patrol in addition to the four basic types. 
+    There are two further subtypes of patrols which occur as isolated events within the four main types. These are other_clan and new_cat patrols. Other clan patrols deal with the Clans neighboring the player Clan and are discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#other_clan_rep). New cat patrols deal with patrols where a new cat joins the player Clan. The chance of finding a new_cat patrol is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#outsider_rep), the new_cat tag is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#tags-liststr), and the code to generate a new_cat is discussed [here](https://github.com/ClanGenOfficial/clangen/wiki/%5BWriting%5D-%E2%80%90-Patrols#new_cat-listliststr). A patrol is firstly one of the four types, e.g herb gathering, and then can also be a other_clan or new_cat (or both!) patrol in addition to the four basic types. 
 
 
 ***
@@ -264,7 +262,7 @@ Please have a look at the [full biome differences list](index.md#clangen-biomes)
 > The general hunting and border jsons have balancing patrols in them. These have very low weights (between 1-5) and aren't very interesting patrols, but they are made so that no matter what biome and season it is, the game has a pool of valid hunting and border patrols to choose from. 
 
 !!! tip
-	Hunting patrols have an additional level of filtering active above the patrol weights. First the game decides what prey reward the patrol should give (based on chances that change depending on the biome and season), and then, from the patrols that give that prey reward _as a non-stat success_, the acceptable patrols are weighed against each other. This naturally makes patrols that give huge prey rewards rare, no matter how many of those patrols you write. Don't worry about weighing hunting patrols according to their prey reward. Instead make each hunting patrol give roughly the same prey reward for all non-stat successes. The hunting filtering code will make sure the appropriate amount of prey is given. 
+    Hunting patrols have an additional level of filtering active above the patrol weights. First the game decides what prey reward the patrol should give (based on chances that change depending on the biome and season), and then, from the patrols that give that prey reward _as a non-stat success_, the acceptable patrols are weighed against each other. This naturally makes patrols that give huge prey rewards rare, no matter how many of those patrols you write. Don't worry about weighing hunting patrols according to their prey reward. Instead make each hunting patrol give roughly the same prey reward for all non-stat successes. The hunting filtering code will make sure the appropriate amount of prey is given. 
 
 
 ***
@@ -528,61 +526,61 @@ Please have a look at the [full biome differences list](index.md#clangen-biomes)
 ### Outcome Block Template
 This is a good starting point for writing your own outcomes.
 
-```py
+```json
 {
-	"text": "The raw displayed outcome text.",
-	"exp": 0,
-"weight": 20,
-"stat_skill": [],
-"stat_trait": [],
-"can_have_stat": [],
-"prey": [],
-        "herbs": [],
-"lost_cats": [],
-	"dead_cats": [],
-	"outsider_rep": null,
-	"other_clan_rep": null,
-	"injury": [
-{
-			"cats": [],
-			"injuries": [],
-			"scars": [],
-			"no_results": false
-},
-{
-			"cats": [],
-			"injuries": [],
-			"scars": [],
-			"no_results": false
-}
-],
-	"history_text": {
-		"reg_death": "m_c died while on a patrol.",
-		"lead_death": "died on patrol",
-		"scars": "m_c was scarred on patrol",
-	}
-	"relationships": [
-{
-			"cats_to": [],
-			"cats_from": [],
-			"mutual": false,
-			"values": [],
-			"amount": 5
-},	
-{
-			"cats_to": [],
-			"cats_from": [],
-			"mutual": false,
-			"values": [],
-			"amount": 5
-		}
-],
-"new_cat" [
-	[],
-	[]
-],
-"art": "patrol_outcome_art",
-"art_clean": "non_gore_outcome_art"
+    "text": "The raw displayed outcome text.",
+    "exp": 0,
+    "weight": 20,
+    "stat_skill": [],
+    "stat_trait": [],
+    "can_have_stat": [],
+    "prey": [],
+    "herbs": [],
+    "lost_cats": [],
+    "dead_cats": [],
+    "outsider_rep": null,
+    "other_clan_rep": null,
+    "injury": [
+        {
+            "cats": [],
+            "injuries": [],
+            "scars": [],
+            "no_results": false
+        },
+        {
+            "cats": [],
+            "injuries": [],
+            "scars": [],
+            "no_results": false
+        }
+    ],
+    "history_text": {
+        "reg_death": "m_c died while on a patrol.",
+        "lead_death": "died on patrol",
+        "scars": "m_c was scarred on patrol"
+    },
+    "relationships": [
+        {
+                    "cats_to": [],
+                    "cats_from": [],
+                    "mutual": false,
+                    "values": [],
+                    "amount": 5
+        },    
+        {
+                    "cats_to": [],
+                    "cats_from": [],
+                    "mutual": false,
+                    "values": [],
+                    "amount": 5
+        }
+    ],
+    "new_cat": [
+        [],
+        []
+    ],
+    "art": "patrol_outcome_art",
+    "art_clean": "non_gore_outcome_art"
 }
 ```
 
@@ -693,12 +691,12 @@ What each parameter does, and what the options are for outcomes.
 #### injury: List[Dict[str, various]]
 >Optional. Indicates which cats get injured, and how. In classic mode, there are no conditions, so you can include a "scars" line to scar the cat instead. You can include as many of the following blocks (in a list) as you want. 
 >
->```py
+>```json
 >{
->	 "cats": [],
->	 "injuries": [],
->	 "scars": [],
->	 "no_results": false
+>     "cats": [],
+>     "injuries": [],
+>     "scars": [],
+>     "no_results": false
 >}
 >```
 >
@@ -763,11 +761,11 @@ What each parameter does, and what the options are for outcomes.
 >
 >```
 >{
->	 "cats_from": [],
+>     "cats_from": [],
 >   "cats_to": [],
->	 "mutual": false
->	 "values" [],
->	 "amount": 5
+>     "mutual": false
+>     "values" [],
+>     "amount": 5
 >}
 >```
 >
@@ -835,8 +833,8 @@ What each parameter does, and what the options are for outcomes.
 >
 >```
 >[
->	[cat details],
->	[cat 2 details]
+>    [cat details],
+>    [cat 2 details]
 >]
 >```
 >
@@ -935,34 +933,34 @@ Other clan reputation changes
 ## Minimal Patrol Example
 This is a perfectly good patrol, with the bare minimum features needed!
 
-```py
+```json
 {
-	"patrol_id": "some_unique_id",
-	"biome": ["Any"],
-	"season": ["Any"],
-	"types": ["hunting"],
-	"tags": [],
-	"patrol_art": "hunt_general_intro",
-	"min_cats": 1,
-	"max_cats": 6,
-	"weight": 20,
-	"chance_of_success": 50,
-	"intro_text": "The patrol heads out.",
-	"decline_text": "And they head right back!",
-	"success_outcomes": [
-		{
-			"text": "Wow! The patrol did great!",
-			"exp": 10,
-			"weight": 20,
-		}
-	],
-	"fail_outcomes": [
-		{
-			"text": "Oof. The patrol didn't do so hot.",
-			"exp": 0,
-			"weight": 20,
-		}
-	]
+    "patrol_id": "some_unique_id",
+    "biome": ["Any"],
+    "season": ["Any"],
+    "types": ["hunting"],
+    "tags": [],
+    "patrol_art": "hunt_general_intro",
+    "min_cats": 1,
+    "max_cats": 6,
+    "weight": 20,
+    "chance_of_success": 50,
+    "intro_text": "The patrol heads out.",
+    "decline_text": "And they head right back!",
+    "success_outcomes": [
+        {
+            "text": "Wow! The patrol did great!",
+            "exp": 10,
+            "weight": 20
+        }
+    ],
+    "fail_outcomes": [
+        {
+            "text": "Oof. The patrol didn't do so hot.",
+            "exp": 0,
+            "weight": 20
+        }
+    ]
 }
 ```
 
@@ -970,138 +968,201 @@ This is a perfectly good patrol, with the bare minimum features needed!
 This uses almost all features somewhere. Yes, it is long. Most patrols are not this long. 
 
 !!! tip
-	If you are new to patrol writing, I recommend going through this example line by line and reading the parameter explanation from above alongside it.
+    If you are new to patrol writing, I recommend going through this example line by line and reading the parameter explanation from above alongside it.
 
-```py
+```json
 {
-	"patrol_id": "some_unique_id",
-	"biome": ["Any"],
-	"season": ["Any"],
-	"types": ["hunting"],
-	"tags": ["disaster", "new_cat"],
-	"patrol_art": "explict_art_name"
-	"patrol_art_clean": "hunt_general_intro",
-	"min_cats": 3,
-	"max_cats": 6,
-	"min_max_status": {
-		"warrior": [1, 6],
-		"leader": [1, 6],
-		"normal adult": [1, 6],
-		"apprentice": [-1, -1]
-	},
-	"weight": 20,
-	"chance_of_success": 50,
-	"relationship_constraint": ["siblings", "platonic_20"],
-	"pl_skill_constraint": ["FIGHTER,1"],
-	"intro_text": "The patrol heads out.",
-	"decline_text": "And they head right back!",
-	"success_outcomes": [
-		{
-			"text": "Wow! The patrol did great!",
-			"exp": 10,
-			"weight": 20,
-			"relationships": [
-				{
-					"cat_to": ["p_l"],
-					"cat_from": ["r_c"],
-					"values": ["platonic", "comfort"],
-					"amount": 5
-				},
-				{
-					"cat_to": ["p_l"],
-					"cat_from": ["r_c"],
-					"values": ["dislike"],
-					"amount": -5
-				}
-				
-			],
-			"prey": ["medium"],
-			"art": "patrol_outcome_art",
-			"art_clean": "patrol_outcome_art_clean"
-		},
-{
-			"text": "Wow! This is an uncommon outcome, and someone new joined!",
-			"exp": 2,
-"weight": 10,
-			"new_cat": [
-				["can_birth", "age:has_kits"],
-				["litter", "parent:0"]
-			],
-"art": "patrol_outcome_art",
-			
-		},
-
-{
-			"text": "Wow! s_c did extra great!",
-			"exp": 10,
-			"weight": 20,
-			"stat_trait": ["loving", "cold"],
-			"stat_skill": ["TEACHER,1"],
-			"can_have_stat": ["p_l", "adult"],
-		}
-	],
-	"fail_outcomes": [
-		{
-			"text": "Oof. The patrol didn't do so hot. They also all died.",
-			"exp": 0,
-			"weight": 20,
-			"dead_cats": ["patrol"],
-			"history_text": {
-				"reg_death": "m_c died while on a patrol.",
-				"lead_death": "died on patrol"
-			},
-			"art": "patrol_outcome_art",
-			"art_clean": "patrol_outcome_art_clean"
-		},
-{
-			"text": "Wow, a fail-stat outcome. Cool.",
-			"exp": 0,
-			"weight": 20,
-			"stat_trait": ["grumpy", "nervous"],
-			"stat_skill": ["SPEAKER,1"],
-			"art": "patrol_outcome_art",
-		},
-
-{
-			"text": "They didn't die.. , but they got hurt and lost!",
-			"exp": 0,
-			"weight": 20,
-			"lost_cats": ["r_c"],
-			"injury": [
-{
-					"cats": ["p_l"],
-					"injuries": ["battle_injury"],
-					"scars": ["ONE"]
-				}
-			],
-			"history_text": {
-				"reg_death": "m_c died from an patrol.",
-				"lead_death": "died from a patrol",
-				"scar": "m_c was scarred on patrol"
-			}
-
-		}
-
-	],
-	"antag_success_outcomes": [
-		{
-			"text": "Wow, you did the antagonize!",
-			"exp": 0,
-			"weight": 20,
-			"outsider_rep": -1,
-			"other_clan_rep": -2,
-"art": "patrol_outcome_art",
-		},
-	],
-	"antag_fail_outcomes": [
-{
-			"text": "Wow, you did the antagonize, and failed!",
-			"exp": 0,
-			"weight": 20,
-			"outsider_rep": 0,
-			"other_clan_rep": -2
-		},
-	]
+    "patrol_id": "some_unique_id",
+    "biome": [
+        "Any"
+    ],
+    "season": [
+        "Any"
+    ],
+    "types": [
+        "hunting"
+    ],
+    "tags": [
+        "disaster",
+        "new_cat"
+    ],
+    "patrol_art": "explict_art_name",
+    "patrol_art_clean": "hunt_general_intro",
+    "min_cats": 3,
+    "max_cats": 6,
+    "min_max_status": {
+        "warrior": [
+            1,
+            6
+        ],
+        "leader": [
+            1,
+            6
+        ],
+        "normal adult": [
+            1,
+            6
+        ],
+        "apprentice": [
+            -1,
+            -1
+        ]
+    },
+    "weight": 20,
+    "chance_of_success": 50,
+    "relationship_constraint": [
+        "siblings",
+        "platonic_20"
+    ],
+    "pl_skill_constraint": [
+        "FIGHTER,1"
+    ],
+    "intro_text": "The patrol heads out.",
+    "decline_text": "And they head right back!",
+    "success_outcomes": [
+        {
+            "text": "Wow! The patrol did great!",
+            "exp": 10,
+            "weight": 20,
+            "relationships": [
+                {
+                    "cat_to": [
+                        "p_l"
+                    ],
+                    "cat_from": [
+                        "r_c"
+                    ],
+                    "values": [
+                        "platonic",
+                        "comfort"
+                    ],
+                    "amount": 5
+                },
+                {
+                    "cat_to": [
+                        "p_l"
+                    ],
+                    "cat_from": [
+                        "r_c"
+                    ],
+                    "values": [
+                        "dislike"
+                    ],
+                    "amount": -5
+                }
+            ],
+            "prey": [
+                "medium"
+            ],
+            "art": "patrol_outcome_art",
+            "art_clean": "patrol_outcome_art_clean"
+        },
+        {
+            "text": "Wow! This is an uncommon outcome, and someone new joined!",
+            "exp": 2,
+            "weight": 10,
+            "new_cat": [
+                [
+                    "can_birth",
+                    "age:has_kits"
+                ],
+                [
+                    "litter",
+                    "parent:0"
+                ]
+            ],
+            "art": "patrol_outcome_art"
+        },
+        {
+            "text": "Wow! s_c did extra great!",
+            "exp": 10,
+            "weight": 20,
+            "stat_trait": [
+                "loving",
+                "cold"
+            ],
+            "stat_skill": [
+                "TEACHER,1"
+            ],
+            "can_have_stat": [
+                "p_l",
+                "adult"
+            ]
+        }
+    ],
+    "fail_outcomes": [
+        {
+            "text": "Oof. The patrol didn't do so hot. They also all died.",
+            "exp": 0,
+            "weight": 20,
+            "dead_cats": [
+                "patrol"
+            ],
+            "history_text": {
+                "reg_death": "m_c died while on a patrol.",
+                "lead_death": "died on patrol"
+            },
+            "art": "patrol_outcome_art",
+            "art_clean": "patrol_outcome_art_clean"
+        },
+        {
+            "text": "Wow, a fail-stat outcome. Cool.",
+            "exp": 0,
+            "weight": 20,
+            "stat_trait": [
+                "grumpy",
+                "nervous"
+            ],
+            "stat_skill": [
+                "SPEAKER,1"
+            ],
+            "art": "patrol_outcome_art"
+        },
+        {
+            "text": "They didn't die.. , but they got hurt and lost!",
+            "exp": 0,
+            "weight": 20,
+            "lost_cats": [
+                "r_c"
+            ],
+            "injury": [
+                {
+                    "cats": [
+                        "p_l"
+                    ],
+                    "injuries": [
+                        "battle_injury"
+                    ],
+                    "scars": [
+                        "ONE"
+                    ]
+                }
+            ],
+            "history_text": {
+                "reg_death": "m_c died from an patrol.",
+                "lead_death": "died from a patrol",
+                "scar": "m_c was scarred on patrol"
+            }
+        }
+    ],
+    "antag_success_outcomes": [
+        {
+            "text": "Wow, you did the antagonize!",
+            "exp": 0,
+            "weight": 20,
+            "outsider_rep": -1,
+            "other_clan_rep": -2,
+            "art": "patrol_outcome_art"
+        }
+    ],
+    "antag_fail_outcomes": [
+        {
+            "text": "Wow, you did the antagonize, and failed!",
+            "exp": 0,
+            "weight": 20,
+            "outsider_rep": 0,
+            "other_clan_rep": -2
+        }
+    ]
 }
-
 ```
