@@ -14,7 +14,8 @@ class ShortEvent:
         season: List[str] = None,
         sub_type: List[str] = None,
         tags: List[str] = None,
-        weight: int = 0,
+        weight: int = 1,
+        rarity: int = 4,
         text: str = "",
         new_accessory: List[str] = None,
         m_c=None,
@@ -37,11 +38,15 @@ class ShortEvent:
         self.season = season if season else ["any"]
         self.sub_type = sub_type if sub_type else []
         self.tags = tags if tags else []
+        self.rarity = rarity
         self.weight = weight
         self.text = text
         self.new_accessory = new_accessory if new_accessory else []
         self.m_c = m_c if m_c else {"age": ["any"]}
         if self.m_c:
+            for key in self.m_c.keys():
+                if key != "dies" and not "any" in self.m_c[key]:
+                    self.weight += 1
             if "age" not in self.m_c:
                 self.m_c["age"] = ["any"]
             if "status" not in self.m_c:
@@ -67,6 +72,9 @@ class ShortEvent:
 
         self.r_c = r_c if r_c else {}
         if self.r_c:
+            for key in self.r_c.keys():
+                if key != "dies" and not "any" in self.r_c[key]:
+                    self.weight += 1
             if "age" not in self.r_c:
                 self.r_c["age"] = ["any"]
             if "status" not in self.r_c:

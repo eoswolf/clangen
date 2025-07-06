@@ -6333,7 +6333,7 @@
         "season": [
             "any"
         ],
-        "rarity": 2,
+        "rarity": 1,
         "event_text": "m_c was hurt by r_c for speaking out against {PRONOUN/r_c/object}.",
         "m_c": {
             "status": [
@@ -6917,7 +6917,7 @@
         "sub_type": [
             "war"
         ],
-        "rarity": 4,
+        "rarity": 2,
         "event_text": "While patrolling the o_c_n borders, m_c stepped on a concealed pit trap set by what seemed to be o_c_n warriors. m_c freezes with shock as {PRONOUN/m_c/subject} {VERB/m_c/plunge/plunges} into the depths of the trap. The other cats on the patrol flank {PRONOUN/m_c/object} as {PRONOUN/m_c/subject} {VERB/m_c/limp/limps} back to the camp.",
         "m_c": {
             "age": [

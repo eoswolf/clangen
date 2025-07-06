@@ -277,9 +277,9 @@ class EventEditScreen(Screens):
         self.tag_info: list = []
         """Loaded tags"""
 
-        self.weight_element = {}
-        self.weight_info: int = 20
-        """Loaded weight"""
+        self.rarity_element = {}
+        self.rarity_info: int = 20
+        """Loaded rarity"""
 
         self.acc_element = {}
         self.acc_button = {}
@@ -499,7 +499,7 @@ class EventEditScreen(Screens):
             self.season_info = []
         self.sub_info = event["sub_type"] if event.get("sub_type") else []
         self.tag_info = event["tags"] if event.get("tags") else []
-        self.weight_info = event["weight"]
+        self.rarity_info = event["rarity"]
         self.event_text_info = event["event_text"]
         self.acc_info = event["new_accessory"] if event.get("new_accessory") else []
         if event.get("m_c"):
@@ -603,7 +603,7 @@ class EventEditScreen(Screens):
         if self.tag_info:
             new_event["tags"] = self.tag_info
 
-        new_event["weight"] = self.weight_info
+        new_event["rarity"] = self.rarity_info
         new_event["event_text"] = self.event_text_info
 
         if self.acc_info:
@@ -885,7 +885,7 @@ class EventEditScreen(Screens):
                     # check validity of event first
                     if (
                         not self.event_text_info
-                        or not self.weight_info
+                        or not self.rarity_info
                         or not self.type_info
                         or not self.valid_id()
                         or not self.valid_injury()
@@ -1547,9 +1547,9 @@ class EventEditScreen(Screens):
         self.rank_tag_checkbox = {}
         if not self.param_locks.get("tag"):
             self.tag_info = []
-        self.weight_element = {}
-        if not self.param_locks.get("weight"):
-            self.weight_info = 20
+        self.rarity_element = {}
+        if not self.param_locks.get("rarity"):
+            self.rarity_info = 20
         self.acc_element = {}
         if not self.param_locks.get("acc"):
             self.acc_info = []
@@ -7123,7 +7123,7 @@ class EventEditScreen(Screens):
         # TAGS
         self.create_tag_editor()
         # WEIGHT
-        self.create_weight_editor()
+        self.create_rarity_editor()
         # ACC
         self.create_acc_editor()
 
@@ -7135,7 +7135,7 @@ class EventEditScreen(Screens):
             line_spacing=1,
             manager=MANAGER,
             container=self.editor_container,
-            anchors={"top_target": self.weight_element["text"]},
+            anchors={"top_target": self.rarity_element["text"]},
         )
         prev_element = None
         for group in self.acc_categories.keys():
@@ -7236,9 +7236,9 @@ class EventEditScreen(Screens):
             ui_scale_dimensions((100, 100)),
         )
 
-    def create_weight_editor(self):
-        self.weight_element["text"] = UITextBoxTweaked(
-            "<b>* weight:</b>",
+    def create_rarity_editor(self):
+        self.rarity_element["text"] = UITextBoxTweaked(
+            "<b>* rarity:</b>",
             ui_scale(pygame.Rect((0, 15), (-1, -1))),
             object_id=get_text_box_theme("#text_box_30_horizleft_pad_10_10"),
             line_spacing=1,
@@ -7246,23 +7246,23 @@ class EventEditScreen(Screens):
             container=self.editor_container,
             anchors={"top_target": self.editor_element["tag"]},
         )
-        self.weight_element["entry"] = pygame_gui.elements.UITextEntryLine(
+        self.rarity_element["entry"] = pygame_gui.elements.UITextEntryLine(
             ui_scale(pygame.Rect((0, 18), (50, 29))),
             manager=MANAGER,
             container=self.editor_container,
             anchors={
                 "top_target": self.editor_element["tag"],
-                "left_target": self.weight_element["text"],
+                "left_target": self.rarity_element["text"],
             },
-            initial_text=f"{self.weight_info}",
+            initial_text=f"{self.rarity_info}",
         )
         self.create_lock(
-            name="weight",
+            name="rarity",
             top_anchor=self.editor_element["tag"],
-            left_anchor=self.weight_element["entry"],
+            left_anchor=self.rarity_element["entry"],
             x_offset=268,
         )
-        self.create_divider(self.weight_element["entry"], "weight", -10)
+        self.create_divider(self.rarity_element["entry"], "rarity", -10)
 
     def create_tag_editor(self):
         self.tag_element["collapse_container"] = UICollapsibleContainer(

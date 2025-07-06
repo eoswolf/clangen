@@ -99,9 +99,9 @@ class GenerateEvents:
         GenerateEvents.loaded_events = {}
 
     @staticmethod
-    def generate_short_events(event_triggered, biome, weight):
+    def generate_short_events(event_triggered, biome, rarity):
         file_path = f"{event_triggered}/{biome}.json"
-        load_name = f"{file_path}_{weight}"
+        load_name = f"{file_path}_{rarity}"
 
         try:
             if load_name in GenerateEvents.loaded_events:
@@ -114,7 +114,7 @@ class GenerateEvents:
                     return event_list
                 for event in events_dict:
                     event_text = event["event_text"] if "event_text" in event else None
-                    event_weight = event["weight"] if "weight" in event else 4
+                    event_rarity = event["rarity"] if "rarity" in event else 4
                     if not event_text:
                         event_text = (
                             event["death_text"] if "death_text" in event else None
@@ -125,7 +125,7 @@ class GenerateEvents:
                             f"WARNING: some events resources which are used in generate_events have no 'event_text'."
                         )
 
-                    if weight != event_weight:
+                    if rarity != event_rarity:
                         continue
 
                     event = ShortEvent(
@@ -134,7 +134,7 @@ class GenerateEvents:
                         season=event["season"] if "season" in event else ["any"],
                         sub_type=event["sub_type"] if "sub_type" in event else [],
                         tags=event["tags"] if "tags" in event else [],
-                        weight=event["weight"] if "weight" in event else 20,
+                        rarity=event["rarity"] if "rarity" in event else 4,
                         text=event_text,
                         new_accessory=(
                             event["new_accessory"] if "new_accessory" in event else []
@@ -218,7 +218,7 @@ class GenerateEvents:
                 return event
 
     @staticmethod
-    def possible_short_events(event_type=None, weight=4):
+    def possible_short_events(event_type=None, rarity=4):
         event_list = []
 
         # skip the rest of the loading if there is an unrecognised biome
@@ -237,12 +237,12 @@ class GenerateEvents:
 
         # biome specific events
         event_list.extend(
-            GenerateEvents.generate_short_events(event_type, biome, weight)
+            GenerateEvents.generate_short_events(event_type, biome, rarity)
         )
 
         # any biome events
         event_list.extend(
-            GenerateEvents.generate_short_events(event_type, "general", weight)
+            GenerateEvents.generate_short_events(event_type, "general", rarity)
         )
 
         return event_list
@@ -430,7 +430,7 @@ class GenerateEvents:
                 if discard:
                     continue
 
-            final_events.append(event)
+            final_events.extend([event] * event.weight)
 
         cat_list = [
             c
@@ -455,8 +455,15 @@ class GenerateEvents:
             else:
                 chosen_event = random.choice(final_events) if final_events else None
 
+        failed_ids = []
         while final_events and not chosen_cat and not chosen_event:
             chosen_event = random.choice(final_events)
+            if chosen_event.event_id in failed_ids:
+                final_events.remove(chosen_event)
+                chosen_event = None
+                print(f"removed copy of {chosen_event.event_id}")
+                continue
+
             # if we have an ensured id, only allow that event past
             if (
                 game.config["event_generation"]["debug_ensure_event_id"]
@@ -464,6 +471,7 @@ class GenerateEvents:
                 != chosen_event.event_id
             ):
                 final_events.remove(chosen_event)
+                chosen_event = None
                 continue
 
             if not chosen_event.r_c:
@@ -491,6 +499,7 @@ class GenerateEvents:
             )
 
             if not chosen_cat:
+                failed_ids.append(chosen_event.event_id)
                 final_events.remove(chosen_event)
                 chosen_event = None
             else:

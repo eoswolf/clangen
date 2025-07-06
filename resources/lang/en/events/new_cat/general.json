@@ -821,7 +821,7 @@
         "season": ["any"],
         "tags": ["clan_wide"],
         "sub_type": ["war"],
-        "rarity": 20,
+        "rarity": 2,
         "event_text": "Word of c_n's war with o_c_n has spread throughout the area, with one particular loner deciding to share a few of {PRONOUN/n_c:0/poss} herbs with c_n.",
         "new_cat": [
             [
@@ -925,7 +925,7 @@
         "season": ["any"],
         "tags": ["clan_wide"],
         "sub_type": ["war"],
-        "rarity": 20,
+        "rarity": 2,
         "event_text": "Word of c_n's war with o_c_n has spread throughout the area, with one particular loner deciding to share some of {PRONOUN/n_c:0/poss} fresh-kill with c_n.",
         "new_cat": [
             [
