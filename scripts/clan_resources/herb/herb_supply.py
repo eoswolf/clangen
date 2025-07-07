@@ -2,6 +2,7 @@ from random import choice, randint, choices
 
 import i18n
 
+from scripts.cat.enums import CatRank
 from scripts.cat.skills import SkillPath
 from scripts.clan_resources.herb.herb import Herb, HERBS
 from scripts.clan_resources.herb.herb_effects import HerbEffect
@@ -202,10 +203,7 @@ class HerbSupply:
             # if there are no working med cats, then only allow med cats to be treated. the idea being that a med cat
             # could conceivably attempt to care for themselves, but would not be well enough to care for the Clan as
             # a whole. also helps prevent death spiral when med cats aren't able to work.
-            if not med_cats and kitty.status not in [
-                "medicine cat",
-                "medicine cat apprentice",
-            ]:
+            if not med_cats and not kitty.status.rank.is_any_medicine_rank():
                 break
             severities = []
             conditions = kitty.permanent_condition.copy()
@@ -318,15 +316,11 @@ class HerbSupply:
         messages: list = MESSAGES["storage_status"][self.get_overall_rating()]
         for message in messages.copy():
             if "lead_name" in message and (
-                not game.clan.leader
-                or game.clan.leader.dead
-                or game.clan.leader.outside
+                not game.clan.leader or not game.clan.leader.status.alive_in_player_clan
             ):
                 messages.remove(message)
             if "dep_name" in message and (
-                not game.clan.deputy
-                or game.clan.deputy.dead
-                or game.clan.deputy.outside
+                not game.clan.deputy or not game.clan.deputy.status.alive_in_player_clan
             ):
                 messages.remove(message)
 
