@@ -984,7 +984,7 @@ class LeaderDenScreen(Screens):
             i
             for i in Cat.all_cats.values()
             if not i.dead
-            and not i.status.is_outsider
+            and i.status.is_outsider
             and i.status.is_near(CatGroup.PLAYER_CLAN)
         ]
 
