@@ -491,7 +491,7 @@ def create_new_cat_block(
     litter = False
     if "litter" in attribute_list:
         litter = True
-        if rank not in [CatRank.KITTEN, CatRank.NEWBORN]:
+        if rank not in (CatRank.KITTEN, CatRank.NEWBORN):
             rank = CatRank.KITTEN
 
     # CHOOSE DEFAULT BACKSTORY BASED ON CAT TYPE, STATUS
@@ -835,7 +835,7 @@ def create_new_cat(
             moons = randint(6, 120)
 
     # setting rank
-    if not rank:
+    if not rank and not outside:
         if moons == 0:
             rank = CatRank.NEWBORN
         elif moons < 6:
