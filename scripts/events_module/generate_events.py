@@ -436,9 +436,7 @@ class GenerateEvents:
             final_events.extend([event] * event.weight)
 
         cat_list = [
-            c
-            for c in Cat_class.all_cats.values()
-            if c.status.alive_in_player_clan
+            c for c in Cat_class.all_cats.values() if c.status.alive_in_player_clan
         ]
         chosen_cat = None
         chosen_event = None
