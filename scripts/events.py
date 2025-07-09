@@ -518,18 +518,6 @@ class Events:
 
     def mediator_events(self, cat):
         """Check for mediator events"""
-        # If the cat is a mediator, check if they visited other clans
-        # TODO: honestly we don't really need to handle this as it's own subtype? i think they could just be plain misc
-        if cat.status.rank.is_any_mediator_rank and not cat.not_working():
-            # 1/10 chance
-            if not int(random.random() * 10):
-                handle_short_events.handle_event(
-                    event_type="misc",
-                    main_cat=cat,
-                    sub_type=["mediator"],
-                    freshkill_pile=game.clan.freshkill_pile,
-                )
-
         if get_clan_setting("become_mediator"):
             # Note: These chances are large since it triggers every moon.
             # Checking every moon has the effect giving older cats more chances to become a mediator
