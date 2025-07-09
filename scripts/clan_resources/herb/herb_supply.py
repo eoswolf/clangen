@@ -2,10 +2,12 @@ from random import choice, randint, choices
 
 import i18n
 
+from scripts.cat.enums import CatRank
 from scripts.cat.skills import SkillPath
 from scripts.clan_resources.herb.herb import Herb, HERBS
 from scripts.clan_resources.herb.herb_effects import HerbEffect
 from scripts.clan_resources.supply import Supply
+from scripts.game_structure import constants
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.localization import load_lang_resource
 from scripts.utility import (
@@ -125,7 +127,7 @@ class HerbSupply:
         """
         return round(
             self.required_herb_count
-            / game.config["clan_resources"]["herbs"]["adequate"]
+            / constants.CONFIG["clan_resources"]["herbs"]["adequate"]
         )
 
     @property
@@ -141,7 +143,8 @@ class HerbSupply:
         returns the lowest qualifier for an adequate supply
         """
         return (
-            self.required_herb_count * game.config["clan_resources"]["herbs"]["excess"]
+            self.required_herb_count
+            * constants.CONFIG["clan_resources"]["herbs"]["excess"]
         )
 
     def convert_old_save(self, herb_list):
@@ -154,10 +157,11 @@ class HerbSupply:
 
     def set_required_herb_count(self, clan_size):
         """
-        takes given clan_size and multiplies it by the required_herbs_per_cat from game.config
+        takes given clan_size and multiplies it by the required_herbs_per_cat from constants.CONFIG
         """
         self.required_herb_count = (
-            clan_size * game.config["clan_resources"]["herbs"]["required_herbs_per_cat"]
+            clan_size
+            * constants.CONFIG["clan_resources"]["herbs"]["required_herbs_per_cat"]
         )
 
     def start_storage(self, clan_size):
@@ -202,10 +206,7 @@ class HerbSupply:
             # if there are no working med cats, then only allow med cats to be treated. the idea being that a med cat
             # could conceivably attempt to care for themselves, but would not be well enough to care for the Clan as
             # a whole. also helps prevent death spiral when med cats aren't able to work.
-            if not med_cats and kitty.status not in [
-                "medicine cat",
-                "medicine cat apprentice",
-            ]:
+            if not med_cats and not kitty.status.rank.is_any_medicine_rank():
                 break
             severities = []
             conditions = kitty.permanent_condition.copy()
@@ -318,15 +319,11 @@ class HerbSupply:
         messages: list = MESSAGES["storage_status"][self.get_overall_rating()]
         for message in messages.copy():
             if "lead_name" in message and (
-                not game.clan.leader
-                or game.clan.leader.dead
-                or game.clan.leader.outside
+                not game.clan.leader or not game.clan.leader.status.alive_in_player_clan
             ):
                 messages.remove(message)
             if "dep_name" in message and (
-                not game.clan.deputy
-                or game.clan.deputy.dead
-                or game.clan.deputy.outside
+                not game.clan.deputy or not game.clan.deputy.status.alive_in_player_clan
             ):
                 messages.remove(message)
 
@@ -447,14 +444,20 @@ class HerbSupply:
         quantity_modifier = 1
 
         if primary == SkillPath.SENSE:
-            amount_modifier = game.config["clan_resources"]["herbs"]["primary_sense"]
+            amount_modifier = constants.CONFIG["clan_resources"]["herbs"][
+                "primary_sense"
+            ]
         elif primary == SkillPath.CLEVER:
-            quantity_modifier = game.config["clan_resources"]["herbs"]["primary_clever"]
+            quantity_modifier = constants.CONFIG["clan_resources"]["herbs"][
+                "primary_clever"
+            ]
 
         if secondary == SkillPath.SENSE:
-            amount_modifier = game.config["clan_resources"]["herbs"]["secondary_sense"]
+            amount_modifier = constants.CONFIG["clan_resources"]["herbs"][
+                "secondary_sense"
+            ]
         elif secondary == SkillPath.CLEVER:
-            quantity_modifier = game.config["clan_resources"]["herbs"][
+            quantity_modifier = constants.CONFIG["clan_resources"]["herbs"][
                 "secondary_clever"
             ]
 
@@ -465,7 +468,7 @@ class HerbSupply:
         found_herbs = {}
 
         # adjust weighting according to season
-        weight = game.config["clan_resources"]["herbs"][
+        weight = constants.CONFIG["clan_resources"]["herbs"][
             (
                 game.clan.biome
                 if not game.clan.override_biome
@@ -478,7 +481,7 @@ class HerbSupply:
             choices(population=[1, 2, 3], weights=weight, k=1)[0] + amount_modifier
         )
         if general_amount_bonus:
-            amount_of_herbs *= game.config["clan_resources"]["herbs"][
+            amount_of_herbs *= constants.CONFIG["clan_resources"]["herbs"][
                 "general_amount_bonus"
             ]
 
@@ -755,7 +758,7 @@ class HerbSupply:
         # apply mortality effect
         if effect == HerbEffect.MORTALITY:
             con_info[effect] += (
-                game.config["clan_resources"]["herbs"]["base_mortality_effect"]
+                constants.CONFIG["clan_resources"]["herbs"]["base_mortality_effect"]
                 * strength
                 + amt_modifier
             )
@@ -765,7 +768,7 @@ class HerbSupply:
         elif effect == HerbEffect.DURATION:
             # duration doesn't get amt_modifier, as that would be far too strong an affect
             con_info[effect] -= (
-                game.config["clan_resources"]["herbs"]["base_duration_effect"]
+                constants.CONFIG["clan_resources"]["herbs"]["base_duration_effect"]
                 * strength
             )
             if con_info["duration"] < 0:
@@ -776,7 +779,7 @@ class HerbSupply:
         elif effect == HerbEffect.RISK:
             for risk in con_info[effect]:
                 risk["chance"] += (
-                    game.config["clan_resources"]["herbs"]["base_risk_effect"]
+                    constants.CONFIG["clan_resources"]["herbs"]["base_risk_effect"]
                     * strength
                     + amt_modifier
                 )

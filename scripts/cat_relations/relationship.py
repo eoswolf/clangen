@@ -3,8 +3,8 @@ from random import choice
 
 import i18n
 
-import scripts.cat_relations.interaction as interactions
-from scripts.cat.history import History
+from scripts.game_structure import constants
+from scripts.cat.enums import CatRank
 from scripts.cat_relations.interaction import (
     rel_fulfill_rel_constraints,
     cats_fulfill_single_interaction_constraints,
@@ -13,6 +13,7 @@ from scripts.cat_relations.interaction import (
 from scripts.event_class import Single_Event
 from scripts.game_structure.game_essentials import game
 from scripts.utility import get_personality_compatibility, process_text
+import scripts.cat_relations.interaction as interactions
 
 
 # ---------------------------------------------------------------------------- #
@@ -76,9 +77,9 @@ class Relationship:
     def start_interaction(self) -> None:
         """This function handles the simple interaction of this relationship."""
         # such interactions are only allowed for living Clan members
-        if self.cat_from.dead or self.cat_from.outside or self.cat_from.exiled:
+        if not self.cat_from.status.alive_in_player_clan:
             return
-        if self.cat_to.dead or self.cat_to.outside or self.cat_to.exiled:
+        if not self.cat_to.status.alive_in_player_clan:
             return
 
         if self.currently_loaded_lang != i18n.config.get("locale"):
@@ -103,7 +104,7 @@ class Relationship:
         if rel_type in ("jealousy", "dislike"):
             in_de_crease = "decrease" if positive else "increase"
 
-        chance = game.config["relationship"]["chance_for_neutral"]
+        chance = constants.CONFIG["relationship"]["chance_for_neutral"]
         if chance == 1:
             in_de_crease = "neutral"
         elif chance > 1 and random.randint(1, chance) == 1:
@@ -194,7 +195,7 @@ class Relationship:
                     if "death_text" in injury_dict
                     else None
                 )
-                if injured_cat.status == "leader":
+                if injured_cat.status.is_leader:
                     possible_death = (
                         self.adjust_interaction_string(injury_dict["death_leader_text"])
                         if "death_leader_text" in injury_dict
@@ -270,7 +271,7 @@ class Relationship:
         if in_de_crease == "neutral":
             return 0
         # get the normal amount
-        amount = game.config["relationship"]["in_decrease_value"][intensity]
+        amount = constants.CONFIG["relationship"]["in_decrease_value"][intensity]
         if in_de_crease == "decrease":
             amount = amount * -1
 
@@ -281,10 +282,10 @@ class Relationship:
             amount = amount
         elif compatibility:
             # positive compatibility
-            amount += game.config["relationship"]["compatibility_effect"]
+            amount += constants.CONFIG["relationship"]["compatibility_effect"]
         else:
             # negative compatibility
-            amount -= game.config["relationship"]["compatibility_effect"]
+            amount -= constants.CONFIG["relationship"]["compatibility_effect"]
         return amount
 
     def interaction_affect_relationships(
@@ -306,7 +307,7 @@ class Relationship:
         """
         amount = self.get_amount(in_de_crease, intensity)
         passive_buff = int(
-            abs(amount / game.config["relationship"]["passive_influence_div"])
+            abs(amount / constants.CONFIG["relationship"]["passive_influence_div"])
         )
 
         # influence the own relationship

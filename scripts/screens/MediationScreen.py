@@ -21,6 +21,9 @@ from scripts.utility import (
     ui_scale_dimensions,
 )
 from .Screens import Screens
+from ..clan_package.settings import get_clan_setting
+from ..game_structure.game.settings import game_setting_get
+from ..game_structure.game.switches import switch_get_value, Switch
 from ..game_structure.screen_settings import MANAGER
 from ..ui.generate_box import get_box, BoxStyles
 from ..ui.generate_button import get_button_dict, ButtonStyles
@@ -130,17 +133,18 @@ class MediationScreen(Screens):
         # Gather the mediators:
         self.mediators = []
         for cat in Cat.all_cats_list:
-            if cat.status in ("mediator", "mediator apprentice") and not (
-                cat.dead or cat.outside
+            if (
+                cat.status.rank.is_any_mediator_rank()
+                and cat.status.alive_in_player_clan
             ):
                 self.mediators.append(cat)
 
         self.page = 1
 
         if self.mediators:
-            if Cat.fetch_cat(game.switches["cat"]) in self.mediators:
+            if Cat.fetch_cat(switch_get_value(Switch.cat)) in self.mediators:
                 self.selected_mediator = self.mediators.index(
-                    Cat.fetch_cat(game.switches["cat"])
+                    Cat.fetch_cat(switch_get_value(Switch.cat))
                 )
             else:
                 self.selected_mediator = 0
@@ -369,7 +373,7 @@ class MediationScreen(Screens):
             i
             for i in Cat.all_cats_list
             if (i.ID != self.mediators[self.selected_mediator].ID)
-            and not (i.dead or i.outside)
+            and i.status.alive_in_player_clan
         ]
         self.all_cats = self.chunks(self.all_cats_list, 24)
         self.current_listed_cats = self.all_cats_list
@@ -404,7 +408,7 @@ class MediationScreen(Screens):
         chunked_cats = self.chunks(self.current_listed_cats, 24)
         if chunked_cats:
             for cat in chunked_cats[self.page - 1]:
-                if game.clan.clan_settings["show fav"] and cat.favourite:
+                if get_clan_setting("show fav") and cat.favourite:
                     _temp = pygame.transform.scale(
                         pygame.image.load(
                             f"resources/images/fav_marker.png"
@@ -512,7 +516,7 @@ class MediationScreen(Screens):
         elif other_cat:
             # FAMILY DOT
             # Only show family dot on cousins if first cousin mates are disabled.
-            if game.clan.clan_settings["first cousin mates"]:
+            if get_clan_setting("first cousin mates"):
                 check_cousins = False
             else:
                 check_cousins = other_cat.is_cousin(cat)
@@ -590,9 +594,9 @@ class MediationScreen(Screens):
                 col2 += i18n.t("general.child")
             elif cat.is_sibling(other_cat) or other_cat.is_sibling(cat):
                 col2 += i18n.t("general.sibling")
-            elif not game.clan.clan_settings[
-                "first cousin mates"
-            ] and other_cat.is_cousin(cat):
+            elif not get_clan_setting("first cousin mates") and other_cat.is_cousin(
+                cat
+            ):
                 col2 += i18n.t("general.cousin")
 
         self.selected_cat_elements["col2" + tag] = pygame_gui.elements.UITextBox(
@@ -674,7 +678,7 @@ class MediationScreen(Screens):
                 ),
                 display_romantic,
                 positive_trait=True,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
             bar_count += 1
 
@@ -701,7 +705,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.platonic_like,
                 positive_trait=True,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
             bar_count += 1
@@ -729,7 +733,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.dislike,
                 positive_trait=False,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
             bar_count += 1
@@ -757,7 +761,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.admiration,
                 positive_trait=True,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
             bar_count += 1
@@ -785,7 +789,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.comfortable,
                 positive_trait=True,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
             bar_count += 1
@@ -813,7 +817,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.jealousy,
                 positive_trait=False,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
             bar_count += 1
@@ -844,7 +848,7 @@ class MediationScreen(Screens):
                 ),
                 the_relationship.trust,
                 positive_trait=True,
-                dark_mode=game.settings["dark mode"],
+                dark_mode=game_setting_get("dark mode"),
             )
 
     def selected_cat_list(self):
@@ -908,7 +912,7 @@ class MediationScreen(Screens):
         Cat.sort_cats(self.all_cats_list)
 
         search_text = search_text.strip()
-        if search_text not in ("",):
+        if search_text not in (""):
             for cat in self.all_cats_list:
                 if search_text.lower() in str(cat.name).lower():
                     self.current_listed_cats.append(cat)
