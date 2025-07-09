@@ -480,7 +480,7 @@ class GenerateEvents:
                 break
 
             # if we're overriding requirements, don't bother looking for an appropriate cat
-            if game.config["event_generation"]["debug_override_requirements"]:
+            if constants.CONFIG["event_generation"]["debug_override_requirements"]:
                 chosen_cat = random.choice(cat_list)
                 continue
 
