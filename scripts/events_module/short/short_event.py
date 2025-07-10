@@ -154,7 +154,10 @@ class ShortEvent:
                 self.outsider["changed"] = 0
         self.other_clan = other_clan if other_clan else {}
         if self.other_clan:
-            if "current_rep" in self.other_clan and "any" not in self.other_clan["current_rep"]:
+            if (
+                "current_rep" in self.other_clan
+                and "any" not in self.other_clan["current_rep"]
+            ):
                 self.weight += (3 - len(self.other_clan["current_rep"])) * 5
             else:
                 self.other_clan["current_rep"] = []
