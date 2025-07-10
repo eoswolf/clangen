@@ -452,7 +452,7 @@ class GenerateEvents:
                         chosen_event = event
                         break
             # else, pick a random one from the available events
-            else:
+            elif not chosen_event:
                 chosen_event = random.choice(final_events) if final_events else None
 
         failed_ids = []
