@@ -102,9 +102,9 @@ class GenerateEvents:
         GenerateEvents.loaded_events = {}
 
     @staticmethod
-    def generate_short_events(event_triggered, biome, rarity):
+    def generate_short_events(event_triggered, biome, frequency):
         file_path = f"{event_triggered}/{biome}.json"
-        load_name = f"{file_path}_{rarity}"
+        load_name = f"{file_path}_{frequency}"
 
         try:
             if load_name in GenerateEvents.loaded_events:
@@ -117,7 +117,7 @@ class GenerateEvents:
                     return event_list
                 for event in events_dict:
                     event_text = event["event_text"] if "event_text" in event else None
-                    event_rarity = event["rarity"] if "rarity" in event else 4
+                    event_frequency = event["frequency"] if "frequency" in event else 4
                     if not event_text:
                         event_text = (
                             event["death_text"] if "death_text" in event else None
@@ -128,7 +128,7 @@ class GenerateEvents:
                             f"WARNING: some events resources which are used in generate_events have no 'event_text'."
                         )
 
-                    if rarity != event_rarity:
+                    if frequency != event_frequency:
                         continue
 
                     event = ShortEvent(
@@ -137,7 +137,7 @@ class GenerateEvents:
                         season=event["season"] if "season" in event else ["any"],
                         sub_type=event["sub_type"] if "sub_type" in event else [],
                         tags=event["tags"] if "tags" in event else [],
-                        rarity=event["rarity"] if "rarity" in event else 4,
+                        frequency=event["frequency"] if "frequency" in event else 4,
                         text=event_text,
                         new_accessory=(
                             event["new_accessory"] if "new_accessory" in event else []
@@ -191,7 +191,7 @@ class GenerateEvents:
                         priority=event["priority"],
                         duration=event["duration"],
                         current_duration=0,
-                        rarity=event["rarity"],
+                        frequency=event["frequency"],
                         trigger_events=event["trigger_events"],
                         progress_events=event["progress_events"],
                         conclusion_events=event["conclusion_events"],
@@ -221,7 +221,7 @@ class GenerateEvents:
                 return event
 
     @staticmethod
-    def possible_short_events(event_type=None, rarity=4):
+    def possible_short_events(event_type=None, frequency=4):
         event_list = []
 
         # skip the rest of the loading if there is an unrecognised biome
@@ -240,12 +240,12 @@ class GenerateEvents:
 
         # biome specific events
         event_list.extend(
-            GenerateEvents.generate_short_events(event_type, biome, rarity)
+            GenerateEvents.generate_short_events(event_type, biome, frequency)
         )
 
         # any biome events
         event_list.extend(
-            GenerateEvents.generate_short_events(event_type, "general", rarity)
+            GenerateEvents.generate_short_events(event_type, "general", frequency)
         )
 
         return event_list

@@ -134,14 +134,14 @@ class HandleShortEvents:
         elif event_type == "health":
             event_type = "injury"
 
-        # choosing rarity
+        # choosing frequency
         # think of it as "in a span of 10 moons, in how many moons should this sort of event appear?"
-        rarity_roll = randint(1, 10)
-        if rarity_roll <= 4:
+        frequency_roll = randint(1, 10)
+        if frequency_roll <= 4:
             weight = 4
-        elif rarity_roll <= 7:
+        elif frequency_roll <= 7:
             weight = 3
-        elif rarity_roll <= 9:
+        elif frequency_roll <= 9:
             weight = 2
         else:
             weight = 1

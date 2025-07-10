@@ -18,7 +18,7 @@ Some death events are considered "mass death" events (aka "mass extinction").  T
     "season": [],
     "sub_type": [],
     "tags": [],
-    "rarity": 0,
+    "frequency": 0,
     "event_text": "event text here",
     "new_accessory": [],
     "m_c": {
@@ -217,7 +217,7 @@ lowercase season names + "any"
 
 ***
 
-### rarity:int
+### frequency:int
 >Controls how common an event is.  This works on a 1-4 scale. 
 
 | int | commonality |
@@ -228,10 +228,10 @@ lowercase season names + "any"
 | 4   | Common      |
 
 !!! tip
-    Unsure what rarity your event should have? Think of it this way: if an event of this type were to happen every moon for 10 moons, how often should I see an event like this one? Seeing this sort of event for 4/10 moons would mean it's a common event! Seeing it just once within those 10 moons would mean it's a very rare event.
+    Unsure what frequency your event should have? Think of it this way: if an event of this type were to happen every moon for 10 moons, how often should I see an event like this one? Seeing this sort of event for 4/10 moons would mean it's a common event! Seeing it just once within those 10 moons would mean it's a very rare event.
 
 !!! warning
-    When handling death and injury events, be careful not to think of the rarity as "how often should a death/injury occur". The event's rarity has no effect on regardless of whether a death/injury occurs! It only affects *how* a cat dies/is injured.  For injuries, it can be helpful to think about it in comparison to the cat's age or status. A kit shouldn't be getting mauled over and over, rather they should mostly get some bumps and bruises!
+    When handling death and injury events, be careful not to think of the frequency as "how often should a death/injury occur". The event's frequency has no effect on regardless of whether a death/injury occurs! It only affects *how* a cat dies/is injured.  For injuries, it can be helpful to think about it in comparison to the cat's age or status. A kit shouldn't be getting mauled over and over, rather they should mostly get some bumps and bruises!
 ***
 
 ### event_text:str

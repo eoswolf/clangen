@@ -26,7 +26,7 @@ class ShortEvent:
         sub_type: List[str] = None,
         tags: List[str] = None,
         weight: int = 1,
-        rarity: int = 4,
+        frequency: int = 4,
         text: str = "",
         new_accessory: List[str] = None,
         m_c=None,
@@ -58,7 +58,7 @@ class ShortEvent:
             )  # this increases the weight inversely to the number of season constraints
         self.sub_type = sub_type if sub_type else []
         self.tags = tags if tags else []
-        self.rarity = rarity
+        self.frequency = frequency
         self.text = text
         self.new_accessory = new_accessory if new_accessory else []
         self.m_c = m_c if m_c else {"age": ["any"]}
