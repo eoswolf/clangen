@@ -84,7 +84,7 @@ class ShortEvent:
             if "trait" not in self.m_c:
                 self.m_c["trait"] = []
             else:
-                self.weight += int((self.num_of_traits - len(self.m_c["trait"]) / 2))
+                self.weight += self.num_of_traits - len(self.m_c["trait"])
             if "not_trait" not in self.m_c:
                 self.m_c["not_trait"] = []
             else:
@@ -121,7 +121,7 @@ class ShortEvent:
             if "trait" not in self.r_c:
                 self.r_c["trait"] = []
             else:
-                self.weight += int((self.num_of_traits - len(self.r_c["trait"]) / 2))
+                self.weight += self.num_of_traits - len(self.r_c["trait"])
             if "not_trait" not in self.r_c:
                 self.r_c["not_trait"] = []
             else:
