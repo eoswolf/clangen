@@ -18,6 +18,8 @@ class ShortEvent:
 
     num_of_ages = 7  # can't pull this from the Cat file bc of circular imports
 
+    num_of_ranks = 11
+
     def __init__(
         self,
         event_id: str = "",
@@ -63,36 +65,38 @@ class ShortEvent:
         self.new_accessory = new_accessory if new_accessory else []
         self.m_c = m_c if m_c else {"age": ["any"]}
         if self.m_c:
-            if "age" not in self.m_c:
-                self.m_c["age"] = ["any"]
-            elif "any" not in self.m_c["age"]:
+            if "age" in self.m_c and "any" not in self.m_c["age"]:
                 self.weight += self.num_of_ages - len(self.m_c["age"])
-            if "status" not in self.m_c:
+            else:
+                self.m_c["age"] = ["any"]
+            if "status" in self.m_c and "any" not in self.m_c["status"]:
+                self.weight += self.num_of_ranks - len(self.m_c["status"])
+            else:
                 self.m_c["status"] = ["any"]
-            if "relationship_status" not in self.m_c:
-                self.m_c["relationship_status"] = []
-            else:
+            if "relationship_status" in self.m_c:
                 self.weight += len(self.m_c["relationship_status"])
-            if "skill" not in self.m_c:
-                self.m_c["skill"] = []
             else:
+                self.m_c["relationship_status"] = []
+            if "skill" in self.m_c:
                 self.weight += self.num_of_skills - len(self.m_c["skill"])
-            if "not_skill" not in self.m_c:
-                self.m_c["not_skill"] = []
             else:
+                self.m_c["skill"] = []
+            if "not_skill" in self.m_c:
                 self.weight += len(self.m_c["not_skill"])
-            if "trait" not in self.m_c:
-                self.m_c["trait"] = []
             else:
+                self.m_c["not_skill"] = []
+            if "trait" in self.m_c:
                 self.weight += self.num_of_traits - len(self.m_c["trait"])
-            if "not_trait" not in self.m_c:
-                self.m_c["not_trait"] = []
             else:
+                self.m_c["trait"] = []
+            if "not_trait" in self.m_c:
                 self.weight += len(self.m_c["not_trait"])
-            if "backstory" not in self.m_c:
-                self.m_c["backstory"] = []
             else:
+                self.m_c["not_trait"] = []
+            if "backstory" in self.m_c:
                 self.weight += 1
+            else:
+                self.m_c["backstory"] = []
             if "dies" not in self.m_c:
                 self.m_c["dies"] = False
             if "gender" not in self.m_c:
@@ -100,36 +104,38 @@ class ShortEvent:
 
         self.r_c = r_c if r_c else {}
         if self.r_c:
-            if "age" not in self.r_c:
-                self.r_c["age"] = ["any"]
-            elif "any" not in self.r_c["age"]:
+            if "age" in self.r_c and "any" not in self.r_c["age"]:
                 self.weight += self.num_of_ages - len(self.r_c["age"])
-            if "status" not in self.r_c:
+            else:
+                self.r_c["age"] = ["any"]
+            if "status" in self.r_c and "any" not in self.r_c["status"]:
+                self.weight += self.num_of_ranks - len(self.r_c["status"])
+            else:
                 self.r_c["status"] = ["any"]
-            if "relationship_status" not in self.r_c:
-                self.r_c["relationship_status"] = []
-            else:
+            if "relationship_status" in self.r_c:
                 self.weight += len(self.r_c["relationship_status"])
-            if "skill" not in self.r_c:
-                self.r_c["skill"] = []
             else:
+                self.r_c["relationship_status"] = []
+            if "skill" in self.r_c:
                 self.weight += self.num_of_skills - len(self.r_c["skill"])
-            if "not_skill" not in self.r_c:
-                self.r_c["not_skill"] = []
             else:
+                self.r_c["skill"] = []
+            if "not_skill" in self.r_c:
                 self.weight += len(self.r_c["not_skill"])
-            if "trait" not in self.r_c:
-                self.r_c["trait"] = []
             else:
+                self.r_c["not_skill"] = []
+            if "trait" in self.r_c:
                 self.weight += self.num_of_traits - len(self.r_c["trait"])
-            if "not_trait" not in self.r_c:
-                self.r_c["not_trait"] = []
             else:
+                self.r_c["trait"] = []
+            if "not_trait" in self.r_c:
                 self.weight += len(self.r_c["not_trait"])
-            if "backstory" not in self.r_c:
-                self.r_c["backstory"] = []
             else:
+                self.r_c["not_trait"] = []
+            if "backstory" in self.r_c:
                 self.weight += 1
+            else:
+                self.r_c["backstory"] = []
             if "dies" not in self.r_c:
                 self.r_c["dies"] = False
             if "gender" not in self.r_c:
@@ -148,10 +154,10 @@ class ShortEvent:
                 self.outsider["changed"] = 0
         self.other_clan = other_clan if other_clan else {}
         if self.other_clan:
-            if "current_rep" not in self.other_clan:
-                self.other_clan["current_rep"] = []
-            elif "any" not in self.other_clan["current_rep"]:
+            if "current_rep" in self.other_clan and "any" not in self.other_clan["current_rep"]:
                 self.weight += (3 - len(self.other_clan["current_rep"])) * 5
+            else:
+                self.other_clan["current_rep"] = []
             if "changed" not in self.other_clan:
                 self.other_clan["changed"] = 0
         self.supplies = supplies if supplies else []
