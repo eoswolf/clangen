@@ -129,7 +129,7 @@
             "Is picking the burrs from {PRONOUN/m_c/poss} pelt",
             "Can't wait to take a nap later",
             "Saw a yappy little dog today",
-            "Is hoping {PRONOUN/m_c/subject} {VERB/m_c/find/finds} an opportunity to slip back to {PRONOUN/m_c/poss} nest",
+            "Is hoping for an opportunity to slip back to {PRONOUN/m_c/poss} nest",
             "Had a nice chat with a cat from another Clan at the border",
             "Had a nice chat with a loner outside Clan territory",
             "Had a nice chat with a kittypet",
@@ -426,7 +426,7 @@
             "Imagines riding a log down a rushing river",
             "Wonders about species of prey beyond the border",
             "Wonders about types of plants beyond the border",
-            "Fantasizes about breathing underwater to explore a lake"
+            "Fantasizes about breathing underwater to explore the depths of a lake"
         ],
         "main_trait_constraint": [
             "adventurous"
