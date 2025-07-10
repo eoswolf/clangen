@@ -5,7 +5,6 @@ import random
 import i18n
 import ujson
 
-from scripts.cat.enums import CatRank
 from scripts.events_module.event_filters import (
     event_for_location,
     event_for_season,
@@ -191,7 +190,7 @@ class GenerateEvents:
                         priority=event["priority"],
                         duration=event["duration"],
                         current_duration=0,
-                        frequency=event["frequency"],
+                        rarity=event["rarity"],
                         trigger_events=event["trigger_events"],
                         progress_events=event["progress_events"],
                         conclusion_events=event["conclusion_events"],
