@@ -4416,7 +4416,7 @@
     {
         "id": "gen_to_dead_parent",
         "thoughts": [
-            "Heard a humming tune in {PRONOUN/m_c/poss} dream that {PRONOUN/m_c/subject} remembered r_c humming in the nursery",
+            "Heard a tune in {PRONOUN/m_c/poss} dream that {PRONOUN/m_c/subject} remembered r_c humming in the nursery",
             "Had a tearful visit from r_c in {PRONOUN/m_c/poss} dream last night",
             "Wants to work hard knowing r_c is watching {PRONOUN/m_c/object}",
             "Feels r_c watching over {PRONOUN/m_c/object} even in death",
