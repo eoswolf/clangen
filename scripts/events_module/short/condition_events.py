@@ -459,6 +459,10 @@ class Condition_Events:
             "LEGBITE": ["weak leg"],
             "TOETRAP": ["weak leg"],
             "HINDLEG": ["weak leg"],
+            "SNOUT": ["crooked jaw"],
+            "CHEEK": ["crooked jaw"],
+            "BRIDGE": ["crooked jaw"],
+            "BEAKCHEEK": ["crooked jaw"]
         }
 
         scarless_conditions = [

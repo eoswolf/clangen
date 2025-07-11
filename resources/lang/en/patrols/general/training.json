@@ -425,7 +425,7 @@
                 ]
             },
             {
-                "text": "With the patrol ranged around {PRONOUN/s_c/subject} in a loose circle, s_c teases that maybe {PRONOUN/s_c/subject} {VERB/s_c/do/does}n't want to tell a story, for once! But no, no, they're happy to entertain and teach their Clanmates - has anyone heard of story_list?",
+                "text": "With the patrol ranged around {PRONOUN/s_c/object} in a loose circle, s_c teases that maybe {PRONOUN/s_c/subject} {VERB/s_c/do/does}n't want to tell a story, for once! But no, no, they're happy to entertain and teach their Clanmates - has anyone heard of story_list?",
                 "exp": 20,
                 "weight": 40,
                 "stat_skill": [
@@ -5707,9 +5707,11 @@
                 ]
             },
             {
-                "text": "The cats have a wonderful training session. Everyone agrees that app1 using a side pounce to hook r_c's feet out from under {PRONOUN/r_c/object} was definitely a highlight, though r_c maintains it'd be a bit different if {PRONOUN/r_c/subject} {VERB/r_c/weren't/wasn't} standing waiting to be pounced on as a static target.",
+                "text": "The cats have a wonderful training session. Everyone agrees that app1 using a side pounce to hook s_c's feet out from under {PRONOUN/s_c/object} was definitely a highlight, though s_c maintains it'd be a bit different if {PRONOUN/s_c/subject} {VERB/s_c/weren't/wasn't} standing waiting to be pounced on as a static target.",
                 "exp": 30,
                 "weight": 10,
+                "stat_trait": ["arrogant", "confident", "insecure", "ambitious", "strict", "gloomy"],
+                "can_have_stat": ["p_l", "app2"],
                 "relationships": [
                     {
                         "cats_to": ["patrol"],
@@ -6884,7 +6886,7 @@
                 ]
             },
             {
-                "text": "s_c boasts that {PRONOUN/s_c/subject} {VERB/s_c/go/goes} into the tunnels <i>all</i> the time. app2 is unconvinced, so s_c crawls in with a smug look back... just as the tunnel rumbles and collapses. With a terrified screech, app2 runs back to camp, praying {PRONOUN/app2/subject} can find help fast. As they hurry back, {PRONOUN/app2/subject} can only hear s_c wail that {PRONOUN/s_c/subject} can't feel {PRONOUN/s_c/poss} legs.",
+                "text": "s_c boasts that {PRONOUN/s_c/subject} {VERB/s_c/go/goes} into the tunnels <i>all</i> the time. app2 is unconvinced, so s_c crawls in with a smug look back... just as the tunnel rumbles and collapses. With a terrified screech, app2 runs back to camp, praying {PRONOUN/app2/subject} can find help fast. As {PRONOUN/app2/subject} {VERB/app2/hurry/hurries} back, {PRONOUN/app2/subject} can only hear s_c wail that {PRONOUN/s_c/subject} can't feel {PRONOUN/s_c/poss} legs.",
                 "exp": 0,
                 "weight": 10,
                 "stat_trait": [

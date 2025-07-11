@@ -400,6 +400,9 @@
                         "injuries": ["blunt_force_injury"],
                         "no_results": true
                     }
+                ],
+                "new_cat": [
+                    ["status:warrior", "kittypet"]
                 ]
             }
         ],
@@ -465,6 +468,9 @@
                         "injuries": ["blunt_force_injury"],
                         "no_results": true
                     }
+                ],
+                "new_cat": [
+                    ["status:warrior", "kittypet"]
                 ]
             }
         ],
