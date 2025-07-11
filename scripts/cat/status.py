@@ -555,7 +555,7 @@ class Status:
         """
         Returns the last group this cat belonged to before death. If the cat had no group before dying, this will return None.
         """
-        history = self.group_history
+        history = self.group_history.copy()
         history.reverse()
 
         for entry in history:
