@@ -44,49 +44,6 @@
         ]
     },
     {
-        "event_id": "mtn_injury_brokenbone_anyany1",
-        "location": [
-            "mountainous"
-        ],
-        "season": [
-            "any"
-        ],
-        "frequency": 3,
-        "event_text": "m_c fell from a cliff and somehow survived, though not without breaking {PRONOUN/m_c/poss} leg.",
-        "m_c": {
-            "age": [
-                "adolescent",
-                "young adult",
-                "adult",
-                "senior adult",
-                "senior"
-            ]
-        },
-        "injury": [
-            {
-                "cats": [
-                    "m_c"
-                ],
-                "injuries": [
-                    "broken bone"
-                ],
-                "scars": [
-                    "MANLEG"
-                ]
-            }
-        ],
-        "history": [
-            {
-                "cats": [
-                    "m_c"
-                ],
-                "scar": "m_c was scarred when {PRONOUN/m_c/subject} fell off a cliff.",
-                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after falling off a cliff.",
-                "lead_death": "died after falling off a cliff"
-            }
-        ]
-    },
-    {
         "event_id": "mtn_injury_mangledtail_anyany1",
         "location": [
             "mountainous"
