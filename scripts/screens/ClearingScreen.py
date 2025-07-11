@@ -12,7 +12,6 @@ from scripts.game_structure.ui_elements import (
     UIImageButton,
     UITextBoxTweaked,
     UISurfaceImageButton,
-    UIModifiedImage,
 )
 from scripts.utility import (
     get_text_box_theme,
@@ -21,9 +20,7 @@ from scripts.utility import (
     ui_scale_dimensions,
 )
 from .Screens import Screens
-from ..clan_package.settings import get_clan_setting, switch_clan_setting
 from scripts.events_module.short.condition_events import Condition_Events
-from ..cat.enums import CatRank
 from ..game_structure.screen_settings import MANAGER
 from ..ui.generate_box import BoxStyles, get_box
 from ..ui.generate_button import ButtonStyles, get_button_dict
@@ -95,7 +92,7 @@ class ClearingScreen(Screens):
                     self.focus_info.kill()
                 if self.focus_name:
                     self.focus_name.kill()
-            elif event.ui_element in (self.feed_one_button, self.feed_max_button):
+            elif event.ui_element in [self.feed_one_button, self.feed_max_button]:
                 amount = 1
                 if event.ui_element == self.feed_max_button:
                     nutrition_info = game.clan.freshkill_pile.nutrition_info
@@ -201,7 +198,7 @@ class ClearingScreen(Screens):
             if nutrient.percentage <= 99
         ]
         for the_cat in Cat.all_cats_list:
-            if the_cat.status.alive_in_player_clan:
+            if not the_cat.dead and not the_cat.outside:
                 if the_cat.ID in low_nutrition_cats:
                     self.hungry_cats.append(the_cat)
                 else:
@@ -297,7 +294,7 @@ class ClearingScreen(Screens):
         )
         self.log_title.hide()
         self.tactic_title.hide()
-        self.cat_bg = UIModifiedImage(
+        self.cat_bg = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((140, 440), (560, 200))),
             get_box(BoxStyles.ROUNDED_BOX, (560, 200)),
             manager=MANAGER,
@@ -348,7 +345,6 @@ class ClearingScreen(Screens):
             manager=MANAGER,
         )
         self.cat_tab_open = self.hungry_tab
-        self.hungry_tab.disable()
         self.current_page = 1
         self.update_cats_list()
         self.update_nutrition_cats()
@@ -508,7 +504,7 @@ class ClearingScreen(Screens):
                 "screens.clearing.nutrition_text",
                 nutrition_text=nutrition_info[self.focus_cat_object.ID].nutrition_text,
             )
-            if get_clan_setting("showxp"):
+            if game.clan.clan_settings["showxp"]:
                 nutrition_text += f" ({str(int(nutrition_info[self.focus_cat_object.ID].percentage))})"
             info_list.append(nutrition_text)
         work_status = i18n.t("general.can_work")
@@ -574,7 +570,7 @@ class ClearingScreen(Screens):
                         "screens.clearing.nutrition_text",
                         nutrition_text=nutrition_info[cat.ID].nutrition_text,
                     )
-                    if get_clan_setting("showxp"):
+                    if game.clan.clan_settings["showxp"]:
                         full_text += f" ({str(int(nutrition_info[cat.ID].percentage))})"
                     condition_list.append(full_text)
             conditions = (
@@ -621,7 +617,7 @@ class ClearingScreen(Screens):
 
         current_prey_amount = game.clan.freshkill_pile.total_amount
         needed_amount = game.clan.freshkill_pile.amount_food_needed()
-        warrior_need = game.prey_config["prey_requirement"][CatRank.WARRIOR]
+        warrior_need = game.prey_config["prey_requirement"]["warrior"]
         warrior_amount = int(current_prey_amount / warrior_need)
         general_text = i18n.t(
             "screens.clearing.prey_amount_info", warrior_amount=warrior_amount
@@ -785,8 +781,8 @@ class ClearingScreen(Screens):
 
         prey_requirement = game.prey_config["prey_requirement"]
         feeding_order = game.prey_config["feeding_order"]
-        for rank in feeding_order:
-            amount = prey_requirement[rank]
+        for status in feeding_order:
+            amount = prey_requirement[status]
             self.additional_text[
                 f"condition_increase_{n}"
             ] = pygame_gui.elements.UITextBox(
@@ -798,17 +794,15 @@ class ClearingScreen(Screens):
                 text_kwargs={
                     "number": str(n),
                     "status": i18n.t(
-                        f"general.{rank}",
-                        count=2 if rank not in (CatRank.LEADER, CatRank.DEPUTY) else 1,
+                        f"general.{status}",
+                        count=2 if status not in ["leader", "deputy"] else 1,
                     ),
                     "prey": i18n.t("screens.clearing.prey_count", count=amount),
                 },
                 anchors={
-                    "top_target": (
-                        self.additional_text[f"condition_increase_{n-1}"]
-                        if n > 1
-                        else self.additional_text["condition_increase"]
-                    )
+                    "top_target": self.additional_text[f"condition_increase_{n-1}"]
+                    if n > 1
+                    else self.additional_text["condition_increase"]
                 },
             )
             n += 1
@@ -846,7 +840,7 @@ class ClearingScreen(Screens):
         for code, desc in settings_dict["freshkill_tactics"].items():
             if code == "ration prey":
                 continue
-            if get_clan_setting(code):
+            if game.clan.clan_settings[code]:
                 box_type = "@checked_checkbox"
             else:
                 box_type = "@unchecked_checkbox"
@@ -857,7 +851,8 @@ class ClearingScreen(Screens):
             if len(desc) == 4 and isinstance(desc[3], list):
                 x_val += 25
                 disabled = (
-                    get_clan_setting(desc[3][0], default=not desc[3][1]) != desc[3][1]
+                    game.clan.clan_settings.get(desc[3][0], not desc[3][1])
+                    != desc[3][1]
                 )
 
             self.tactic_boxes[code] = UIImageButton(
@@ -880,7 +875,7 @@ class ClearingScreen(Screens):
         n = 0
         for code, desc in settings_dict["freshkill_tactics"].items():
             if code == "ration prey":
-                if get_clan_setting(code):
+                if game.clan.clan_settings[code]:
                     box_type = "@checked_checkbox"
                 else:
                     box_type = "@unchecked_checkbox"
@@ -891,7 +886,7 @@ class ClearingScreen(Screens):
                 if len(desc) == 4 and isinstance(desc[3], list):
                     x_val += 50
                     disabled = (
-                        get_clan_setting(desc[3][0], default=not desc[3][1])
+                        game.clan.clan_settings.get(desc[3][0], not desc[3][1])
                         != desc[3][1]
                     )
 
@@ -918,7 +913,7 @@ class ClearingScreen(Screens):
                     value == event.ui_element
                     and value.object_ids[1] == "@unchecked_checkbox"
                 ):
-                    switch_clan_setting(key)
+                    game.clan.switch_setting(key)
                     active_key = key
                     self.settings_changed = True
                     self.create_checkboxes()
@@ -931,7 +926,7 @@ class ClearingScreen(Screens):
                     and key != active_key
                     and value.object_ids[1] == "@checked_checkbox"
                 ):
-                    switch_clan_setting(key)
+                    game.clan.switch_setting(key)
                     self.settings_changed = True
                     self.create_checkboxes()
                     break
@@ -939,7 +934,7 @@ class ClearingScreen(Screens):
         if event.ui_element in self.checkboxes.values():
             for key, value in self.checkboxes.items():
                 if value == event.ui_element:
-                    switch_clan_setting(key)
+                    game.clan.switch_setting(key)
                     active_key = key
                     self.settings_changed = True
                     self.create_checkboxes()

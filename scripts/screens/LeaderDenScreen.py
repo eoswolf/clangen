@@ -6,13 +6,7 @@ import pygame_gui
 from pygame_gui.core import UIContainer
 
 from scripts.cat.cats import Cat
-from scripts.cat.enums import CatRank, CatGroup
 from scripts.clan import OtherClan
-from scripts.clan_package.settings.clan_settings import (
-    set_clan_setting,
-    get_clan_setting,
-)
-from scripts.game_structure import constants
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import (
@@ -31,7 +25,7 @@ from scripts.utility import (
     get_other_clan,
     clan_symbol_sprite,
     shorten_text_to_fit,
-    find_alive_cats_with_rank,
+    get_alive_status_cats,
     get_living_clan_cat_count,
     ui_scale_dimensions,
 )
@@ -127,12 +121,12 @@ class LeaderDenScreen(Screens):
         """
         super().screen_switches()
         # just making sure these are set up ahead of time
-        if get_clan_setting("lead_den_clan_interaction") is None:
-            set_clan_setting("lead_den_interaction", False)
-        if get_clan_setting("lead_den_clan_event") is None:
-            set_clan_setting("lead_den_clan_event", {})
-        if get_clan_setting("lead_den_clan_event") is None:
-            set_clan_setting("lead_den_outsider_event", {})
+        if "lead_den_interaction" not in game.clan.clan_settings:
+            game.clan.clan_settings["lead_den_interaction"] = False
+        if "lead_den_clan_event" not in game.clan.clan_settings:
+            game.clan.clan_settings["lead_den_clan_event"] = {}
+        if "lead_den_outsider_event" not in game.clan.clan_settings:
+            game.clan.clan_settings["lead_den_outsider_event"] = {}
 
         # no menu header allowed
         self.hide_menu_buttons()
@@ -155,7 +149,7 @@ class LeaderDenScreen(Screens):
         # This is here incase the leader comes back
         self.no_leader = False
 
-        if not game.clan.leader or not game.clan.leader.status.alive_in_player_clan:
+        if not game.clan.leader or game.clan.leader.dead or game.clan.leader.exiled:
             self.no_leader = True
 
         # LEADER DEN BG AND LEADER SPRITE
@@ -197,9 +191,9 @@ class LeaderDenScreen(Screens):
                 if not game.clan.deputy.not_working() and not game.clan.deputy.dead:
                     self.helper_cat = game.clan.deputy  # if lead is sick, dep helps
             if not self.helper_cat:  # if dep is sick, med cat helps
-                meds = find_alive_cats_with_rank(
+                meds = get_alive_status_cats(
                     Cat,
-                    ranks=[CatRank.MEDICINE_CAT, CatRank.MEDICINE_APPRENTICE],
+                    get_status=["medicine cat", "medicine cat apprentice"],
                     working=True,
                     sort=True,
                 )
@@ -210,8 +204,10 @@ class LeaderDenScreen(Screens):
                         i
                         for i in Cat.all_cats.values()
                         if not i.dead
+                        and not i.exiled
+                        and not i.outside
                         and not i.not_working()
-                        and i.status.rank.is_any_mediator_rank()
+                        and i.status in ["mediator", "mediator apprentice"]
                     ]
                     if mediators:
                         self.helper_cat = mediators[0]
@@ -223,9 +219,10 @@ class LeaderDenScreen(Screens):
                 adults = [
                     i
                     for i in Cat.all_cats.values()
-                    if i.status.alive_in_player_clan
-                    and i.status.rank
-                    not in [CatRank.NEWBORN, CatRank.KITTEN, CatRank.LEADER]
+                    if not i.dead
+                    and not i.exiled
+                    and not i.outside
+                    and i.status not in ["newborn", "kitten", "leader"]
                 ]
                 if adults:
                     self.helper_cat = random.choice(adults)
@@ -289,7 +286,7 @@ class LeaderDenScreen(Screens):
                 "screens.leader_den.no_cats_outsider"
             )
         # if leader is dead and no one new is leading, give special notice
-        elif self.no_leader or not game.clan.leader.status.alive_in_player_clan:
+        elif self.no_leader or game.clan.leader.dead or game.clan.leader.exiled:
             self.no_leader = True
             self.screen_elements["clan_notice_text"].set_text(
                 "screens.leader_den.no_leader_clan"
@@ -342,8 +339,8 @@ class LeaderDenScreen(Screens):
         )
 
         # INITIAL DISPLAY - display currently chosen interaction OR first clan in list
-        if get_clan_setting("lead_den_clan_event"):
-            current_setting = get_clan_setting("lead_den_clan_event")
+        if game.clan.clan_settings["lead_den_clan_event"]:
+            current_setting = game.clan.clan_settings["lead_den_clan_event"]
             self.focus_clan = get_other_clan(current_setting["other_clan"])
             self.update_other_clan_focus()
             self.update_clan_interaction_choice(current_setting["interaction_type"])
@@ -575,8 +572,8 @@ class LeaderDenScreen(Screens):
         self.focus_frame_elements["outsiders_tab"].disable()
         self.focus_frame_elements["clans_tab"].enable()
 
-        if get_clan_setting("lead_den_outsider_event"):
-            current_setting = get_clan_setting("lead_den_outsider_event")
+        if game.clan.clan_settings["lead_den_outsider_event"]:
+            current_setting = game.clan.clan_settings["lead_den_outsider_event"]
             self.focus_cat = Cat.fetch_cat(current_setting["cat_ID"])
             self.update_outsider_focus()
             self.update_outsider_interaction_choice(current_setting["interaction_type"])
@@ -705,7 +702,7 @@ class LeaderDenScreen(Screens):
         self.handle_other_clan_interaction(interaction)
 
     def handle_other_clan_interaction(self, interaction_type: str):
-        set_clan_setting("lead_den_interaction", True)
+        game.clan.clan_settings["lead_den_interaction"] = True
 
         gathering_cat = game.clan.leader if not self.helper_cat else self.helper_cat
 
@@ -721,16 +718,13 @@ class LeaderDenScreen(Screens):
         if random.random() >= fail_chance:
             success = True
 
-        set_clan_setting(
-            "lead_den_clan_event",
-            {
-                "cat_ID": gathering_cat.ID,
-                "other_clan": self.focus_clan.name,
-                "player_clan_temper": self.clan_temper,
-                "interaction_type": interaction_type,
-                "success": success,
-            },
-        )
+        game.clan.clan_settings["lead_den_clan_event"] = {
+            "cat_ID": gathering_cat.ID,
+            "other_clan": self.focus_clan.name,
+            "player_clan_temper": self.clan_temper,
+            "interaction_type": interaction_type,
+            "success": success,
+        }
 
     def _compare_temper(self, player_temper_int, other_temper_int) -> float:
         """
@@ -740,7 +734,7 @@ class LeaderDenScreen(Screens):
         # base equation for fail chance (temper_int - temper_int) / 10
         fail_chance = (abs(int(player_temper_int - other_temper_int))) / 10
 
-        temper_dict = constants.TEMPERAMENT_DICT
+        temper_dict = game.clan.temperament_dict
         clan_index = 0
         clan_social = None
         other_index = 0
@@ -779,7 +773,7 @@ class LeaderDenScreen(Screens):
         """
         returns int value (social rank + aggression rank) of given temperament
         """
-        temper_dict = constants.TEMPERAMENT_DICT
+        temper_dict = game.clan.temperament_dict
         temper_int = 0
 
         if temper in temper_dict["low_social"]:
@@ -834,7 +828,7 @@ class LeaderDenScreen(Screens):
         )
         self.focus_outsider_elements["cat_status"] = pygame_gui.elements.UILabel(
             relative_rect=ui_scale(pygame.Rect((0, 5), (218, -1))),
-            text=f"general.{self.focus_cat.status.rank}",
+            text=f"general.{self.focus_cat.status}",
             object_id="#text_box_22_horizcenter",
             container=self.focus_outsider_container,
             manager=MANAGER,
@@ -887,12 +881,12 @@ class LeaderDenScreen(Screens):
             },
         )
 
-        self.focus_button["hunt"] = UISurfaceImageButton(
+        self.focus_button["hunt_down"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 0), (121, 30))),
-            "screens.leader_den.hunt",
+            "screens.leader_den.hunt_down",
             get_button_dict(ButtonStyles.SQUOVAL, (121, 30)),
             object_id="@buttonstyles_squoval",
-            tool_tip_text="screens.leader_den.hunt_tooltip",
+            tool_tip_text="screens.leader_den.hunt_down_tooltip",
             tool_tip_text_kwargs={"r_c": self.focus_cat},
             container=self.focus_outsider_button_container,
             starting_height=3,
@@ -902,28 +896,28 @@ class LeaderDenScreen(Screens):
             },
         )
 
-        self.focus_button["drive"] = UISurfaceImageButton(
+        self.focus_button["drive_off"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 5), (121, 30))),
-            "screens.leader_den.drive",
+            "screens.leader_den.drive_off",
             get_button_dict(ButtonStyles.SQUOVAL, (121, 30)),
             object_id="@buttonstyles_squoval",
-            tool_tip_text="screens.leader_den.drive_tooltip",
+            tool_tip_text="screens.leader_den.drive_off_tooltip",
             tool_tip_text_kwargs={"r_c": self.focus_cat},
             container=self.focus_outsider_button_container,
             starting_height=3,
             manager=MANAGER,
             anchors={
                 "centerx": "centerx",
-                "top_target": self.focus_button["hunt"],
+                "top_target": self.focus_button["hunt_down"],
             },
         )
 
-        self.focus_button["invite"] = UISurfaceImageButton(
+        self.focus_button["invite_in"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 5), (121, 30))),
-            "screens.leader_den.invite",
+            "screens.leader_den.invite_in",
             get_button_dict(ButtonStyles.SQUOVAL, (121, 30)),
             object_id="@buttonstyles_squoval",
-            tool_tip_text="screens.leader_den.invite_tooltip",
+            tool_tip_text="screens.leader_den.invite_in_tooltip",
             tool_tip_text_kwargs={"r_c": self.focus_cat},
             container=self.focus_outsider_button_container,
             starting_height=3,
@@ -931,18 +925,21 @@ class LeaderDenScreen(Screens):
             visible=False,
             anchors={
                 "centerx": "centerx",
-                "top_target": self.focus_button["drive"],
+                "top_target": self.focus_button["drive_off"],
             },
         )
 
-        if self.focus_cat.status.is_outsider and not self.focus_cat.status.is_lost(
-            CatGroup.PLAYER_CLAN
+        if (
+            self.focus_cat.outside
+            and not self.focus_cat.exiled
+            and self.focus_cat.status
+            not in ["kittypet", "loner", "rogue", "former Clancat"]
         ):
-            self.focus_button["invite"].set_text("screens.leader_den.invite")
+            self.focus_button["invite_in"].set_text("screens.leader_den.search_for")
         else:
-            self.focus_button["invite"].set_text("screens.leader_den.search")
+            self.focus_button["invite_in"].set_text("screens.leader_den.invite_in")
 
-        self.focus_button["invite"].show()
+        self.focus_button["invite_in"].show()
 
         self.focus_outsider_button_container.enable()
         if (
@@ -991,9 +988,7 @@ class LeaderDenScreen(Screens):
         outsiders = [
             i
             for i in Cat.all_cats.values()
-            if not i.dead
-            and i.status.is_outsider
-            and i.status.is_near(CatGroup.PLAYER_CLAN)
+            if i.outside and not i.dead and not i.driven_out
         ]
 
         # separate them into chunks for the pages
@@ -1073,16 +1068,14 @@ class LeaderDenScreen(Screens):
             },
         )
 
-        # because our groups are "hunt", "search", "invite" and "drive"
-        # we remove the descriptor ("hunt_down", "drive_off", "invite_in")
-        self.handle_outsider_interaction(action.split("_")[0])
+        self.handle_outsider_interaction(action)
 
     def handle_outsider_interaction(self, action):
         """
         handles determining the outcome of an outsider interaction, returns result text
         :param action: the object id of the interaction button pressed
         """
-        set_clan_setting("lead_den_interaction", True)
+        game.clan.clan_settings["lead_den_interaction"] = True
 
         # percentage of success
         success_chance = (int(game.clan.reputation) / 100) / 1.5
@@ -1100,14 +1093,11 @@ class LeaderDenScreen(Screens):
         else:
             success = False
 
-        set_clan_setting(
-            "lead_den_outsider_event",
-            {
-                "cat_ID": self.focus_cat.ID,
-                "interaction_type": action,
-                "success": success,
-            },
-        )
+        game.clan.clan_settings["lead_den_outsider_event"] = {
+            "cat_ID": self.focus_cat.ID,
+            "interaction_type": action,
+            "success": success,
+        }
 
     def chunks(self, L, n):
         return [L[x : x + n] for x in range(0, len(L), n)]

@@ -4,12 +4,6 @@ from typing import TYPE_CHECKING
 
 import ujson
 
-from scripts.game_structure.game.settings import (
-    game_settings_save,
-    game_setting_get,
-    game_setting_set,
-)
-from scripts.game_structure.game.switches import switch_get_value, Switch
 from scripts.housekeeping.datadir import get_save_dir
 
 if TYPE_CHECKING:
@@ -66,8 +60,10 @@ def set_display_mode(
     old_scale = screen_scale
     mouse_pos = pygame.mouse.get_pos()
 
+    from scripts.game_structure.game_essentials import game
+
     if fullscreen is None:
-        fullscreen = game_setting_get("fullscreen")
+        fullscreen = game.settings["fullscreen"]
 
     with open("resources/screen_config.json", "r", encoding="utf-8") as read_config:
         screen_config = ujson.load(read_config)
@@ -85,7 +81,7 @@ def set_display_mode(
         display_size = display_sizes[screen_config["fullscreen_display"]]
         # display_size = [3840, 2160]
 
-        determine_screen_scale(display_size[0], display_size[1])
+        determine_screen_scale(display_size[0], display_size[1], ingame_switch)
 
         screen = pygame.display.set_mode(
             display_size, pygame.FULLSCREEN, display=screen_config["fullscreen_display"]
@@ -123,7 +119,7 @@ def set_display_mode(
             from scripts.screens.all_screens import AllScreens
             import scripts.screens.screens_core.screens_core
 
-            game_settings_save(currentscreen=source_screen)
+            game.save_settings(currentscreen=source_screen)
             source_screen.exit_screen()
 
             if fullscreen:
@@ -144,9 +140,7 @@ def set_display_mode(
             AllScreens.rebuild_all_screens()
 
             scripts.screens.screens_core.screens_core.rebuild_core()
-            from scripts import debug_console
-
-            debug_console.debug_mode.rebuild_console()
+            scripts.debug_console.debug_mode.rebuild_console()
 
             screen_name = source_screen.name.replace(" ", "_")
             new_screen: "Screens" = getattr(AllScreens, screen_name)
@@ -158,7 +152,7 @@ def set_display_mode(
         from scripts.screens.all_screens import AllScreens
 
         new_screen: "Screens" = getattr(
-            AllScreens, switch_get_value(Switch.cur_screen).replace(" ", "_")
+            AllScreens, game.switches["cur_screen"].replace(" ", "_")
         )
         if game.clan and curr_variable_dict["clan_name"] == game.clan.name:
             new_screen.display_change_load(curr_variable_dict)
@@ -216,10 +210,20 @@ def set_display_mode(
     pygame_gui.core.utility.set_default_manager(MANAGER)
 
 
-def determine_screen_scale(x, y):
+def determine_screen_scale(x, y, ingame_switch):
     global screen_scale, screen_x, screen_y, offset, game_screen_size
 
-    if game_setting_get("fullscreen_scaling"):
+    if ingame_switch:
+        from scripts.game_structure.game_essentials import game
+
+        screen_config = game.settings
+    else:
+        with open(
+            get_save_dir() + "/settings.json", "r", encoding="utf-8"
+        ) as read_config:
+            screen_config = ujson.loads(read_config.read())
+
+    if "fullscreen scaling" in screen_config and screen_config["fullscreen scaling"]:
         scalex = (x - 20) // 80
         scaley = (y - 20) // 70
 
@@ -262,11 +266,13 @@ def toggle_fullscreen(
     while display_change_in_progress:
         continue
 
-    if fullscreen is None:
-        fullscreen = not game_setting_get("fullscreen")
+    from scripts.game_structure.game_essentials import game
 
-    game_setting_set("fullscreen", fullscreen)
-    game_settings_save()
+    if fullscreen is None:
+        fullscreen = not game.settings["fullscreen"]
+
+    game.settings["fullscreen"] = fullscreen
+    game.save_settings()
 
     set_display_mode(
         fullscreen=fullscreen,
@@ -290,15 +296,13 @@ def load_manager(res: Tuple[int, int], screen_offset: Tuple[int, int], scale: fl
         return
 
     translation_paths = []
-    languages = []
     for root, dirs, files in os.walk(os.path.join("resources", "lang")):
         for directory in dirs:
-            languages.append(directory)
             translation_paths.append(os.path.join(root, directory))
         break
 
     # update old settings data from pre-localization
-    if settings_data["language"] not in languages:
+    if settings_data["language"] == "english":
         settings_data["language"] = "en"
         with open(
             get_save_dir() + "/settings.json", "w", encoding="utf-8"

@@ -6,6 +6,9 @@ import pygame_gui.elements
 
 from scripts.cat.cats import Cat
 from scripts.game_structure import image_cache
+from scripts.game_structure.game_essentials import (
+    game,
+)
 from scripts.game_structure.ui_elements import (
     UIImageButton,
     UISpriteButton,
@@ -20,8 +23,6 @@ from scripts.utility import (
     shorten_text_to_fit,
 )
 from .Screens import Screens
-from ..clan_package.settings import get_clan_setting
-from ..game_structure.game.switches import switch_set_value, switch_get_value, Switch
 from ..game_structure.screen_settings import MANAGER
 from ..ui.generate_box import BoxStyles, get_box
 from ..ui.generate_button import get_button_dict, ButtonStyles
@@ -117,13 +118,13 @@ class ChooseMateScreen(Screens):
 
             elif event.ui_element == self.previous_cat_button:
                 if isinstance(Cat.fetch_cat(self.previous_cat), Cat):
-                    switch_set_value(Switch.cat, self.previous_cat)
+                    game.switches["cat"] = self.previous_cat
                     self.update_current_cat_info()
                 else:
                     print("invalid previous cat", self.previous_cat)
             elif event.ui_element == self.next_cat_button:
                 if isinstance(Cat.fetch_cat(self.next_cat), Cat):
-                    switch_set_value(Switch.cat, self.next_cat)
+                    game.switches["cat"] = self.next_cat
                     self.update_current_cat_info()
                 else:
                     print("invalid next cat", self.next_cat)
@@ -187,7 +188,7 @@ class ChooseMateScreen(Screens):
                 if event.ui_element.cat_object.faded:
                     return
 
-                switch_set_value(Switch.cat, event.ui_element.cat_object.ID)
+                game.switches["cat"] = event.ui_element.cat_object.ID
                 self.change_screen("profile screen")
 
     def screen_switches(self):
@@ -614,11 +615,9 @@ class ChooseMateScreen(Screens):
                 text = f"{self.the_cat.name} has no offspring."
 
             self.no_kits_message = pygame_gui.elements.UITextBox(
-                (
-                    "screens.choose_mate.no_kits_pair"
-                    if self.kits_selected_pair and self.selected_cat
-                    else "screens.choose_mate.no_kits_single"
-                ),
+                "screens.choose_mate.no_kits_pair"
+                if self.kits_selected_pair and self.selected_cat
+                else "screens.choose_mate.no_kits_single",
                 ui_scale(pygame.Rect((0, 0), (497, 120))),
                 container=self.offspring_container,
                 object_id="#text_box_30_horizcenter_vertcenter",
@@ -802,7 +801,7 @@ class ChooseMateScreen(Screens):
     def update_current_cat_info(self, reset_selected_cat=True):
         """Updates all elements with the current cat, as well as the selected cat.
         Called when the screen switched, and whenever the focused cat is switched"""
-        self.the_cat = Cat.all_cats[switch_get_value(Switch.cat)]
+        self.the_cat = Cat.all_cats[game.switches["cat"]]
         if not self.the_cat.inheritance:
             self.the_cat.create_inheritance_new_cat()
 
@@ -810,21 +809,9 @@ class ChooseMateScreen(Screens):
             self.next_cat,
             self.previous_cat,
         ) = self.the_cat.determine_next_and_previous_cats(
-            filter_func=(
-                lambda cat: cat.age
-                in ("young adult", "adult", "senior adult", "senior")
-            )
-        )
-        (
-            self.next_cat_button.disable()
-            if self.next_cat == 0
-            else self.next_cat_button.enable()
-        )
-        (
-            self.previous_cat_button.disable()
-            if self.previous_cat == 0
-            else self.previous_cat_button.enable()
-        )
+            filter_func = (lambda cat: cat.age in ["young adult", "adult", "senior adult", "senior"]))
+        self.next_cat_button.disable() if self.next_cat == 0 else self.next_cat_button.enable()
+        self.previous_cat_button.disable() if self.previous_cat == 0 else self.previous_cat_button.enable()
 
         for ele in self.current_cat_elements:
             self.current_cat_elements[ele].kill()
@@ -949,11 +936,9 @@ class ChooseMateScreen(Screens):
             anchors={
                 "bottom": "bottom",
                 "bottom_target": self.list_frame_image,
-                "left_target": (
-                    self.tab_buttons["mates"]
-                    if mates_tab_shown
-                    else self.tab_buttons["potential"]
-                ),
+                "left_target": self.tab_buttons["mates"]
+                if mates_tab_shown
+                else self.tab_buttons["potential"],
             },
         )
 
@@ -1011,11 +996,9 @@ class ChooseMateScreen(Screens):
                 image_cache.load_image(
                     "resources/images/heart_mates.png"
                     if self.selected_cat.ID in self.the_cat.mate
-                    else (
-                        "resources/images/heart_breakup.png"
-                        if self.selected_cat.ID in self.the_cat.previous_mates
-                        else "resources/images/heart_maybe.png"
-                    )
+                    else "resources/images/heart_breakup.png"
+                    if self.selected_cat.ID in self.the_cat.previous_mates
+                    else "resources/images/heart_maybe.png"
                 ).convert_alpha(),
                 ui_scale_dimensions((200, 78)),
             ),
@@ -1124,13 +1107,11 @@ class ChooseMateScreen(Screens):
                 image_cache.load_image(
                     "resources/images/line_compatible.png"
                     if get_personality_compatibility(self.the_cat, self.selected_cat)
-                    else (
-                        "resources/images/line_incompatible.png"
-                        if not get_personality_compatibility(
-                            self.the_cat, self.selected_cat
-                        )
-                        else "resources/images/line_neutral.png"
+                    else "resources/images/line_incompatible.png"
+                    if not get_personality_compatibility(
+                        self.the_cat, self.selected_cat
                     )
+                    else "resources/images/line_neutral.png"
                 ).convert_alpha(),
                 ui_scale_dimensions((200, 78)),
             ),
@@ -1217,12 +1198,12 @@ class ChooseMateScreen(Screens):
             and self.the_cat.is_potential_mate(
                 i, for_love_interest=False, age_restriction=False, ignore_no_mates=True
             )
-            and i.status.is_outsider == self.the_cat.status.is_outsider
+            and i.outside == self.the_cat.outside
             and i.ID not in self.the_cat.mate
             and (not self.single_only or not i.mate)
             and (
                 not self.have_kits_only
-                or get_clan_setting("same sex birth")
+                or game.clan.clan_settings["same sex birth"]
                 or i.gender != self.the_cat.gender
             )
             and (

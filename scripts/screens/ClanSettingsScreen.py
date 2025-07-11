@@ -10,14 +10,8 @@ import pygame_gui
 import ujson
 
 from scripts.cat.cats import Cat
-from scripts.game_structure.game.settings import game_setting_get
 from scripts.game_structure.game_essentials import game
-from scripts.game_structure.ui_elements import (
-    UIImageButton,
-    UISurfaceImageButton,
-    UIModifiedScrollingContainer,
-)
-from scripts.housekeeping.datadir import open_data_dir
+from scripts.game_structure.ui_elements import UIImageButton, UISurfaceImageButton
 from scripts.utility import (
     get_text_box_theme,
     ui_scale,
@@ -25,9 +19,8 @@ from scripts.utility import (
     ui_scale_offset,
 )  # pylint: disable=redefined-builtin
 from .Screens import Screens
-from ..clan_package.settings import get_clan_setting, switch_clan_setting
-from ..cat.enums import CatRank, CatGroup
 from ..game_structure.screen_settings import MANAGER, toggle_fullscreen
+from ..housekeeping.datadir import get_data_dir
 from ..housekeeping.version import get_version_info
 from ..ui.generate_button import get_button_dict, ButtonStyles
 
@@ -45,8 +38,8 @@ class ClanSettingsScreen(Screens):
     sub_menu = "general"
 
     # This is set to the current settings when the screen is opened.
-    # All edits are made directly to settings, however, when you
-    #  leave the screen, settings will be reverted based on this variable
+    # All edits are made directly to game.settings, however, when you
+    #  leave the screen,game.settings will be reverted based on this variable
     #   However, if settings are saved, edits will also be made to this variable.
     settings_at_open = {}
 
@@ -82,7 +75,15 @@ class ClanSettingsScreen(Screens):
             if event.ui_element == self.fullscreen_toggle:
                 toggle_fullscreen(source_screen=self)
             elif event.ui_element == self.open_data_directory_button:
-                open_data_dir()
+                if platform.system() == "Darwin":
+                    subprocess.Popen(["open", "-R", get_data_dir()])
+                elif platform.system() == "Windows":
+                    os.startfile(get_data_dir())  # pylint: disable=no-member
+                elif platform.system() == "Linux":
+                    try:
+                        subprocess.Popen(["xdg-open", get_data_dir()])
+                    except OSError:
+                        logger.exception("Failed to call to xdg-open.")
                 return
             elif event.ui_element == self.relation_settings_button:
                 self.open_relation_settings()
@@ -107,7 +108,7 @@ class ClanSettingsScreen(Screens):
         if event.ui_element in self.checkboxes.values():
             for key, value in self.checkboxes.items():
                 if value == event.ui_element:
-                    switch_clan_setting(key)
+                    game.clan.switch_setting(key)
                     self.settings_changed = True
                     # self.update_save_button()
 
@@ -181,6 +182,7 @@ class ClanSettingsScreen(Screens):
             tool_tip_text="buttons.open_data_directory_tooltip",
         )
 
+        screentext = "windowed" if game.settings["fullscreen"] else "fullscreen"
         rect = ui_scale(pygame.Rect((0, 0), (158, 36)))
         rect.bottomright = ui_scale_offset((-5, -25))
         self.fullscreen_toggle = UIImageButton(
@@ -189,18 +191,14 @@ class ClanSettingsScreen(Screens):
             object_id="#toggle_fullscreen_button",
             manager=MANAGER,
             starting_height=2,
-            tool_tip_text=(
-                "buttons.toggle_fullscreen_windowed"
-                if game_setting_get("fullscreen")
-                else "buttons.toggle_fullscreen_fullscreen"
-            ),
+            tool_tip_text="buttons.toggle_fullscreen_tooltip",
             anchors={
                 "bottom": "bottom",
                 "right": "right",
                 "right_target": Screens.menu_buttons["mute_button"],
             },
         )
-        del rect
+        del screentext, rect
 
         if get_version_info().is_sandboxed:
             self.open_data_directory_button.hide()
@@ -251,10 +249,11 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "general"
 
-        self.checkboxes_text["container_general"] = UIModifiedScrollingContainer(
+        self.checkboxes_text[
+            "container_general"
+        ] = pygame_gui.elements.UIScrollingContainer(
             ui_scale(pygame.Rect((0, 245), (700, 300))),
             allow_scroll_x=False,
-            allow_scroll_y=True,
             manager=MANAGER,
         )
 
@@ -298,10 +297,11 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "role"
 
-        self.checkboxes_text["container_role"] = UIModifiedScrollingContainer(
+        self.checkboxes_text[
+            "container_role"
+        ] = pygame_gui.elements.UIScrollingContainer(
             ui_scale(pygame.Rect((0, 245), (700, 300))),
             allow_scroll_x=False,
-            allow_scroll_y=True,
             manager=MANAGER,
         )
 
@@ -338,10 +338,11 @@ class ClanSettingsScreen(Screens):
         self.clear_sub_settings_buttons_and_text()
         self.sub_menu = "relation"
 
-        self.checkboxes_text["container_relation"] = UIModifiedScrollingContainer(
+        self.checkboxes_text[
+            "container_relation"
+        ] = pygame_gui.elements.UIScrollingContainer(
             ui_scale(pygame.Rect((0, 245), (700, 300))),
             allow_scroll_x=False,
-            allow_scroll_y=True,
             manager=MANAGER,
         )
 
@@ -397,34 +398,34 @@ class ClanSettingsScreen(Screens):
                 continue
 
             if cat.dead:
-                if cat.status.group == CatGroup.STARCLAN:
-                    starclan += 1
-                elif cat.status.group == CatGroup.DARK_FOREST:
+                if cat.df:
                     df += 1
-                else:
+                elif cat.outside:
                     ur += 1
+                else:
+                    starclan += 1
                 continue
 
-            if cat.status.is_outsider:
+            if cat.outside:
                 cats_outside += 1
                 continue
 
             living_cats += 1
-            if cat.status.rank == CatRank.MEDICINE_CAT:
+            if cat.status == "medicine cat":
                 med_cats += 1
-            elif cat.status.rank == CatRank.MEDICINE_APPRENTICE:
+            elif cat.status == "medicine cat apprentice":
                 med_cat_apprentices += 1
-            elif cat.status.rank == CatRank.WARRIOR:
+            elif cat.status == "warrior":
                 warriors += 1
-            elif cat.status.rank == CatRank.APPRENTICE:
+            elif cat.status == "apprentice":
                 warrior_apprentices += 1
-            elif cat.status.rank == CatRank.MEDIATOR_APPRENTICE:
+            elif cat.status == "mediator apprentice":
                 mediator_apprentices += 1
-            elif cat.status.rank == CatRank.MEDIATOR:
+            elif cat.status == "mediator":
                 mediators += 1
-            elif cat.status.rank == CatRank.ELDER:
+            elif cat.status == "elder":
                 elders += 1
-            elif cat.status.rank.is_baby():
+            elif cat.status in ("newborn", "kitten"):
                 kits += 1
 
         self.checkboxes_text["stat_box"] = pygame_gui.elements.UITextBox(
@@ -459,7 +460,7 @@ class ClanSettingsScreen(Screens):
 
         n = 0
         for code, desc in settings_dict[self.sub_menu].items():
-            if get_clan_setting(code):
+            if game.clan.clan_settings[code]:
                 box_type = "@checked_checkbox"
             else:
                 box_type = "@unchecked_checkbox"
@@ -470,7 +471,8 @@ class ClanSettingsScreen(Screens):
             if len(desc) == 4 and isinstance(desc[3], list):
                 x_val += 25
                 disabled = (
-                    get_clan_setting(desc[3][0], default=not desc[3][1]) != desc[3][1]
+                    game.clan.clan_settings.get(desc[3][0], not desc[3][1])
+                    != desc[3][1]
                 )
 
             self.checkboxes[code] = UIImageButton(

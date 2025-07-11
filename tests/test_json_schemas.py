@@ -7,8 +7,6 @@ HOWEVER,
  Please keep the raw python script, so it can be run by the GitHub action.
 """
 
-from itertools import chain
-
 import json
 import jsonschema
 from pathlib import Path
@@ -18,12 +16,16 @@ import unittest
 
 ROOT_DIR = Path(__file__).parent.parent
 SCHEMA_DIR = ROOT_DIR / "schemas"
-RESOURCES_DIR = ROOT_DIR / "resources"
+RESOURCES_DIR = ROOT_DIR / "resources" / "lang" / "en"
 
 COMMON_SCHEMA = json.loads((SCHEMA_DIR / "common.schema.json").read_text())
 THOUGHT_SCHEMA = json.loads((SCHEMA_DIR / "thought.schema.json").read_text())
 PATROL_SCHEMA = json.loads((SCHEMA_DIR / "patrol.schema.json").read_text())
 SHORTEVENT_SCHEMA = json.loads((SCHEMA_DIR / "shortevent.schema.json").read_text())
+
+THOUGHT_DIR = RESOURCES_DIR / "thoughts"
+PATROL_DIR = RESOURCES_DIR / "patrols"
+EVENT_DIR = RESOURCES_DIR / "events"
 
 registry = Registry().with_resources(
     [
@@ -39,7 +41,7 @@ def all_thought_files():
     """
     Iterator for Paths for all thought files
     """
-    yield from RESOURCES_DIR.glob("lang/*/thoughts/**/*.json")
+    yield from THOUGHT_DIR.glob("**/*.json")
 
 
 def all_patrol_files():
@@ -47,15 +49,12 @@ def all_patrol_files():
     Iterator for Paths for all patrol files
     """
     EXCLUSIONS = [
-        "explicit_patrol_art.json",
-        "prey_text_replacements.json",
+        PATROL_DIR / "explicit_patrol_art.json",
+        PATROL_DIR / "prey_text_replacements.json",
     ]
-
-    yield from (
-        file
-        for file in RESOURCES_DIR.glob("lang/*/patrols/**/*.json")
-        if file.name not in EXCLUSIONS
-    )
+    for filename in PATROL_DIR.glob("**/*.json"):
+        if filename not in EXCLUSIONS:
+            yield filename
 
 
 def all_shortevent_files():
@@ -65,9 +64,8 @@ def all_shortevent_files():
 
     INCLUSION_GLOBS = ["death/*.json", "injury/*.json", "misc/*.json", "new_cat/*.json"]
 
-    yield from chain.from_iterable(
-        RESOURCES_DIR.glob("lang/*/events/" + glob) for glob in INCLUSION_GLOBS
-    )
+    for glob in INCLUSION_GLOBS:
+        yield from EVENT_DIR.glob(glob)
 
 
 def test_thoughts_schema():

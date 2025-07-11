@@ -8,8 +8,7 @@ import random
 
 import ujson
 
-from scripts.game_structure import constants
-from scripts.cat.enums import CatRank
+from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.datadir import get_save_dir
 
 
@@ -121,7 +120,7 @@ class Name:
             ) or all(
                 i == possible_three_letter[1][0]
                 for i in possible_three_letter[1]
-                # Prevent double animal names (ex. Spiderfalcon)
+            # Prevent double animal names (ex. Spiderfalcon)
             )
             double_animal = (
                 self.prefix in self.names_dict["animal_prefixes"]
@@ -146,6 +145,7 @@ class Name:
                     and str(self.suffix) != ""
                 )
             ):
+
                 # check if random die was for prefix
                 if name_fixpref:
                     self.give_prefix(eyes, color, biome)
@@ -170,14 +170,11 @@ class Name:
                     double_animal = False
                 i += 1
 
-    def __str__(self):
-        return self.__repr__()
-
     # Generate possible prefix
     def give_prefix(self, eyes, colour, biome):
         """Generate possible prefix."""
-        # decided in constants.CONFIG: cat_name_controls
-        if constants.CONFIG["cat_name_controls"]["always_name_after_appearance"]:
+        # decided in game config: cat_name_controls
+        if game.config["cat_name_controls"]["always_name_after_appearance"]:
             named_after_appearance = True
         else:
             named_after_appearance = not random.getrandbits(
@@ -190,7 +187,7 @@ class Name:
         possible_prefix_categories = []
         if (
             eyes in self.names_dict["eye_prefixes"]
-            and constants.CONFIG["cat_name_controls"]["allow_eye_names"]
+            and game.config["cat_name_controls"]["allow_eye_names"]
         ):
             possible_prefix_categories.append(self.names_dict["eye_prefixes"][eyes])
         if colour in self.names_dict["colour_prefixes"]:
@@ -240,7 +237,7 @@ class Name:
             # Pelt name only gets used if there's an associated suffix.
             if named_after_pelt:
                 if (
-                    pelt in ("Tortie", "Calico")
+                    pelt in ["Tortie", "Calico"]
                     and tortiepattern in self.names_dict["tortie_pelt_suffixes"]
                 ):
                     self.suffix = random.choice(
@@ -265,28 +262,31 @@ class Name:
         # then suffixes based on ages (fixes #2004, just trust me)
 
         # Handles suffix assignment with outside cats
-        if self.cat.status.is_former_clancat:
+        if self.cat.status not in ["rogue", "loner", "kittypet"] and self.cat.outside:
+            adjusted_status: str = ""
+            if self.cat.moons >= 15:
+                adjusted_status = "warrior"
+            elif self.cat.moons >= 6:
+                adjusted_status = "apprentice"
             if self.cat.moons == 0:
-                adjusted_status = CatRank.NEWBORN
+                adjusted_status = "newborn"
             elif self.cat.moons < 6:
-                adjusted_status = CatRank.KITTEN
+                adjusted_status = "kitten"
             elif self.cat.moons < 12:
-                adjusted_status = CatRank.APPRENTICE
+                adjusted_status = "apprentice"
             else:
-                adjusted_status = CatRank.WARRIOR
+                adjusted_status = "warrior"
 
-            if adjusted_status != CatRank.WARRIOR and not self.specsuffix_hidden:
+            if adjusted_status != "warrior" and not self.specsuffix_hidden:
                 return (
                     self.prefix + self.names_dict["special_suffixes"][adjusted_status]
                 )
         if (
-            self.cat.status.rank in self.names_dict["special_suffixes"]
+            self.cat.status in self.names_dict["special_suffixes"]
             and not self.specsuffix_hidden
         ):
-            return (
-                self.prefix + self.names_dict["special_suffixes"][self.cat.status.rank]
-            )
-        if constants.CONFIG["fun"]["april_fools"]:
+            return self.prefix + self.names_dict["special_suffixes"][self.cat.status]
+        if game.config["fun"]["april_fools"]:
             return f"{self.prefix}egg"
         return self.prefix + self.suffix
 
