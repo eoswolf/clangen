@@ -6,7 +6,11 @@ from typing import Union
 import pygame
 import ujson
 
-from scripts.game_structure.game_essentials import game
+from scripts.game_structure import constants
+from scripts.game_structure.game.settings import game_setting_get
+from scripts.special_dates import SpecialDate, is_today
+
+logger = logging.getLogger(__name__)
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +170,10 @@ class Sprites:
                 "fadedarkforest",
                 "symbols",
             ]:
-                if 'lineart' in x and game.config['fun']['april_fools']:
+                if "lineart" in x and (
+                    constants.CONFIG["fun"]["april_fools"]
+                    or is_today(SpecialDate.APRIL_FOOLS)
+                ):
                     self.spritesheet(f"sprites/{f}/aprilfools{x}.png", x)
                 elif 'symbols' in x:
                     self.spritesheet(f"sprites/{x}.png", x)
@@ -213,10 +220,9 @@ class Sprites:
                     "PALEYELLOW",
                     "GOLD",
                     "GREENYELLOW",
-                    "ORANGE"
+                    "ORANGE",
                 ],
             ]
-
             for row, colors in enumerate(eye_colors):
                 for col, color in enumerate(colors):
                     self.make_group("eyes", (col, row), f"eyes{f}_{color}")
@@ -603,6 +609,17 @@ class Sprites:
                 "CLOVER",
                 "DAISY",
             ],
+            [
+                "WISTERIA",
+                "ROSE MALLOW",
+                "PICKLEWEED",
+                "GOLDEN CREEPING JENNY",
+                "DESERT WILLOW",
+                "CACTUS FLOWER",
+                "PRAIRIE FIRE",
+                "VERBENA EAR",
+                "VERBENA PELT",
+            ],
         ]
         dryherbs_data = [["DRY HERBS", "DRY CATMINT", "DRY NETTLES", "DRY LAURELS"]]
         wild_data = [
@@ -618,7 +635,10 @@ class Sprites:
                 "MONARCH BUTTERFLY",
                 "CICADA WINGS",
                 "BLACK CICADA",
-            ]
+            ],
+            [
+                "ROAD RUNNER FEATHER",
+            ],
         ]
 
         collars_data = [
@@ -776,16 +796,16 @@ class Sprites:
         var = pygame.PixelArray(recolored_symbol)
         var.replace(
             (87, 76, 45),
-            pygame.Color(game.config["theme"]["dark_mode_clan_symbols"])
-            if not force_light and game.settings["dark mode"]
-            else pygame.Color(game.config["theme"]["light_mode_clan_symbols"]),
-            distance=0.2,
+            (
+                pygame.Color(constants.CONFIG["theme"]["dark_mode_clan_symbols"])
+                if not force_light and game_setting_get("dark mode")
+                else pygame.Color(constants.CONFIG["theme"]["light_mode_clan_symbols"])
+            ),
+            distance=0,
         )
         del var
 
         return recolored_symbol
-
-
 
 # CREATE INSTANCE
 sprites = Sprites()

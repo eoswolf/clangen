@@ -1,11 +1,11 @@
 import logging
-import os
 import random
 
 import pygame
 import pygame_gui
 import ujson
 
+from scripts.game_structure.game.settings import game_setting_get, game_setting_set
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.ui_elements import CatButton, UISpriteButton
 
@@ -15,33 +15,14 @@ menu_screens = ["settings screen", "start screen", "switch clan screen"]
 creation_screens = ["make clan screen"]
 
 
-def init_audio():
-    if os.environ.get("SDL_AUDIODRIVER") == "dummy":
-        MusicManager.audio_disabled = True
-    try:
-        pygame.mixer.init(buffer=44100)
-    except pygame.error:
-        print("Failed to initialize sound. Sound will be disabled.")
-        print(
-            "To avoid the long load time you just experienced in future, "
-            "set `disable_audio` to true in game_config.json."
-        )
-        os.environ["SDL_AUDIODRIVER"] = "dummy"
-        MusicManager.audio_disabled = True
-        pygame.mixer.init(buffer=44100)
-
-
 class MusicManager:
-    audio_disabled = False
-
     def __init__(self):
-        if not pygame.mixer.get_init() and not self.audio_disabled:
-            init_audio()
         self.current_playlist = []
         self.biome_playlist = []
         self.number_of_tracks = len(self.current_playlist)
-        self.volume = game.settings["music_volume"] / 100
-        self.muted = self.audio_disabled
+        self.volume = game_setting_get("music_volume") / 100
+        self.muted = False
+        self.audio_disabled = False
         self.current_track = None
         self.queued_track = None
 
@@ -192,13 +173,11 @@ class MusicManager:
         """
 
         if self.audio_disabled:
-            if os.environ.get("SDL_AUDIODRIVER") == "dummy":
-                return
             try:
                 pygame.mixer.init()
                 self.load_playlists()
                 sound_manager.load_sounds()
-                MusicManager.audio_disabled = False
+                self.audio_disabled = False
                 self.muted = False
             except pygame.error:
                 self.muted = True
@@ -219,7 +198,7 @@ class MusicManager:
 
         # convert to a float and change volume accordingly
         self.volume = new_volume / 100
-        game.settings["music_volume"] = new_volume
+        game_setting_set("music_volume", new_volume)
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.set_volume(self.volume)
 
@@ -250,10 +229,7 @@ music_manager = MusicManager()
 
 class _SoundManager:
     def __init__(self):
-        if not pygame.mixer.get_init() and not MusicManager.audio_disabled:
-            init_audio()
-
-        self.volume = game.settings["sound_volume"] / 100
+        self.volume = game_setting_get("sound_volume") / 100
         self.pressed = None
 
         self.load_sounds()
@@ -309,7 +285,7 @@ class _SoundManager:
     def play(self, sound, button=None):
         """plays the given sound, if an ImageButton is passed through then the sound_id of the ImageButton will be
         used instead"""
-        if music_manager.muted or MusicManager.audio_disabled:
+        if music_manager.muted or music_manager.audio_disabled:
             return
 
         if button and hasattr(button, "sound_id"):
@@ -334,7 +310,7 @@ class _SoundManager:
 
         # convert to a float and change volume accordingly
         self.volume = new_volume / 100
-        game.settings["sound_volume"] = new_volume
+        game_setting_set("sound_volume", new_volume)
         for sound in self.sounds:
             for each in self.sounds[sound]:
                 pygame.mixer.Sound.set_volume(each, self.volume)
