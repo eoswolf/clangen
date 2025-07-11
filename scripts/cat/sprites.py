@@ -6,6 +6,7 @@ import pygame
 import ujson
 
 from scripts.game_structure import constants
+from scripts.game_structure.game_essentials import game
 from scripts.game_structure.game.settings import game_setting_get
 from scripts.special_dates import SpecialDate, is_today
 

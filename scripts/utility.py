@@ -2952,17 +2952,17 @@ def generate_sprite(
                     if accessory in getattr(Pelt, category):
                         if accessory in cat.pelt.plant_accessories:
                             new_sprite.blit(
-                                sprites.sprites["acc_herbs" + accessory + cat_sprite],
+                                sprites.sprites["acc_herbs" + f'{n}_' + accessory + cat_sprite],
                                 (0, 0),
                             )
                         elif accessory in cat.pelt.wild_accessories:
                             new_sprite.blit(
-                                sprites.sprites["acc_wild" + accessory + cat_sprite],
+                                sprites.sprites["acc_wild" + f'{n}_' + accessory + cat_sprite],
                                 (0, 0),
                             )
                         elif accessory in cat.pelt.collars:
                             new_sprite.blit(
-                                sprites.sprites["collars" + accessory + cat_sprite],
+                                sprites.sprites["collars" + f'{n}_' + accessory + cat_sprite],
                                 (0, 0),
                             )
 

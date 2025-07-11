@@ -2,6 +2,7 @@ from typing import Optional, TYPE_CHECKING
 
 import pygame
 import ujson
+from os import walk
 
 from scripts.event_class import Single_Event
 from scripts.game_structure import constants
@@ -85,7 +86,7 @@ class Game:
     cat_class = None
     prey_config = {}
 
-    species_list = {}
+    species = {}
     sprite_folders = set()
 
     rpc = None
@@ -102,6 +103,14 @@ class Game:
 
         with open(f"resources/prey_config.json", "r", encoding="utf-8") as read_file:
             self.prey_config = ujson.loads(read_file.read())
+
+        with open(f"resources/species.json", 'r') as read_file:
+            self.species = ujson.loads(read_file.read())
+
+        # count amount of folders excluding faded and dicts folder
+        for x in(next(walk('sprites'))[1]):
+            if not x in ['faded', 'dicts']:
+                self.sprite_folders.add(x)
 
     @property
     def config(self):
@@ -138,14 +147,6 @@ class Game:
         raise Exception(
             "game.settings has been deprecated, use get_game_setting() and set_game_setting() or helpers instead. Unrecoverable."
         )
-
-        with open(f"resources/species.json", 'r') as read_file:
-            self.species = ujson.loads(read_file.read())
-
-        # count amount of folders excluding faded and dicts folder
-        for x in(next(os.walk('sprites'))[1]):
-            if not x in ['faded', 'dicts']:
-                self.sprite_folders.add(x)
 
     def update_game(self):
         if self.current_screen != switch_get_value(Switch.cur_screen):
