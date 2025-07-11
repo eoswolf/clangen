@@ -11,7 +11,7 @@ from pygame_gui.core.interfaces import IUIManagerInterface
 from pygame_gui.core.text.html_parser import HTMLParser
 from pygame_gui.core.text.text_box_layout import TextBoxLayout
 from pygame_gui.core.utility import translate
-from pygame_gui.elements import UIAutoResizingContainer, UIWindow
+from pygame_gui.elements import UIAutoResizingContainer
 
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
@@ -1464,4 +1464,3 @@ class UIImageHorizontalSlider(pygame_gui.elements.UIHorizontalSlider):
             },
             visible=self.visible,
         )
-        

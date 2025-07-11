@@ -1,5 +1,4 @@
 import os
-import platform
 import shutil
 import subprocess
 import threading
@@ -63,6 +62,7 @@ from scripts.utility import (
 
 if TYPE_CHECKING:
     from scripts.screens.Screens import Screens
+
 
 class SymbolFilterWindow(UIWindow):
     def __init__(self):
@@ -676,13 +676,7 @@ class ChangeCatName(UIWindow):
             elif event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
-                del game.all_screens["profile screen"].windows["cat_name_window"]
                 self.kill()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
-            game.all_screens["profile screen"].exit_screen()
-            game.all_screens["profile screen"].screen_switches()
-            del game.all_screens["profile screen"].windows["cat_name_window"]
-            self.kill()
         return super().process_event(event)
 
 
@@ -1231,13 +1225,7 @@ class KillCat(UIWindow):
             elif event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
-                del game.all_screens["profile screen"].windows["kill_cat_window"]
                 self.kill()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
-            game.all_screens["profile screen"].exit_screen()
-            game.all_screens["profile screen"].screen_switches()
-            del game.all_screens["profile screen"].windows["kill_cat_window"]
-            self.kill()
 
         return super().process_event(event)
 
@@ -1437,21 +1425,10 @@ class UpdateAvailablePopup(UIWindow):
     def process_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.continue_button:
-                # For the time being, we're not going to install the update ourselves.
-                # The auto-updater will take some time to be fully rewritten, so it's best we
-                # don't offer people a broken install option.
-
-                url = "https://clangen.io/download"
-
-                if get_version_info().is_dev():
-                    url = "https://clangen.io/download-development"
-
-                if platform.system() == "Darwin":
-                    subprocess.Popen(["open", "-u", url])
-                elif platform.system() == "Windows":
-                    os.system(f"start \"\" {url}")
-                elif platform.system() == "Linux":
-                    subprocess.Popen(["xdg-open", url])
+                self.x = UpdateWindow(
+                    game.switches["cur_screen"], self.announce_restart_callback
+                )
+                self.kill()
             elif (
                 event.ui_element == self.close_button
                 or event.ui_element == self.cancel_button
@@ -1476,6 +1453,7 @@ class UpdateAvailablePopup(UIWindow):
         return super().process_event(event)
 
     def announce_restart_callback(self):
+        self.x.kill()
         y = AnnounceRestart(game.switches["cur_screen"])
         y.update(1)
 
@@ -2034,7 +2012,6 @@ class ChangeCatToggles(UIWindow):
             if event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
-                del game.all_screens["profile screen"].windows["cat_toggles_window"]
                 self.kill()
             elif event.ui_element == self.checkboxes["prevent_fading"]:
                 self.the_cat.prevent_fading = not self.the_cat.prevent_fading
@@ -2048,11 +2025,6 @@ class ChangeCatToggles(UIWindow):
             elif event.ui_element == self.checkboxes["prevent_mates"]:
                 self.the_cat.no_mates = not self.the_cat.no_mates
                 self.refresh_checkboxes()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game.settings["keybinds"]:
-            game.all_screens["profile screen"].exit_screen()
-            game.all_screens["profile screen"].screen_switches()
-            del game.all_screens["profile screen"].windows["cat_toggles_window"]
-            self.kill()
 
         return super().process_event(event)
 

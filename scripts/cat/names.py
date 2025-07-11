@@ -120,7 +120,7 @@ class Name:
             ) or all(
                 i == possible_three_letter[1][0]
                 for i in possible_three_letter[1]
-            # Prevent double animal names (ex. Spiderfalcon)
+                # Prevent double animal names (ex. Spiderfalcon)
             )
             double_animal = (
                 self.prefix in self.names_dict["animal_prefixes"]
@@ -145,7 +145,6 @@ class Name:
                     and str(self.suffix) != ""
                 )
             ):
-
                 # check if random die was for prefix
                 if name_fixpref:
                     self.give_prefix(eyes, color, biome)
@@ -169,6 +168,9 @@ class Name:
                 ):
                     double_animal = False
                 i += 1
+
+    def __str__(self):
+        return self.__repr__()
 
     # Generate possible prefix
     def give_prefix(self, eyes, colour, biome):
@@ -262,7 +264,7 @@ class Name:
         # then suffixes based on ages (fixes #2004, just trust me)
 
         # Handles suffix assignment with outside cats
-        if self.cat.status not in ["rogue", "loner", "kittypet"] and self.cat.outside:
+        if self.cat.status in ["exiled", "lost"]:
             adjusted_status: str = ""
             if self.cat.moons >= 15:
                 adjusted_status = "warrior"
@@ -277,7 +279,7 @@ class Name:
             else:
                 adjusted_status = "warrior"
 
-            if adjusted_status != "warrior" and not self.specsuffix_hidden:
+            if adjusted_status != "warrior":
                 return (
                     self.prefix + self.names_dict["special_suffixes"][adjusted_status]
                 )

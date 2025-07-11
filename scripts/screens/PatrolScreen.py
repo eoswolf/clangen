@@ -342,9 +342,6 @@ class PatrolScreen(Screens):
     def display_change_load(self, variable_dict: Dict):
         super().display_change_load(variable_dict)
 
-        if variable_dict["clan_name"] != game.clan.name:
-            return
-
         for key, value in variable_dict.items():
             try:
                 setattr(self, key, value)

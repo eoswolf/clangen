@@ -542,19 +542,9 @@ class RelationshipScreen(Screens):
             del gender_rect
 
             # Column One Details:
-            col1 = ""
-            # Gender-Align
-            col1 += self.inspect_cat.genderalign + "\n"
-
-            # Age
-            col1 += f"{self.inspect_cat.moons} moons\n"
-
-            # Trait
-            col1 += shorten_text_to_fit(f"{self.inspect_cat.personality.trait}\n", 110)
-
             self.inspect_cat_elements["col1"] = pygame_gui.elements.UITextBox(
-                col1,
-                ui_scale(pygame.Rect((15, 185), (90, 120))),
+                self.inspect_cat.get_info_block(relationship=True),
+                ui_scale(pygame.Rect((15, 185), (90, 70))),
                 object_id="#text_box_22_horizleft_spacing_95",
                 manager=MANAGER,
                 container=self.selected_cat_container,

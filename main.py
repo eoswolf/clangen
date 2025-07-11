@@ -181,29 +181,7 @@ for module_name, module in list(sys.modules.items()):
             reload(module)
 
 # Load game
-from scripts.game_structure.game_essentials import game
-
-if game.config.get("disable_audio"):
-    os.environ["SDL_AUDIODRIVER"] = "dummy"
-    print("'disable_audio' set to True. Sound will be disabled.")
-
-import pygame
-
-pygame.display.init()
-pygame.font.init()
-pygame.display.set_caption("Clan Generator")
-from scripts.game_structure.screen_settings import toggle_fullscreen
-
-toggle_fullscreen(
-    fullscreen=game.settings["fullscreen"],
-    show_confirm_dialog=False,
-    ingame_switch=False,
-)
-
 from scripts.game_structure.audio import sound_manager, music_manager
-
-pygame.init()
-
 from scripts.game_structure.load_cat import load_cats, version_convert
 from scripts.game_structure.windows import SaveCheck
 from scripts.game_structure.screen_settings import screen_scale, MANAGER, screen
@@ -215,7 +193,9 @@ from scripts.utility import (
     quit,
 )  # pylint: disable=redefined-builtin
 
-from scripts.debug_menu import debugmode
+# from scripts.debug_menu import debugmode
+from scripts.debug_console import debug_mode
+import pygame
 
 print("")
 print("Running on SPS Framework")
@@ -340,6 +320,13 @@ del finished_loading
 del loading_animation
 del load_data
 
+pygame.mixer.pre_init(buffer=44100)
+try:
+    pygame.mixer.init()
+except pygame.error:
+    print("Failed to initialize sound. Sound will be disabled.")
+    music_manager.audio_disabled = True
+    music_manager.muted = True
 AllScreens.start_screen.screen_switches()
 
 # dev screen info now lives in scripts/screens/screens_core

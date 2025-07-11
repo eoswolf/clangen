@@ -880,8 +880,7 @@ class Screens:
         return {
             "heading": scripts.screens.screens_core.screens_core.menu_buttons[
                 "heading"
-            ].html_text,
-            "clan_name": game.clan.name
+            ].html_text
         }
 
     def display_change_load(self, variable_dict: Dict):

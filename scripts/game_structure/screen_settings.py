@@ -146,16 +146,14 @@ def set_display_mode(
             new_screen: "Screens" = getattr(AllScreens, screen_name)
             new_screen.screen_switches()
             if ingame_switch:
-                if game.clan and curr_variable_dict["clan_name"] == game.clan.name:
-                    new_screen.display_change_load(curr_variable_dict)
+                new_screen.display_change_load(curr_variable_dict)
     if curr_variable_dict is not None and show_confirm_dialog:
         from scripts.screens.all_screens import AllScreens
 
         new_screen: "Screens" = getattr(
             AllScreens, game.switches["cur_screen"].replace(" ", "_")
         )
-        if game.clan and curr_variable_dict["clan_name"] == game.clan.name:
-            new_screen.display_change_load(curr_variable_dict)
+        new_screen.display_change_load(curr_variable_dict)
 
     # preloading the associated fonts
     if not MANAGER.ui_theme.get_font_dictionary().check_font_preloaded(

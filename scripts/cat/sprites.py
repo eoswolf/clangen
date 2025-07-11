@@ -1,14 +1,10 @@
-import logging
 import os
 from copy import copy
-from typing import Union
 
 import pygame
 import ujson
 
 from scripts.game_structure.game_essentials import game
-
-logger = logging.getLogger(__name__)
 
 
 class Sprites:
@@ -34,13 +30,15 @@ class Sprites:
 
     def load_tints(self):
         try:
-            with open("sprites/dicts/tint.json", "r") as read_file:
+            with open("sprites/dicts/tint.json", "r", encoding="utf-8") as read_file:
                 self.cat_tints = ujson.loads(read_file.read())
         except IOError:
             print("ERROR: Reading Tints")
 
         try:
-            with open("sprites/dicts/white_patches_tint.json", "r") as read_file:
+            with open(
+                "sprites/dicts/white_patches_tint.json", "r", encoding="utf-8"
+            ) as read_file:
                 self.white_patches_tints = ujson.loads(read_file.read())
         except IOError:
             print("ERROR: Reading White Patches Tints")
@@ -698,7 +696,9 @@ class Sprites:
         """
 
         if os.path.exists("resources/dicts/clan_symbols.json"):
-            with open("resources/dicts/clan_symbols.json") as read_file:
+            with open(
+                "resources/dicts/clan_symbols.json", encoding="utf-8"
+            ) as read_file:
                 self.symbol_dict = ujson.loads(read_file.read())
 
         # U and X omitted from letter list due to having no prefixes
@@ -762,29 +762,17 @@ class Sprites:
 
             y_pos += 1
 
-    def get_symbol(self, symbol: str, force_light=False):
-        """Change the color of the symbol to match the requested theme, then return it
-        :param Surface symbol: The clan symbol to convert
-        :param force_light: Use to ignore dark mode and always display the light mode color
-        """
-        symbol = self.sprites.get(symbol)
-        if symbol is None:
-            logger.warning("%s is not a known Clan symbol! Using default.")
-            symbol = self.sprites[self.clan_symbols[0]]
-
-        recolored_symbol = copy(symbol)
-        var = pygame.PixelArray(recolored_symbol)
-        var.replace(
-            (87, 76, 45),
-            pygame.Color(game.config["theme"]["dark_mode_clan_symbols"])
-            if not force_light and game.settings["dark mode"]
-            else pygame.Color(game.config["theme"]["light_mode_clan_symbols"]),
-            distance=0.2,
-        )
+    def dark_mode_symbol(self, symbol):
+        """Change the color of the symbol to dark mode, then return it
+        :param Surface symbol: The clan symbol to convert"""
+        dark_mode_symbol = copy(symbol)
+        var = pygame.PixelArray(dark_mode_symbol)
+        var.replace((87, 76, 45), (239, 229, 206))
         del var
+        # dark mode color (239, 229, 206)
+        # debug hot pink (255, 105, 180)
 
-        return recolored_symbol
-
+        return dark_mode_symbol
 
 
 # CREATE INSTANCE
