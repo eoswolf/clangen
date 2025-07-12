@@ -136,7 +136,6 @@ class GenerateEvents:
                         season=event["season"] if "season" in event else ["any"],
                         sub_type=event["sub_type"] if "sub_type" in event else [],
                         tags=event["tags"] if "tags" in event else [],
-                        frequency=event["frequency"] if "frequency" in event else 4,
                         text=event_text,
                         new_accessory=(
                             event["new_accessory"] if "new_accessory" in event else []
@@ -220,7 +219,10 @@ class GenerateEvents:
                 return event
 
     @staticmethod
-    def possible_short_events(event_type=None, frequency=4):
+    def possible_short_events(
+        frequency,
+        event_type=None,
+    ):
         event_list = []
 
         # skip the rest of the loading if there is an unrecognised biome
@@ -433,6 +435,8 @@ class GenerateEvents:
                     continue
 
             final_events.extend([event] * event.weight)
+        if not final_events:
+            return None, None
 
         cat_list = [
             c for c in Cat_class.all_cats.values() if c.status.alive_in_player_clan
@@ -453,7 +457,7 @@ class GenerateEvents:
                         break
             # else, pick a random one from the available events
             elif not chosen_event:
-                chosen_event = random.choice(final_events) if final_events else None
+                chosen_event = random.choice(final_events)
 
         failed_ids = []
         while final_events and not chosen_cat and not chosen_event:

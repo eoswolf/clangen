@@ -138,18 +138,19 @@ class HandleShortEvents:
         # think of it as "in a span of 10 moons, in how many moons should this sort of event appear?"
         frequency_roll = randint(1, 10)
         if frequency_roll <= 4:
-            weight = 4
+            frequency = 4
         elif frequency_roll <= 7:
-            weight = 3
+            frequency = 3
         elif frequency_roll <= 9:
-            weight = 2
+            frequency = 2
         else:
-            weight = 1
+            frequency = 1
 
         chosen_event = None
-        while not chosen_event and weight < 5:
+        while not chosen_event and frequency < 5:
             possible_short_events = GenerateEvents.possible_short_events(
-                event_type, weight
+                frequency,
+                event_type,
             )
 
             chosen_event, random_cat = GenerateEvents.filter_possible_short_events(
@@ -166,8 +167,8 @@ class HandleShortEvents:
                 ignore_subtyping=ignore_subtyping,
             )
             if not chosen_event:
-                # we'll see if any higher weighted events are available
-                weight += 1
+                # we'll see if any more common events are available
+                frequency += 1
 
         # ---------------------------------------------------------------------------- #
         #                               do the event                                   #

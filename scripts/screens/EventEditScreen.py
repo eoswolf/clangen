@@ -275,7 +275,7 @@ class EventEditScreen(Screens):
         """Loaded tags"""
 
         self.frequency_element = {}
-        self.frequency_info: int = 20
+        self.frequency_info: int = 4
         """Loaded frequency"""
 
         self.acc_element = {}

@@ -1,5 +1,6 @@
 from typing import List
 
+from scripts.cat.enums import CatAge, CatRank
 from scripts.cat.personality import Personality
 from scripts.cat.skills import SkillPath
 from scripts.game_structure import constants
@@ -14,11 +15,13 @@ class ShortEvent:
     num_of_traits = len(Personality.trait_ranges["normal_traits"].keys()) + len(
         Personality.trait_ranges["kit_traits"].keys()
     )
-    num_of_skills = len([*SkillPath])
+    num_of_skills = len(SkillPath)
 
-    num_of_ages = 7  # can't pull this from the Cat file bc of circular imports
+    num_of_ages = len(
+        CatAge
+    )  # can't pull this from the Cat file bc of circular imports
 
-    num_of_ranks = 11
+    num_of_ranks = CatRank.get_num_of_clan_ranks()
 
     def __init__(
         self,
@@ -27,8 +30,6 @@ class ShortEvent:
         season: List[str] = None,
         sub_type: List[str] = None,
         tags: List[str] = None,
-        weight: int = 1,
-        frequency: int = 4,
         text: str = "",
         new_accessory: List[str] = None,
         m_c=None,
@@ -47,7 +48,7 @@ class ShortEvent:
         if not event_id:
             print("WARNING: moon event has no event_id")
 
-        self.weight = weight
+        self.weight = 1
 
         self.event_id = event_id
         self.location = location if location else ["any"]
@@ -60,7 +61,6 @@ class ShortEvent:
             )  # this increases the weight inversely to the number of season constraints
         self.sub_type = sub_type if sub_type else []
         self.tags = tags if tags else []
-        self.frequency = frequency
         self.text = text
         self.new_accessory = new_accessory if new_accessory else []
         self.m_c = m_c if m_c else {"age": ["any"]}
