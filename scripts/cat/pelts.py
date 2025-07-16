@@ -479,6 +479,7 @@ class Pelt:
     exotic = ["Bengal", "Marbled", "Masked"]
     torties = ["Tortie", "Calico"]
     pelt_categories = [tabbies, spotted, plain, exotic, torties]
+    bobcat_pelts = ["Ticked","Agouti","Speckled","Rosette","Bengal"]
 
     # SPRITE NAMES
     single_colours = [
@@ -1035,9 +1036,11 @@ class Pelt:
             weights = [1, 1, 1, 1]
 
         # Now, choose the pelt category and pelt. The extra 0 is for the tortie pelts,
-        chosen_pelt = choice(
-            random.choices(Pelt.pelt_categories, weights=weights + [0], k=1)[0]
-        )
+        #if self.the_cat.species == "cat":
+        chosen_pelt = choice(random.choices(Pelt.pelt_categories, weights=weights + [0], k=1)[0])
+        #if self.the_cat.species == "bobcat":
+               # chosen_pelt = choice(choices(pelt.bobcat_pelts,weights=(1,1,1,1,1),k=1)[0])
+        #else: chosen_pelt = choice(random.choices(pelt.pelt_categories, weights=weights + [0], k=1)[0])
 
         # Tortie chance
         tortie_chance_f = constants.CONFIG["cat_generation"][
@@ -1162,7 +1165,14 @@ class Pelt:
 
         # Determine pelt.
         chosen_pelt = choice(
-            random.choices(Pelt.pelt_categories, weights=(35, 20, 30, 15, 0), k=1)[0]
+         #   if self.species == "cat":
+         #       random.choices(Pelt.pelt_categories, weights=(35, 20, 30, 15, 0), k=1)[0]
+         #   elif self.species == "halfbobcat":
+         #       random.choices(Pelt.pelt_categories, weights=weights + [0], k=1)[0]
+         #   elif self.species == "bobcat":
+         #       choices(Pelt.bobcat_pelts,weights=(1,1,1,1,1),k=1)[0]
+         #   else:
+          random.choices(Pelt.pelt_categories, weights=(35, 20, 30, 15, 0), k=1)[0]
         )
 
         # Tortie chance
