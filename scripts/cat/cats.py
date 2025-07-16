@@ -482,7 +482,7 @@ class Cat:
         if parents:
             par_species = []
             par_weights = []
-            for x in range(0, len(weights)):
+            for  x in range(0, len(weights)):
                 par_weights.append(0)
 
             # collect species of parents
@@ -518,7 +518,14 @@ class Cat:
                     par_weights[x] += add_weight[x]
 
             try:
-                self.species = choices(species_list, weights=par_weights, k=1)[0]
+                if par_species == ['cat', 'bobcat']:
+                    self.species = choices(species_list,weights=(0,0,5),k=1)[0]
+                elif par_species == ['half-bobcat', 'bobcat']:
+                    self.species = choices(species_list,weights=(0,1,3),k=1)[0]
+                elif par_species == ['half-bobcat', 'cat']:
+                    self.species = choices(species_list,weights=(5,0,1),k=1)[0]
+                else:
+                    self.species = choices(species_list, weights=par_weights, k=1)[0]
             except:
                 print("[SPS] Warning - failed to generate species. Are all inheritance weights set to zero?")
                 print("[SPS] Parent species: "+str(par_species))
