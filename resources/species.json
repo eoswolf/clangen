@@ -3,16 +3,18 @@
         "cat": [],
         "bobcat": [],
         "half-bobcat":["rec_inh"],
-        "snail-cat":[],
-	"scavenger":[]
+        "snail cat":["rec_inh"],
+	"scavenger":[],
+	"alien cat":["rec_inh"]
     },
-    "ran_weights": [5,1,3,5,5],
+    "ran_weights": [5,1,3,5,5,5],
     "in_weights": {
-        "cat": [1,1,1,1,1],
-        "bobcat": [1,1,1,1,1],
-        "half-bobcat":[1,1,1,1,1],
-        "snail-cat":[1,1,1,1,1],
-	"scavenger":[1,1,1,1,1]
+        "cat": [1,1,1,1,1,1],
+        "bobcat": [1,1,1,1,1,1],
+        "half-bobcat":[1,1,1,1,1,1],
+        "snail cat":[1,1,1,1,1,1],
+	"scavenger":[1,1,1,1,1,1],
+	"alien cat":[1,1,1,1,1,1]
     },
     "comment": [
         "look at the official documentation for a list of all species tags.",
