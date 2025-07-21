@@ -414,6 +414,7 @@ class Cat:
         :return: None
         """
         # trans cat chances
+        enby_list = ["intersex","intergender","gendervoid","gender apathetic","multigender","pangender","altersex","transxenic","transsexual","transgender","transmasc","transfem","transfemmasc","girlboy","transneu","transfemmascneu","boygirl","girlthing","boything","thingy","cassgender","isogender","nonbinary", "genderfluid", "demigirl", "demiboy", "genderfae", "genderfaun","genderdoe","genderthil", "bigender", "genderqueer", "agender", "???", "demigender", "trigender", "genderflux", "polygender"]
         self.genderalign = self.gender
         trans_chance = randint(0, 50)
         nb_chance = randint(0, 75)
@@ -422,13 +423,30 @@ class Cat:
         if self.age.is_baby():
             # newborns can't be trans, sorry babies
             pass
-        elif nb_chance == 1:
-            self.genderalign = "nonbinary"
-        elif trans_chance == 1:
-            if self.gender == "female":
-                self.genderalign = "trans male"
+        if self.gender == "female" and not self.status in ['newborn', 'kitten']:
+            if trans_chance == 1:
+                binary_chance = randint(1,10)
+                if binary_chance > 2:
+                    self.genderalign = "trans male"
+                else:
+                    self.genderalign = choice(enby_list)
+            elif nb_chance == 1:
+                self.genderalign = choice(enby_list)
             else:
-                self.genderalign = "trans female"
+                self.genderalign = self.gender
+        elif self.gender == "male" and not self.status in ['newborn', 'kitten']:
+            if trans_chance == 1:
+                binary_chance = randint(1,10)
+                if binary_chance > 2:
+                    self.genderalign = "trans female"
+                else:
+                    self.genderalign = choice(enby_list)
+            elif nb_chance == 1:
+                self.genderalign = choice(enby_list)
+            else:
+                self.genderalign = self.gender
+        else:
+            self.genderalign = self.gender
 
         # PRONOUNS AUTO-GENERATE WHEN REQUIRED
 
